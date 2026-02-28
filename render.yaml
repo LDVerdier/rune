@@ -2,6 +2,7 @@ services:
   - type: web
     name: rune
     runtime: docker
+    plan: free
     repo: https://github.com/laurentmusic/rune
     branch: main
     autoDeploy: false

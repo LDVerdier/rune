@@ -22,7 +22,8 @@
       "Bash(npm run lint)",
       "Bash(npm run typecheck)",
       "Bash(npm test)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "WebFetch(domain:render.com)"
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune"
