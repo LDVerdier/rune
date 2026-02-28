@@ -10,9 +10,12 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-[#0a0a0a] text-[#e0e0e0];
+  color-scheme: dark;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+/* Fix: ensure all buttons show cursor pointer on hover */
+button,
+[role="button"] {
+  cursor: pointer;
 }
