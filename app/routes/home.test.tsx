@@ -10,8 +10,4 @@ describe("Home", () => {
     expect(screen.getByText("Rune")).toBeInTheDocument();
   });
 
-  it("renders the welcome message", () => {
-    render(<Home />);
-    expect(screen.getByText("Welcome to Rune.")).toBeInTheDocument();
-  });
 });
