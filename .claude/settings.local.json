@@ -25,7 +25,8 @@
       "Bash(npm run build)",
       "WebFetch(domain:render.com)",
       "WebFetch(domain:www.heroui.com)",
-      "Bash(npm install @heroui/react framer-motion)"
+      "Bash(npm install @heroui/react framer-motion)",
+      "Bash(npx vitest run app/routes/home.test.tsx)"
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune"
