@@ -3,7 +3,7 @@ services:
     name: rune
     runtime: docker
     plan: free
-    repo: https://github.com/laurentmusic/rune
+    repo: https://github.com/LDVerdier/rune
     branch: main
     autoDeploy: false
     envVars:
