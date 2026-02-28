@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default --jq '.[].name')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/package.json --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/vite.config.ts --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/tsconfig.json --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/react-router.config.ts --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/.gitignore --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/.dockerignore --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/Dockerfile --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app --jq '.[].name')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/root.tsx --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/routes.ts --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/routes --jq '.[].name')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/welcome --jq '.[].name')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/routes/home.tsx --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/app/welcome/welcome.tsx --jq '.content')",
+      "Bash(gh api repos/remix-run/react-router-templates/contents/default/public --jq '.[].name')",
+      "Bash(ls -la /Users/laurent/Documents/perso/rune/.git*)",
+      "Bash(npm install)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm test)",
+      "Bash(npm run build)"
+    ],
+    "additionalDirectories": [
+      "/Users/laurent/Documents/perso/rune"
+    ]
+  }
+}

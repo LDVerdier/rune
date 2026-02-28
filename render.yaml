@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: rune
+    runtime: docker
+    repo: https://github.com/laurentmusic/rune
+    branch: main
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
