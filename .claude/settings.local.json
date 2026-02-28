@@ -29,7 +29,8 @@
       "Bash(npx vitest run app/routes/home.test.tsx)"
     ],
     "additionalDirectories": [
-      "/Users/laurent/Documents/perso/rune"
+      "/Users/laurent/Documents/perso/rune",
+      "/Users/laurent/Documents/perso/rune/.claude"
     ]
   }
 }
