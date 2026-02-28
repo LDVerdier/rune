@@ -31,7 +31,8 @@
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune",
-      "/Users/laurent/Documents/perso/rune/.claude"
+      "/Users/laurent/Documents/perso/rune/.claude",
+      "/Users/laurent/.claude/projects/-Users-laurent-Documents-perso-rune/memory"
     ]
   }
 }

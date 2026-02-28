@@ -14,4 +14,6 @@ For each step:
 - If it fails, fix the issues before moving to the next step
 - Re-run the command to confirm the fix
 
-Report a summary at the end with the status of each check.
+4. **Documentation** — Update or create AI-destined documentation files (in `.claude/memory/`) to store any new directives, conventions, or decisions about the project that emerged during the work. This ensures future sessions have the right context. Only write what is stable and confirmed — skip session-specific or speculative notes.
+
+Report a summary at the end with the status of each check and any documentation updates made.
