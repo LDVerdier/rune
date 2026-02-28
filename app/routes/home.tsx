@@ -15,7 +15,7 @@ export default function Home() {
           Rune
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400">
-          Welcome to Rune.
+          Welcome to Rune, land of the Vikings.
         </p>
       </div>
     </main>
