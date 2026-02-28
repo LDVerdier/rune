@@ -62,7 +62,7 @@ jobs:
     steps:
       - run:
           name: Deploy to Render
-          command: curl -sf -X POST "$RENDER_DEPLOY_HOOK_URL"
+          command: curl -s "$RENDER_DEPLOY_HOOK_URL"
 
 workflows:
   ci:
