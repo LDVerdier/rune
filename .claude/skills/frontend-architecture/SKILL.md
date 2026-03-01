@@ -3,6 +3,8 @@ name: frontend-architecture
 description: Apply the Domain → Hook → Route layered architecture when creating or refactoring frontend features. Use this skill when adding a new page/feature or when a route file mixes business logic with UI rendering.
 ---
 
+# Frontend architecture: Domain → Hook → Route pattern
+
 ## Pattern: Domain → Hook → Route
 
 All feature code must follow a three-layer separation:

@@ -3,6 +3,8 @@ name: i18n
 description: All user-facing text must be internationalized. Use this skill when creating or modifying any UI component that contains text visible to the user.
 ---
 
+# Internationalization (i18n) guidelines
+
 ## Rule: No hardcoded user-facing strings
 
 Every piece of text rendered in the UI must come from the i18n translation files. Never hardcode strings directly in JSX.

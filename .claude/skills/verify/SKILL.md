@@ -1,9 +1,11 @@
 ---
 name: verify
-description: After finishing the execution of a plan, run the full verification suite: linter, typecheck, and tests. Fix any issues found.
+description: After finishing the execution of a plan, run the full verification suite: linter, typecheck, tests, Documentation. Fix any issues found.
 ---
 
-Run these three checks sequentially:
+# Final verification checklist
+
+Run these four checks sequentially:
 
 1. **Lint** — `npm run lint`
 2. **Typecheck** — `npm run typecheck`
