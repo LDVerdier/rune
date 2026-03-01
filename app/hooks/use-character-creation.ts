@@ -2,21 +2,21 @@ import { useState } from "react";
 import {
   BASE_POINTS,
   INITIAL_RANKS,
-  canIncrease as domainCanIncreaseChar,
-  nextCost as domainNextCost,
+  canIncrease as charCanIncrease,
+  nextCost as charNextCost,
   pointsSpent as characteristicPointsSpent,
-  prevRefund as domainPrevRefund,
+  prevRefund as charPrevRefund,
   tryChangeRank,
 } from "~/domain/character-stats";
 import type { Characteristic, Ranks } from "~/domain/character-stats";
 import {
   INITIAL_ABILITY_RANKS,
-  abilityNextCost as domainAbilityNextCost,
   abilityPointsSpent,
-  abilityPrevRefund as domainAbilityPrevRefund,
-  canDecreaseAbility as domainCanDecreaseAbility,
-  canIncreaseAbility as domainCanIncreaseAbility,
-  tryChangeAbilityRank,
+  canDecrease as canDecreaseAbility,
+  canIncrease as canIncreaseAbility,
+  nextCost as abilityNextCost,
+  prevRefund as abilityPrevRefund,
+  tryChangeRank as tryChangeAbilityRank,
 } from "~/domain/abilities";
 import type { AbilityRanks } from "~/domain/abilities";
 import {
@@ -115,19 +115,19 @@ export function useCharacterCreation() {
     ranks,
     changeRank,
     canIncrease: (char: Characteristic) =>
-      domainCanIncreaseChar(ranks, char, charBudget),
-    nextCost: (char: Characteristic) => domainNextCost(ranks, char),
-    prevRefund: (char: Characteristic) => domainPrevRefund(ranks, char),
+      charCanIncrease(ranks, char, charBudget),
+    nextCost: (char: Characteristic) => charNextCost(ranks, char),
+    prevRefund: (char: Characteristic) => charPrevRefund(ranks, char),
 
     // Abilities
     abilityRanks,
     changeAbilityRank,
     canIncreaseAbility: (name: string) =>
-      domainCanIncreaseAbility(abilityRanks, name, abilBudget),
+      canIncreaseAbility(abilityRanks, name, abilBudget),
     canDecreaseAbility: (name: string) =>
-      domainCanDecreaseAbility(abilityRanks, name),
-    abilityNextCost: (name: string) => domainAbilityNextCost(name),
-    abilityPrevRefund: (name: string) => domainAbilityPrevRefund(name),
+      canDecreaseAbility(abilityRanks, name),
+    abilityNextCost: (name: string) => abilityNextCost(name),
+    abilityPrevRefund: (name: string) => abilityPrevRefund(name),
 
     // Hit Points
     extraHPPoints,

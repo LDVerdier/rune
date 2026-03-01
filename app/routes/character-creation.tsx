@@ -14,18 +14,21 @@ import type { Route } from "./+types/character-creation";
 import type { Characteristic } from "~/domain/character-stats";
 import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES, BASE_POINTS } from "~/domain/character-stats";
 import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
-import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
+import { AbilityChart } from "~/components/AbilityChart";
+import { CombatEquipmentStatsRow, CombatEquipmentDetails } from "~/components/CombatEquipment";
+import { ArmorStatsRow, ArmorDetails } from "~/components/Armor";
 import {
   SELECTABLE_WEAPONS,
   SELECTABLE_SHIELDS,
   SELECTABLE_ARMORS,
+  MAX_WEAPONS,
 } from "~/domain/equipment";
-import type { WeaponDefinition, ShieldDefinition, ArmorDefinition, WeaponAbility } from "~/domain/equipment";
+import { charRankColor, abilityRankColor } from "~/utils/formatting";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -42,227 +45,6 @@ type ExpandedItem =
   | { type: "extraHP" }
   | { type: "equipment"; id: string }
   | null;
-
-function charRankColor(rank: number): string {
-  if (rank === -3) return "text-red-500";
-  if (rank === -2) return "text-orange-400";
-  if (rank === -1) return "text-yellow-400";
-  if (rank === 0) return "text-gray-400";
-  if (rank === 1) return "text-green-400";
-  if (rank === 2) return "text-green-500";
-  return "text-green-600";
-}
-
-function abilityRankColor(rank: number): string {
-  if (rank === 0) return "text-gray-400";
-  if (rank === 1) return "text-green-400";
-  if (rank === 2) return "text-green-500";
-  return "text-green-600";
-}
-
-function AbilityChart({ ability }: { ability: AbilityDefinition }) {
-  const { t } = useTranslation();
-  if (!ability.chart) return null;
-  const { columns, rows } = ability.chart;
-  return (
-    <div className="mt-2 overflow-x-auto">
-      <table className="w-full text-xs text-gray-300">
-        <thead>
-          <tr>
-            {columns.map((col) => (
-              <th key={col} className="text-left py-1 px-2 text-gray-500 font-medium border-b border-content3">
-                {t(col)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className="border-b border-content3/50">
-              {columns.map((col) => (
-                <td key={col} className="py-1 px-2">
-                  {t(row[col])}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-const WEAPON_ABILITY_KEYS: Record<WeaponAbility, string> = {
-  Brawling: "abilities.Brawling",
-  Bows: "abilities.Bows",
-  Chain: "abilities.ChainWeapon",
-  Great: "abilities.GreatWeapon",
-  Longshaft: "abilities.LongshaftWeapon",
-  Single: "abilities.SingleWeapon",
-  Thrown: "abilities.ThrownWeapon",
-};
-
-function formatStatNum(value: number): string {
-  return value >= 0 ? `+${value}` : `${value}`;
-}
-
-function WeaponStatsRow({ weapon }: { weapon: WeaponDefinition }) {
-  const { t } = useTranslation();
-  const stats = [
-    { label: t("equipment.init"), value: formatStatNum(weapon.init) },
-    { label: t("equipment.atk"), value: formatStatNum(weapon.atk) },
-    {
-      label: t("equipment.dfn"),
-      value: weapon.dfn !== null ? formatStatNum(weapon.dfn) : "—",
-    },
-    {
-      label: t("equipment.dam"),
-      value:
-        weapon.dam === "special"
-          ? t("equipment.special")
-          : formatStatNum(weapon.dam),
-    },
-  ];
-  return (
-    <div className="flex flex-wrap gap-x-3 gap-y-1">
-      {stats.map(({ label, value }) => (
-        <span key={label} className="text-xs text-gray-500">
-          <span className="uppercase tracking-wide">{label}</span>{" "}
-          <span className="text-gray-300 font-mono">{value}</span>
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function WeaponDetails({ weapon }: { weapon: WeaponDefinition }) {
-  const { t } = useTranslation();
-  const hasDescription =
-    weapon.id === "barbNet" || weapon.id === "flagon";
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-        <span>
-          <span className="text-gray-500">{t("equipment.load")}: </span>
-          {weapon.load !== null ? weapon.load : t("equipment.na")}
-        </span>
-        <span>
-          <span className="text-gray-500">{t("equipment.ability")}: </span>
-          {t(WEAPON_ABILITY_KEYS[weapon.ability])}
-        </span>
-        <span>
-          <span className="text-gray-500">{t("equipment.availability")}: </span>
-          {weapon.availability === "Common"
-            ? t("equipment.common")
-            : weapon.availability === "Rare"
-              ? t("equipment.rare")
-              : weapon.availability === "Special"
-                ? t("equipment.special")
-                : t("equipment.na")}
-        </span>
-      </div>
-      {hasDescription && (
-        <p className="text-sm italic text-gray-400">
-          {t(`equipment.${weapon.id}.description`)}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function ShieldStatsRow({ shield }: { shield: ShieldDefinition }) {
-  const { t } = useTranslation();
-  const stats = [
-    { label: t("equipment.init"), value: formatStatNum(shield.init) },
-    { label: t("equipment.atk"), value: formatStatNum(shield.atk) },
-    {
-      label: t("equipment.dfn"),
-      value: shield.dfn !== null ? formatStatNum(shield.dfn) : "—",
-    },
-    {
-      label: t("equipment.dam"),
-      value:
-        shield.dam === "special"
-          ? t("equipment.special")
-          : formatStatNum(shield.dam),
-    },
-  ];
-  return (
-    <div className="flex flex-wrap gap-x-3 gap-y-1">
-      {stats.map(({ label, value }) => (
-        <span key={label} className="text-xs text-gray-500">
-          <span className="uppercase tracking-wide">{label}</span>{" "}
-          <span className="text-gray-300 font-mono">{value}</span>
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function ShieldDetails({ shield }: { shield: ShieldDefinition }) {
-  const { t } = useTranslation();
-  return (
-    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-      <span>
-        <span className="text-gray-500">{t("equipment.load")}: </span>
-        {shield.load !== null ? shield.load : t("equipment.na")}
-      </span>
-      <span>
-        <span className="text-gray-500">{t("equipment.ability")}: </span>
-        {t(WEAPON_ABILITY_KEYS[shield.ability])}
-      </span>
-      <span>
-        <span className="text-gray-500">{t("equipment.availability")}: </span>
-        {shield.availability === "Common"
-          ? t("equipment.common")
-          : shield.availability === "Rare"
-            ? t("equipment.rare")
-            : t("equipment.na")}
-      </span>
-    </div>
-  );
-}
-
-function ArmorStatsRow({ armor }: { armor: ArmorDefinition }) {
-  const { t } = useTranslation();
-  const stats = [
-    { label: t("equipment.prt"), value: `+${armor.prt}` },
-    { label: t("equipment.init"), value: formatStatNum(armor.init) },
-  ];
-  return (
-    <div className="flex flex-wrap gap-x-3 gap-y-1">
-      {stats.map(({ label, value }) => (
-        <span key={label} className="text-xs text-gray-500">
-          <span className="uppercase tracking-wide">{label}</span>{" "}
-          <span className="text-gray-300 font-mono">{value}</span>
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function ArmorDetails({ armor }: { armor: ArmorDefinition }) {
-  const { t } = useTranslation();
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-        <span>
-          <span className="text-gray-500">{t("equipment.load")}: </span>
-          {armor.load}
-        </span>
-        <span>
-          <span className="text-gray-500">{t("equipment.availability")}: </span>
-          {armor.availability === "Common"
-            ? t("equipment.common")
-            : t("equipment.rare")}
-        </span>
-      </div>
-      <p className="text-sm italic text-gray-400">
-        {t(`equipment.${armor.id}.description`)}
-      </p>
-    </div>
-  );
-}
 
 export default function CharacterCreation() {
   const {
@@ -569,7 +351,7 @@ export default function CharacterCreation() {
       <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
         {t("creation.weaponsSection")}
         <span className="ml-2 text-gray-600">
-          {selectedWeapons.length}/3
+          {selectedWeapons.length}/{MAX_WEAPONS}
         </span>
       </h2>
 
@@ -597,9 +379,12 @@ export default function CharacterCreation() {
                     : t("creation.maxWeapons")
               }
               ariaLabel={t(`equipment.${weapon.id}`)}
-              stats={<WeaponStatsRow weapon={weapon} />}
+              stats={<CombatEquipmentStatsRow equipment={weapon} />}
             >
-              <WeaponDetails weapon={weapon} />
+              <CombatEquipmentDetails
+                equipment={weapon}
+                showDescription={weapon.id === "barbNet" || weapon.id === "flagon"}
+              />
             </EquipmentCard>
           );
         })}
@@ -633,9 +418,9 @@ export default function CharacterCreation() {
                   : t("creation.selectEquipment")
               }
               ariaLabel={t(`equipment.${shield.id}`)}
-              stats={<ShieldStatsRow shield={shield} />}
+              stats={<CombatEquipmentStatsRow equipment={shield} />}
             >
-              <ShieldDetails shield={shield} />
+              <CombatEquipmentDetails equipment={shield} />
             </EquipmentCard>
           );
         })}

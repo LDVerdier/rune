@@ -6,6 +6,7 @@ import type { AbilityRanks } from "~/domain/abilities";
 import { ABILITY_SETS, abilitiesBySet } from "~/domain/abilities";
 import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
+import { charRankColor, formatRank } from "~/utils/formatting";
 
 interface CharacterSummaryProps {
   remainingPoints: number;
@@ -17,21 +18,6 @@ interface CharacterSummaryProps {
   selectedShield: string | null;
   selectedArmor: string | null;
   onResetClick: () => void;
-}
-
-function charRankColor(rank: number): string {
-  if (rank === -3) return "text-red-500";
-  if (rank === -2) return "text-orange-400";
-  if (rank === -1) return "text-yellow-400";
-  if (rank === 0) return "text-gray-400";
-  if (rank === 1) return "text-green-400";
-  if (rank === 2) return "text-green-500";
-  return "text-green-600";
-}
-
-function formatRank(rank: number): string {
-  if (rank > 0) return `+${rank}`;
-  return String(rank);
 }
 
 export function CharacterSummary({

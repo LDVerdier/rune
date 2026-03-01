@@ -15,8 +15,8 @@ export type WeaponAbility =
 
 export type WeaponAvailability = "Common" | "Rare" | "NA" | "Special";
 
-export interface WeaponDefinition extends EquipmentDefinition {
-  readonly kind: "weapon";
+/** Shared shape for weapons and shields (they use the same combat stats). */
+export interface CombatEquipmentDefinition extends EquipmentDefinition {
   readonly init: number;
   readonly atk: number;
   readonly dfn: number | null;
@@ -26,15 +26,12 @@ export interface WeaponDefinition extends EquipmentDefinition {
   readonly availability: WeaponAvailability;
 }
 
-export interface ShieldDefinition extends EquipmentDefinition {
+export interface WeaponDefinition extends CombatEquipmentDefinition {
+  readonly kind: "weapon";
+}
+
+export interface ShieldDefinition extends CombatEquipmentDefinition {
   readonly kind: "shield";
-  readonly init: number;
-  readonly atk: number;
-  readonly dfn: number | null;
-  readonly dam: number | "special";
-  readonly load: number | null;
-  readonly ability: WeaponAbility;
-  readonly availability: WeaponAvailability;
 }
 
 export interface ArmorDefinition extends EquipmentDefinition {
@@ -129,3 +126,17 @@ export const SELECTABLE_ARMORS = ARMORS.filter(
 export function canSelectWeapon(selected: string[], id: string): boolean {
   return selected.includes(id) || selected.length < MAX_WEAPONS;
 }
+
+/**
+ * Maps a WeaponAbility value to the corresponding ability name used in the
+ * abilities domain and i18n keys (e.g. "Chain" → "ChainWeapon").
+ */
+export const WEAPON_ABILITY_NAMES: Record<WeaponAbility, string> = {
+  Brawling: "Brawling",
+  Bows: "Bows",
+  Chain: "ChainWeapon",
+  Great: "GreatWeapon",
+  Longshaft: "LongshaftWeapon",
+  Single: "SingleWeapon",
+  Thrown: "ThrownWeapon",
+};

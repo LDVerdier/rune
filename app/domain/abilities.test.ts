@@ -4,13 +4,13 @@ import {
   ABILITY_MAX_RANK,
   ABILITY_MIN_RANK,
   INITIAL_ABILITY_RANKS,
-  abilityNextCost,
+  nextCost,
   abilityPointsSpent,
-  abilityPrevRefund,
+  prevRefund,
   abilitiesBySet,
-  canDecreaseAbility,
-  canIncreaseAbility,
-  tryChangeAbilityRank,
+  canDecrease,
+  canIncrease,
+  tryChangeRank,
 } from "./abilities";
 
 describe("INITIAL_ABILITY_RANKS", () => {
@@ -37,28 +37,28 @@ describe("abilityPointsSpent", () => {
   });
 });
 
-describe("tryChangeAbilityRank", () => {
+describe("tryChangeRank", () => {
   it("returns null when exceeding max rank", () => {
     const ranks = { ...INITIAL_ABILITY_RANKS, Bows: ABILITY_MAX_RANK };
-    expect(tryChangeAbilityRank(ranks, "Bows", 1, 60)).toBeNull();
+    expect(tryChangeRank(ranks, "Bows", 1, 60)).toBeNull();
   });
 
   it("returns null when going below min rank", () => {
     const ranks = { ...INITIAL_ABILITY_RANKS, Bows: ABILITY_MIN_RANK };
-    expect(tryChangeAbilityRank(ranks, "Bows", -1, 60)).toBeNull();
+    expect(tryChangeRank(ranks, "Bows", -1, 60)).toBeNull();
   });
 
   it("returns null when move exceeds budget", () => {
     // Bows is Primary (cost 2 per rank), budget is 1
-    expect(tryChangeAbilityRank(INITIAL_ABILITY_RANKS, "Bows", 1, 1)).toBeNull();
+    expect(tryChangeRank(INITIAL_ABILITY_RANKS, "Bows", 1, 1)).toBeNull();
   });
 
   it("returns null for unknown ability", () => {
-    expect(tryChangeAbilityRank(INITIAL_ABILITY_RANKS, "FakeAbility", 1, 60)).toBeNull();
+    expect(tryChangeRank(INITIAL_ABILITY_RANKS, "FakeAbility", 1, 60)).toBeNull();
   });
 
   it("returns valid new state on a legal increase", () => {
-    const result = tryChangeAbilityRank(INITIAL_ABILITY_RANKS, "Bows", 1, 60);
+    const result = tryChangeRank(INITIAL_ABILITY_RANKS, "Bows", 1, 60);
     expect(result).not.toBeNull();
     expect(result!.Bows).toBe(1);
     expect(result!.Balance).toBe(0);
@@ -66,7 +66,7 @@ describe("tryChangeAbilityRank", () => {
 
   it("returns valid new state on a legal decrease", () => {
     const ranks = { ...INITIAL_ABILITY_RANKS, Balance: 2 };
-    const result = tryChangeAbilityRank(ranks, "Balance", -1, 60);
+    const result = tryChangeRank(ranks, "Balance", -1, 60);
     expect(result).not.toBeNull();
     expect(result!.Balance).toBe(1);
   });
@@ -75,56 +75,56 @@ describe("tryChangeAbilityRank", () => {
     // Spend 4 pts on Bows (Primary, rank 2), budget is 5 → 1 remaining
     const ranks = { ...INITIAL_ABILITY_RANKS, Bows: 2 };
     // Balance is Secondary (cost 1) — should succeed with 1 remaining
-    expect(tryChangeAbilityRank(ranks, "Balance", 1, 5)).not.toBeNull();
+    expect(tryChangeRank(ranks, "Balance", 1, 5)).not.toBeNull();
     // Awareness is Primary (cost 2) — should fail with 1 remaining
-    expect(tryChangeAbilityRank(ranks, "Awareness", 1, 5)).toBeNull();
+    expect(tryChangeRank(ranks, "Awareness", 1, 5)).toBeNull();
   });
 });
 
-describe("canIncreaseAbility", () => {
+describe("canIncrease", () => {
   it("returns false at max rank", () => {
     const ranks = { ...INITIAL_ABILITY_RANKS, Bows: ABILITY_MAX_RANK };
-    expect(canIncreaseAbility(ranks, "Bows", 60)).toBe(false);
+    expect(canIncrease(ranks, "Bows", 60)).toBe(false);
   });
 
   it("returns false when insufficient budget", () => {
-    expect(canIncreaseAbility(INITIAL_ABILITY_RANKS, "Bows", 1)).toBe(false);
+    expect(canIncrease(INITIAL_ABILITY_RANKS, "Bows", 1)).toBe(false);
   });
 
   it("returns true when affordable", () => {
-    expect(canIncreaseAbility(INITIAL_ABILITY_RANKS, "Bows", 60)).toBe(true);
+    expect(canIncrease(INITIAL_ABILITY_RANKS, "Bows", 60)).toBe(true);
   });
 
   it("returns false for unknown ability", () => {
-    expect(canIncreaseAbility(INITIAL_ABILITY_RANKS, "FakeAbility", 60)).toBe(false);
+    expect(canIncrease(INITIAL_ABILITY_RANKS, "FakeAbility", 60)).toBe(false);
   });
 });
 
-describe("canDecreaseAbility", () => {
+describe("canDecrease", () => {
   it("returns false at min rank", () => {
-    expect(canDecreaseAbility(INITIAL_ABILITY_RANKS, "Bows")).toBe(false);
+    expect(canDecrease(INITIAL_ABILITY_RANKS, "Bows")).toBe(false);
   });
 
   it("returns true above min rank", () => {
     const ranks = { ...INITIAL_ABILITY_RANKS, Bows: 1 };
-    expect(canDecreaseAbility(ranks, "Bows")).toBe(true);
+    expect(canDecrease(ranks, "Bows")).toBe(true);
   });
 });
 
-describe("abilityNextCost / abilityPrevRefund", () => {
+describe("nextCost / prevRefund", () => {
   it("returns 2 for Primary abilities", () => {
-    expect(abilityNextCost("Bows")).toBe(2);
-    expect(abilityPrevRefund("Bows")).toBe(2);
+    expect(nextCost("Bows")).toBe(2);
+    expect(prevRefund("Bows")).toBe(2);
   });
 
   it("returns 1 for Secondary abilities", () => {
-    expect(abilityNextCost("Balance")).toBe(1);
-    expect(abilityPrevRefund("Balance")).toBe(1);
+    expect(nextCost("Balance")).toBe(1);
+    expect(prevRefund("Balance")).toBe(1);
   });
 
   it("returns null for unknown ability", () => {
-    expect(abilityNextCost("FakeAbility")).toBeNull();
-    expect(abilityPrevRefund("FakeAbility")).toBeNull();
+    expect(nextCost("FakeAbility")).toBeNull();
+    expect(prevRefund("FakeAbility")).toBeNull();
   });
 });
 

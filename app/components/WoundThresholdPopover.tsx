@@ -1,5 +1,7 @@
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import { useTranslation } from "react-i18next";
+import { computeWoundThreshold } from "~/domain/wound-threshold";
+import { formatRank } from "~/utils/formatting";
 
 interface Props {
   staminaRank: number;
@@ -7,7 +9,7 @@ interface Props {
 
 const ROWS = [-3, -2, -1, 0, 1, 2, 3].map((stamina) => ({
   stamina,
-  threshold: [2, 4, 6, 9, 12, 15, 18][stamina + 3],
+  threshold: computeWoundThreshold(stamina),
 }));
 
 export function WoundThresholdPopover({ staminaRank }: Props) {
@@ -52,7 +54,7 @@ export function WoundThresholdPopover({ staminaRank }: Props) {
                     }
                   >
                     <td className="py-0.5 pr-4 tabular-nums">
-                      {row.stamina > 0 ? `+${row.stamina}` : row.stamina}
+                      {formatRank(row.stamina)}
                     </td>
                     <td className="py-0.5 text-right tabular-nums font-medium">
                       {active ? (

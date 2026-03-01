@@ -243,7 +243,7 @@ export function abilityPointsSpent(abilityRanks: AbilityRanks): number {
   }, 0);
 }
 
-export function tryChangeAbilityRank(
+export function tryChangeRank(
   abilityRanks: AbilityRanks,
   name: string,
   delta: number,
@@ -262,7 +262,7 @@ export function tryChangeAbilityRank(
   return { ...abilityRanks, [name]: newRank };
 }
 
-export function canIncreaseAbility(
+export function canIncrease(
   abilityRanks: AbilityRanks,
   name: string,
   budget: number,
@@ -274,20 +274,20 @@ export function canIncreaseAbility(
   return COST_PER_RANK[ability.category] <= remaining;
 }
 
-export function canDecreaseAbility(
+export function canDecrease(
   abilityRanks: AbilityRanks,
   name: string,
 ): boolean {
   return (abilityRanks[name] ?? 0) > ABILITY_MIN_RANK;
 }
 
-export function abilityNextCost(name: string): number | null {
+export function nextCost(name: string): number | null {
   const ability = getAbility(name);
   if (!ability) return null;
   return COST_PER_RANK[ability.category];
 }
 
-export function abilityPrevRefund(name: string): number | null {
+export function prevRefund(name: string): number | null {
   const ability = getAbility(name);
   if (!ability) return null;
   return COST_PER_RANK[ability.category];

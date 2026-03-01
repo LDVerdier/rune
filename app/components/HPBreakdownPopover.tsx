@@ -1,5 +1,7 @@
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import { useTranslation } from "react-i18next";
+import { extraHPPerPoint } from "~/domain/hit-points";
+import { formatRank } from "~/utils/formatting";
 
 interface Props {
   strengthRank: number;
@@ -60,7 +62,7 @@ const STARTING_HP_ROWS: StartingHPRow[] = [
 
 const HP_PER_POINT_ROWS = [-3, -2, -1, 0, 1, 2, 3].map((stamina) => ({
   stamina,
-  hp: stamina + 4,
+  hp: extraHPPerPoint(stamina),
 }));
 
 export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
@@ -162,7 +164,7 @@ export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
                         }
                       >
                         <td className="py-0.5 pr-2 tabular-nums">
-                          {row.stamina > 0 ? `+${row.stamina}` : row.stamina}
+                          {formatRank(row.stamina)}
                         </td>
                         <td className="py-0.5 text-right tabular-nums font-medium">
                           {active ? (
