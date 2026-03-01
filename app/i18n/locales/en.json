@@ -61,6 +61,10 @@
     "suggestCognomen": "Suggest",
     "deriveFromFather": "Derive from father's name",
     "nameSection": "Name",
+    "importantNumbersSection": "Important Numbers",
+    "encumbrance": "Encumbrance",
+    "encumbranceDecrease": "Encumbrance Decrease",
+    "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",
       "colStamina": "Stamina",
@@ -405,5 +409,19 @@
     "quiltedFur.description": "Layers of quilted cloth or animal fur providing minimal protection.",
     "chainMail.description": "Interlocked metal rings forming a flexible but heavy protective coat.",
     "steelScaleMail.description": "Overlapping steel scales riveted to a backing, offering excellent protection at the cost of mobility."
+  },
+  "encumbrance": {
+    "Light": "Light",
+    "Loaded": "Loaded",
+    "Overloaded": "Overloaded",
+    "BetterPutSomethingDown": "Better Put Something Down",
+    "NoOneWillTakeThisMuch": "No One Will Take This Much",
+    "colStrength": "Str",
+    "colLight": "Light",
+    "colLoaded": "Loaded",
+    "colOverloaded": "Overloaded",
+    "colBetter": "Better Put...",
+    "colNoOne": "No One...",
+    "triggerLabel": "How is this calculated?"
   }
 }

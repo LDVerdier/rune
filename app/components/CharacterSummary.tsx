@@ -7,6 +7,8 @@ import { ABILITY_SETS, abilitiesBySet } from "~/domain/abilities";
 import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import { charRankColor, formatRank } from "~/utils/formatting";
+import type { EncumbranceDegree } from "~/domain/encumbrance";
+import { EncumbrancePopover } from "~/components/EncumbrancePopover";
 
 interface SummaryLabeledRowProps {
   label: string;
@@ -36,6 +38,9 @@ interface CharacterSummaryProps {
   selectedWeapons: string[];
   selectedShield: string | null;
   selectedArmor: string | null;
+  totalLoad: number;
+  encumbranceDegree: EncumbranceDegree;
+  encumbranceDecrease: number;
   onResetClick: () => void;
 }
 
@@ -50,10 +55,21 @@ export function CharacterSummary({
   selectedWeapons,
   selectedShield,
   selectedArmor,
+  totalLoad,
+  encumbranceDegree,
+  encumbranceDecrease,
   onResetClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
   const grouped = abilitiesBySet();
+
+  const degreeColor: Record<EncumbranceDegree, string> = {
+    Light: "text-green-400",
+    Loaded: "text-yellow-400",
+    Overloaded: "text-orange-400",
+    BetterPutSomethingDown: "text-red-400",
+    NoOneWillTakeThisMuch: "text-red-500",
+  };
 
   const hasPurchasedAbilities = ABILITY_SETS.some((set) =>
     grouped[set].some((a) => abilityRanks[a.name] > 0),
@@ -249,6 +265,39 @@ export function CharacterSummary({
           </div>
         </>
       )}
+
+      {/* Important Numbers */}
+      <>
+        <Divider />
+        <div>
+          <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+            {t("creation.importantNumbersSection")}
+          </h3>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 truncate mr-1">
+                  {t("creation.encumbrance")}
+                </span>
+                <EncumbrancePopover strengthRank={ranks.Strength} />
+              </div>
+              <div className="flex items-baseline gap-1 shrink-0">
+                <span className={`text-xs font-bold ${degreeColor[encumbranceDegree]}`}>
+                  {t(`encumbrance.${encumbranceDegree}`)}
+                </span>
+                <span className="text-[10px] text-gray-500">
+                  ({totalLoad})
+                </span>
+              </div>
+            </div>
+            <SummaryLabeledRow
+              label={t("creation.encumbranceDecrease")}
+              value={encumbranceDecrease}
+              color={degreeColor[encumbranceDegree]}
+            />
+          </div>
+        </div>
+      </>
     </div>
   );
 }

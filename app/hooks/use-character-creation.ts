@@ -29,6 +29,11 @@ import {
 } from "~/domain/hit-points";
 import { computeWoundThreshold } from "~/domain/wound-threshold";
 import { MAX_WEAPONS, canSelectWeapon as domainCanSelectWeapon } from "~/domain/equipment";
+import {
+  computeTotalLoad,
+  computeEncumbranceDegree,
+  computeEncumbranceDecrease,
+} from "~/domain/encumbrance";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -77,6 +82,11 @@ export function useCharacterCreation() {
   const extraHPGain = computeExtraHPGain(extraHPPoints, ranks.Stamina);
   const totalHP = computeTotalHP(ranks.Strength, ranks.Stamina, extraHPPoints);
   const woundThreshold = computeWoundThreshold(ranks.Stamina);
+
+  // --- Encumbrance ---
+  const totalLoad = computeTotalLoad(selectedWeapons, selectedShield, selectedArmor);
+  const encumbranceDegree = computeEncumbranceDegree(ranks.Strength, totalLoad);
+  const encumbranceDecrease = computeEncumbranceDecrease(encumbranceDegree);
 
   // --- Reset ---
   function resetAll() {
@@ -150,6 +160,11 @@ export function useCharacterCreation() {
     toggleShield,
     toggleArmor,
     canSelectWeapon: (id: string) => domainCanSelectWeapon(selectedWeapons, id),
+
+    // Encumbrance
+    totalLoad,
+    encumbranceDegree,
+    encumbranceDecrease,
 
     // Actions
     resetAll,

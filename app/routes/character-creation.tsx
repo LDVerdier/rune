@@ -85,6 +85,9 @@ export default function CharacterCreation() {
     toggleShield,
     toggleArmor,
     canSelectWeapon,
+    totalLoad,
+    encumbranceDegree,
+    encumbranceDecrease,
     resetAll,
   } = useCharacterCreation();
   const { t } = useTranslation();
@@ -573,6 +576,9 @@ export default function CharacterCreation() {
                   selectedWeapons={selectedWeapons}
                   selectedShield={selectedShield}
                   selectedArmor={selectedArmor}
+                  totalLoad={totalLoad}
+                  encumbranceDegree={encumbranceDegree}
+                  encumbranceDecrease={encumbranceDecrease}
                   onResetClick={() => {
                     setIsMobileSummaryOpen(false);
                     setIsResetOpen(true);
@@ -605,6 +611,9 @@ export default function CharacterCreation() {
               selectedWeapons={selectedWeapons}
               selectedShield={selectedShield}
               selectedArmor={selectedArmor}
+              totalLoad={totalLoad}
+              encumbranceDegree={encumbranceDegree}
+              encumbranceDecrease={encumbranceDecrease}
               onResetClick={() => setIsResetOpen(true)}
             />
           </div>

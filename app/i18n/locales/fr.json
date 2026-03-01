@@ -61,6 +61,10 @@
     "suggestCognomen": "Suggérer",
     "deriveFromFather": "Dériver du nom du père",
     "nameSection": "Nom",
+    "importantNumbersSection": "Chiffres Importants",
+    "encumbrance": "Encombrement",
+    "encumbranceDecrease": "Pénalité d'Encombrement",
+    "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",
       "colStamina": "Endurance",
@@ -405,5 +409,19 @@
     "quiltedFur.description": "Des couches de tissu matelassé ou de fourrure animale offrant une protection minimale.",
     "chainMail.description": "Des anneaux de métal entrelacés formant une cotte flexible mais lourde.",
     "steelScaleMail.description": "Des écailles d'acier superposées rivetées sur un support, offrant une excellente protection au détriment de la mobilité."
+  },
+  "encumbrance": {
+    "Light": "Léger",
+    "Loaded": "Chargé",
+    "Overloaded": "Surchargé",
+    "BetterPutSomethingDown": "Mieux vaut poser quelque chose",
+    "NoOneWillTakeThisMuch": "Personne ne porterait autant",
+    "colStrength": "For",
+    "colLight": "Léger",
+    "colLoaded": "Chargé",
+    "colOverloaded": "Surchargé",
+    "colBetter": "Poser qqch...",
+    "colNoOne": "Personne...",
+    "triggerLabel": "Comment est-ce calculé ?"
   }
 }
