@@ -37,6 +37,14 @@ export interface ShieldDefinition extends EquipmentDefinition {
   readonly availability: WeaponAvailability;
 }
 
+export interface ArmorDefinition extends EquipmentDefinition {
+  readonly kind: "armor";
+  readonly prt: number;
+  readonly init: number;
+  readonly load: number;
+  readonly availability: WeaponAvailability;
+}
+
 export const MAX_WEAPONS = 3;
 export const MAX_SHIELDS = 1;
 export const MAX_ARMORS = 1;
@@ -99,9 +107,12 @@ export const SHIELDS: ShieldDefinition[] = [
   { id: "towerShield", kind: "shield", init: -2, atk: -2, dfn: 5, dam: 0, load: 3, ability: "Single", availability: "Rare" },
 ];
 
-export const ARMORS: EquipmentDefinition[] = [
-  { id: "heavyLeather", kind: "armor" },
-  { id: "studdedLeather", kind: "armor" },
+export const ARMORS: ArmorDefinition[] = [
+  { id: "quiltedFur", kind: "armor", prt: 1, init: 0, load: 1.0, availability: "Common" },
+  { id: "heavyLeather", kind: "armor", prt: 3, init: -1, load: 1.5, availability: "Common" },
+  { id: "studdedLeather", kind: "armor", prt: 5, init: -3, load: 2.0, availability: "Common" },
+  { id: "chainMail", kind: "armor", prt: 7, init: -5, load: 2.5, availability: "Common" },
+  { id: "steelScaleMail", kind: "armor", prt: 9, init: -7, load: 3.0, availability: "Rare" },
 ];
 
 export function canSelectWeapon(selected: string[], id: string): boolean {

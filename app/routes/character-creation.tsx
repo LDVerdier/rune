@@ -21,7 +21,7 @@ import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
 import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
-import type { WeaponDefinition, ShieldDefinition, WeaponAbility } from "~/domain/equipment";
+import type { WeaponDefinition, ShieldDefinition, ArmorDefinition, WeaponAbility } from "~/domain/equipment";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -216,6 +216,47 @@ function ShieldDetails({ shield }: { shield: ShieldDefinition }) {
             ? t("equipment.rare")
             : t("equipment.na")}
       </span>
+    </div>
+  );
+}
+
+function ArmorStatsRow({ armor }: { armor: ArmorDefinition }) {
+  const { t } = useTranslation();
+  const stats = [
+    { label: t("equipment.prt"), value: `+${armor.prt}` },
+    { label: t("equipment.init"), value: formatStatNum(armor.init) },
+  ];
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-1">
+      {stats.map(({ label, value }) => (
+        <span key={label} className="text-xs text-gray-500">
+          <span className="uppercase tracking-wide">{label}</span>{" "}
+          <span className="text-gray-300 font-mono">{value}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function ArmorDetails({ armor }: { armor: ArmorDefinition }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+        <span>
+          <span className="text-gray-500">{t("equipment.load")}: </span>
+          {armor.load}
+        </span>
+        <span>
+          <span className="text-gray-500">{t("equipment.availability")}: </span>
+          {armor.availability === "Common"
+            ? t("equipment.common")
+            : t("equipment.rare")}
+        </span>
+      </div>
+      <p className="text-sm italic text-gray-400">
+        {t(`equipment.${armor.id}.description`)}
+      </p>
     </div>
   );
 }
@@ -625,10 +666,9 @@ export default function CharacterCreation() {
                   : t("creation.selectEquipment")
               }
               ariaLabel={t(`equipment.${armor.id}`)}
+              stats={<ArmorStatsRow armor={armor} />}
             >
-              <p className="text-sm italic text-gray-400">
-                {t(`equipment.${armor.id}.description`)}
-              </p>
+              <ArmorDetails armor={armor} />
             </EquipmentCard>
           );
         })}

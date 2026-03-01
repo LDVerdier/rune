@@ -316,6 +316,7 @@
     }
   },
   "equipment": {
+    "prt": "Prot",
     "init": "Init",
     "atk": "Atq",
     "dfn": "Déf",
@@ -381,11 +382,17 @@
     "roundShield": "Bouclier rond",
     "kiteShield": "Écu",
     "towerShield": "Pavois",
+    "quiltedFur": "Matelassé/Fourrure",
     "heavyLeather": "Cuir épais",
     "studdedLeather": "Cuir clouté",
+    "chainMail": "Cotte de mailles",
+    "steelScaleMail": "Armure d'écailles d'acier",
     "buckler.description": "Un petit bouclier rond offrant une protection légère.",
     "roundShield.description": "Un bouclier de taille moyenne offrant une couverture défensive solide.",
     "heavyLeather.description": "Une armure de cuir épais offrant une protection de base avec une bonne mobilité.",
-    "studdedLeather.description": "Une armure de cuir renforcée de clous métalliques pour une meilleure protection."
+    "studdedLeather.description": "Une armure de cuir renforcée de clous métalliques pour une meilleure protection.",
+    "quiltedFur.description": "Des couches de tissu matelassé ou de fourrure animale offrant une protection minimale.",
+    "chainMail.description": "Des anneaux de métal entrelacés formant une cotte flexible mais lourde.",
+    "steelScaleMail.description": "Des écailles d'acier superposées rivetées sur un support, offrant une excellente protection au détriment de la mobilité."
   }
 }

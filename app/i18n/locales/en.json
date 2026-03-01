@@ -316,6 +316,7 @@
     }
   },
   "equipment": {
+    "prt": "Prt",
     "init": "Init",
     "atk": "Atk",
     "dfn": "Dfn",
@@ -381,11 +382,17 @@
     "roundShield": "Round Shield",
     "kiteShield": "Kite Shield",
     "towerShield": "Tower Shield",
+    "quiltedFur": "Quilted/Fur",
     "heavyLeather": "Heavy Leather",
     "studdedLeather": "Studded Leather",
+    "chainMail": "Chain Mail",
+    "steelScaleMail": "Steel Scale Mail",
     "buckler.description": "A small round shield offering light protection.",
     "roundShield.description": "A medium shield providing solid defensive coverage.",
     "heavyLeather.description": "Thick leather armor offering basic protection with good mobility.",
-    "studdedLeather.description": "Leather armor reinforced with metal studs for improved protection."
+    "studdedLeather.description": "Leather armor reinforced with metal studs for improved protection.",
+    "quiltedFur.description": "Layers of quilted cloth or animal fur providing minimal protection.",
+    "chainMail.description": "Interlocked metal rings forming a flexible but heavy protective coat.",
+    "steelScaleMail.description": "Overlapping steel scales riveted to a backing, offering excellent protection at the cost of mobility."
   }
 }
