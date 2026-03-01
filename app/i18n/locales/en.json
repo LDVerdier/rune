@@ -36,6 +36,22 @@
     "Intelligence": "Intelligence",
     "Perception": "Perception",
     "Presence": "Presence",
-    "Communication": "Communication"
+    "Communication": "Communication",
+    "Strength.description": "Raw physical power — lifting, breaking, and striking with brute force.",
+    "Stamina.description": "Endurance and resilience — how long you can fight, march, and survive.",
+    "Dexterity.description": "Fine motor control — precision with hands, tools, and weapons.",
+    "Quickness.description": "Speed and reflexes — reacting first and moving fastest.",
+    "Intelligence.description": "Reasoning and memory — solving problems and recalling knowledge.",
+    "Perception.description": "Awareness and sharp senses — noticing what others miss.",
+    "Presence.description": "Force of personality — inspiring allies and intimidating foes.",
+    "Communication.description": "Eloquence and charm — persuading, bartering, and forging bonds.",
+    "Strength.deity": "Thor the Thunderer is the patron god of Strength.",
+    "Stamina.deity": "Tyr the One-Handed is the patron god of Stamina.",
+    "Dexterity.deity": "Ull the Bowman is the patron god of Dexterity.",
+    "Quickness.deity": "Njord the Wind-Rider is the patron god of Quickness.",
+    "Intelligence.deity": "Loki the Trickster is the patron god of Intelligence.",
+    "Perception.deity": "Heimdal the Watchman is the patron god of Perception.",
+    "Presence.deity": "Odin the Allfather is the patron god of Presence.",
+    "Communication.deity": "Freyr the Shining One is the patron god of Communication."
   }
 }

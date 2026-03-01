@@ -12,9 +12,11 @@ import {
   ModalHeader,
   Tooltip,
 } from "@heroui/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
-import { CHARACTERISTICS, BASE_POINTS, MIN_RANK } from "~/domain/character-stats";
+import type { Characteristic } from "~/domain/character-stats";
+import { CHARACTERISTICS, BASE_POINTS, MIN_RANK, PATRON_DEITIES } from "~/domain/character-stats";
 import { useCharacterStats } from "~/hooks/use-character-stats";
 import i18n from "~/i18n";
 
@@ -48,6 +50,7 @@ export default function CharacterCreation() {
   } = useCharacterStats();
   const { t } = useTranslation();
   const [isResetOpen, setIsResetOpen] = useState(false);
+  const [expandedChar, setExpandedChar] = useState<Characteristic | null>(null);
 
   return (
     <main className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
@@ -110,6 +113,8 @@ export default function CharacterCreation() {
           const increase = nextCost(char);
           const refund = prevRefund(char);
 
+          const isExpanded = expandedChar === char;
+
           return (
             <Card
               key={char}
@@ -120,12 +125,22 @@ export default function CharacterCreation() {
             >
               <CardBody className="py-3 px-4">
                 {/* Top row: name + compact controls */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-white uppercase tracking-wide">
-                    {t(`characteristics.${char}`)}
-                  </span>
+                <div
+                  className="flex items-center justify-between cursor-pointer select-none"
+                  onClick={() => setExpandedChar(isExpanded ? null : char)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 transition-transform duration-200"
+                      style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
+                    >
+                      &#9656;
+                    </span>
+                    <span className="text-sm font-semibold text-white uppercase tracking-wide">
+                      {t(`characteristics.${char}`)}
+                    </span>
+                  </div>
 
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                     <Tooltip
                       content={
                         refund !== null
@@ -183,6 +198,30 @@ export default function CharacterCreation() {
                     </Tooltip>
                   </div>
                 </div>
+
+                {/* Expandable detail section */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-3 mt-3 border-t border-content3">
+                        <p className="text-sm italic text-gray-400 mb-2">
+                          {t(`characteristics.${char}.description`)}
+                        </p>
+                        <p className="text-sm text-gray-300">
+                          <span className="font-bold text-white">{PATRON_DEITIES[char]}</span>
+                          {" — "}
+                          {t(`characteristics.${char}.deity`)}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </CardBody>
             </Card>
           );

@@ -36,6 +36,22 @@
     "Intelligence": "Intelligence",
     "Perception": "Perception",
     "Presence": "Présence",
-    "Communication": "Communication"
+    "Communication": "Communication",
+    "Strength.description": "Puissance physique brute — soulever, briser et frapper avec une force brutale.",
+    "Stamina.description": "Endurance et résilience — combien de temps vous pouvez combattre, marcher et survivre.",
+    "Dexterity.description": "Motricité fine — précision avec les mains, les outils et les armes.",
+    "Quickness.description": "Vitesse et réflexes — réagir en premier et se déplacer le plus vite.",
+    "Intelligence.description": "Raisonnement et mémoire — résoudre des problèmes et se rappeler des connaissances.",
+    "Perception.description": "Vigilance et sens aiguisés — remarquer ce que les autres manquent.",
+    "Presence.description": "Force de caractère — inspirer les alliés et intimider les ennemis.",
+    "Communication.description": "Éloquence et charme — persuader, marchander et tisser des liens.",
+    "Strength.deity": "Thor le Tonnerre est le dieu patron de la Force.",
+    "Stamina.deity": "Tyr le Manchot est le dieu patron de l'Endurance.",
+    "Dexterity.deity": "Ull l'Archer est le dieu patron de la Dextérité.",
+    "Quickness.deity": "Njord le Chevaucheur du Vent est le dieu patron de la Vivacité.",
+    "Intelligence.deity": "Loki le Filou est le dieu patron de l'Intelligence.",
+    "Perception.deity": "Heimdal le Veilleur est le dieu patron de la Perception.",
+    "Presence.deity": "Odin le Père de Tout est le dieu patron de la Présence.",
+    "Communication.deity": "Freyr le Lumineux est le dieu patron de la Communication."
   }
 }

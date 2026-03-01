@@ -25,6 +25,17 @@ export const COST_TABLE: Record<Characteristic, Record<number, number>> = {
   Communication: { [-3]: -2,  [-2]: -2,  [-1]: -2, [0]: 0, [1]: 2, [2]: 4,  [3]: 8  },
 };
 
+export const PATRON_DEITIES: Record<Characteristic, string> = {
+  Strength: "Thor",
+  Stamina: "Tyr",
+  Dexterity: "Ull",
+  Quickness: "Njord",
+  Intelligence: "Loki",
+  Perception: "Heimdal",
+  Presence: "Odin",
+  Communication: "Freyr",
+};
+
 export const BASE_POINTS = 60;
 export const MIN_RANK = -3;
 export const MAX_RANK = 3;
