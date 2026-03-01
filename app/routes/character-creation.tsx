@@ -28,7 +28,7 @@ import { CombatEquipmentStatsRow, CombatEquipmentDetails } from "~/components/Co
 import { ArmorStatsRow, ArmorDetails } from "~/components/Armor";
 import { ConfirmationModal } from "~/components/ConfirmationModal";
 import { NameSuggestionPopover } from "~/components/NameSuggestionPopover";
-import { MALE_NAMES, FEMALE_NAMES } from "~/domain/names";
+import { MALE_NAMES, FEMALE_NAMES, deriveCognomen } from "~/domain/names";
 import {
   SELECTABLE_WEAPONS,
   SELECTABLE_SHIELDS,
@@ -90,6 +90,7 @@ export default function CharacterCreation() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [heroName, setHeroName] = useState("");
+  const [cognomen, setCognomen] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [isBackOpen, setIsBackOpen] = useState(false);
@@ -177,7 +178,7 @@ export default function CharacterCreation() {
       </div>
 
       {/* Hero name */}
-      <div className="mb-6 flex items-end gap-2">
+      <div className="mb-4 flex items-end gap-2">
         <Input
           label={t("creation.heroName")}
           placeholder={t("creation.heroNamePlaceholder")}
@@ -191,6 +192,26 @@ export default function CharacterCreation() {
         <NameSuggestionPopover
           names={gender === "male" ? MALE_NAMES : FEMALE_NAMES}
           onSelect={setHeroName}
+        />
+      </div>
+
+      {/* Cognomen */}
+      <div className="mb-6 flex items-end gap-2">
+        <Input
+          label={t("creation.cognomen")}
+          placeholder={t("creation.cognomenPlaceholder")}
+          value={cognomen}
+          onValueChange={setCognomen}
+          variant="bordered"
+          size="sm"
+          classNames={{ label: "text-gray-400", input: "text-white" }}
+          className="flex-1"
+        />
+        <NameSuggestionPopover
+          names={MALE_NAMES}
+          onSelect={(fatherName) => setCognomen(deriveCognomen(fatherName, gender))}
+          title={t("creation.deriveFromFather")}
+          buttonLabel={t("creation.suggestCognomen")}
         />
       </div>
 
@@ -513,6 +534,7 @@ export default function CharacterCreation() {
           resetAll();
           setGender("male");
           setHeroName("");
+          setCognomen("");
         }}
       />
 

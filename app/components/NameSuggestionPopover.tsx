@@ -5,9 +5,11 @@ import { useTranslation } from "react-i18next";
 interface Props {
   names: string[];
   onSelect: (name: string) => void;
+  title?: string;
+  buttonLabel?: string;
 }
 
-export function NameSuggestionPopover({ names, onSelect }: Props) {
+export function NameSuggestionPopover({ names, onSelect, title, buttonLabel }: Props) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -25,11 +27,16 @@ export function NameSuggestionPopover({ names, onSelect }: Props) {
     <Popover placement="bottom" showArrow isOpen={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger>
         <Button size="sm" variant="bordered" className="text-gray-400 shrink-0 h-12">
-          {t("creation.suggestName")}
+          {buttonLabel ?? t("creation.suggestName")}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="bg-[#111] border border-content2 p-0 max-w-sm w-80">
         <div ref={scrollRef} className="max-h-80 overflow-y-auto p-4">
+          {title && (
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              {title}
+            </p>
+          )}
           <div className="grid grid-cols-3 gap-x-2 gap-y-0.5 w-full">
             {names.map((name) => (
               <button

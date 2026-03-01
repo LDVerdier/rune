@@ -98,7 +98,7 @@ Add a CTA button next to the Name input. On click, show a Popover with a list of
 ---
 
 ## Feature 3: Cognomen
-**Status: [ ] Not started**
+**Status: [X] Done**
 
 ### What
 Add an optional Cognomen input. Next to it, a CTA that shows male names with the label "Derive from father's name". On click, the cognomen is computed: name + "-sson" (male) or name + "-sdottir" (female).

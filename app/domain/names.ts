@@ -98,3 +98,12 @@ export const FEMALE_NAMES: string[] = [
   "Thorunn",
   "Thurid",
 ];
+
+export function deriveCognomen(
+  fatherName: string,
+  gender: "male" | "female",
+): string {
+  return gender === "male"
+    ? `${fatherName}sson`
+    : `${fatherName}sdottir`;
+}

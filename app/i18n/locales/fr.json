@@ -56,6 +56,10 @@
     "heroName": "Nom",
     "heroNamePlaceholder": "Entrez le nom de votre héros...",
     "suggestName": "Suggérer",
+    "cognomen": "Surnom",
+    "cognomenPlaceholder": "ex. Thorkelsson",
+    "suggestCognomen": "Suggérer",
+    "deriveFromFather": "Dériver du nom du père",
     "exportPdf": "Exporter en PDF",
     "exporting": "Export en cours...",
     "woundThresholdBreakdown": {
