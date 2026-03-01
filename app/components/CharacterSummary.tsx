@@ -35,6 +35,8 @@ interface CharacterSummaryProps {
   selectedShield: string | null;
   selectedArmor: string | null;
   onResetClick: () => void;
+  onExportPdf?: () => void;
+  isExporting?: boolean;
 }
 
 export function CharacterSummary({
@@ -47,6 +49,8 @@ export function CharacterSummary({
   selectedShield,
   selectedArmor,
   onResetClick,
+  onExportPdf,
+  isExporting = false,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
   const grouped = abilitiesBySet();
@@ -66,7 +70,7 @@ export function CharacterSummary({
         {t("creation.summary")}
       </h2>
 
-      {/* Points + Reset */}
+      {/* Points + Reset + Export */}
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
@@ -79,14 +83,28 @@ export function CharacterSummary({
             <span className="text-xs text-gray-500">/ {BASE_POINTS}</span>
           </div>
         </div>
-        <Button
-          size="sm"
-          variant="flat"
-          className="text-gray-400 text-xs mt-1 shrink-0"
-          onPress={onResetClick}
-        >
-          {t("creation.resetAll")}
-        </Button>
+        <div className="flex flex-col gap-1 mt-1 shrink-0">
+          <Button
+            size="sm"
+            variant="flat"
+            className="text-gray-400 text-xs"
+            onPress={onResetClick}
+          >
+            {t("creation.resetAll")}
+          </Button>
+          {onExportPdf && (
+            <Button
+              size="sm"
+              variant="flat"
+              className="text-gray-400 text-xs"
+              onPress={onExportPdf}
+              isLoading={isExporting}
+              isDisabled={isExporting}
+            >
+              {isExporting ? t("creation.exporting") : t("creation.exportPdf")}
+            </Button>
+          )}
+        </div>
       </div>
 
       <Divider />

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import {
   Button,
   Divider,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -14,6 +15,7 @@ import type { Characteristic } from "~/domain/character-stats";
 import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES, BASE_POINTS } from "~/domain/character-stats";
 import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
+import { useExportPdf } from "~/hooks/use-export-pdf";
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
@@ -83,10 +85,22 @@ export default function CharacterCreation() {
   } = useCharacterCreation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [heroName, setHeroName] = useState("");
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [isBackOpen, setIsBackOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
   const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
+
+  const { exportPdf, isExporting } = useExportPdf({
+    heroName,
+    ranks,
+    abilityRanks,
+    totalHP,
+    woundThreshold,
+    selectedWeapons,
+    selectedShield,
+    selectedArmor,
+  });
 
   const hasAllocations =
     Object.values(ranks).some((r) => r !== 0) ||
@@ -150,6 +164,19 @@ export default function CharacterCreation() {
       </div>
 
       <Divider className="mb-6" />
+
+      {/* Hero name */}
+      <div className="mb-6">
+        <Input
+          label={t("creation.heroName")}
+          placeholder={t("creation.heroNamePlaceholder")}
+          value={heroName}
+          onValueChange={setHeroName}
+          variant="bordered"
+          size="sm"
+          classNames={{ label: "text-gray-400", input: "text-white" }}
+        />
+      </div>
 
       {/* Characteristics Section */}
       <CollapsibleSection
@@ -507,6 +534,11 @@ export default function CharacterCreation() {
                     setIsMobileSummaryOpen(false);
                     setIsResetOpen(true);
                   }}
+                  onExportPdf={() => {
+                    setIsMobileSummaryOpen(false);
+                    void exportPdf();
+                  }}
+                  isExporting={isExporting}
                 />
               </ModalBody>
             </>
@@ -531,6 +563,8 @@ export default function CharacterCreation() {
               selectedShield={selectedShield}
               selectedArmor={selectedArmor}
               onResetClick={() => setIsResetOpen(true)}
+              onExportPdf={() => void exportPdf()}
+              isExporting={isExporting}
             />
           </div>
         </aside>

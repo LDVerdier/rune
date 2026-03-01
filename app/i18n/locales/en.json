@@ -50,6 +50,10 @@
     "selectEquipment": "Select",
     "deselectEquipment": "Remove",
     "maxWeapons": "Maximum 3 weapons",
+    "heroName": "Name",
+    "heroNamePlaceholder": "Enter your hero's name...",
+    "exportPdf": "Export PDF",
+    "exporting": "Exporting...",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",
       "colStamina": "Stamina",
