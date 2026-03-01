@@ -18,6 +18,7 @@ import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
+import { CollapsibleSection } from "~/components/CollapsibleSection";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
 import { AbilityChart } from "~/components/AbilityChart";
 import { CombatEquipmentStatsRow, CombatEquipmentDetails } from "~/components/CombatEquipment";
@@ -50,6 +51,8 @@ export default function CharacterCreation() {
   const {
     ranks,
     remainingPoints,
+    charSpent,
+    abilSpent,
     changeRank,
     canIncrease,
     nextCost,
@@ -149,318 +152,311 @@ export default function CharacterCreation() {
       <Divider className="mb-6" />
 
       {/* Characteristics Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.characteristicsSection")}
-      </h2>
+      <CollapsibleSection
+        title={t("creation.characteristicsSection")}
+        badge={charSpent > 0 ? `${charSpent} pts` : undefined}
+      >
+        <div className="flex flex-col gap-3">
+          {CHARACTERISTICS.map((char) => {
+            const rank = ranks[char];
+            const increase = nextCost(char);
+            const refund = prevRefund(char);
+            const isExpanded =
+              expandedItem?.type === "characteristic" && expandedItem.id === char;
 
-      <div className="flex flex-col gap-3">
-        {CHARACTERISTICS.map((char) => {
-          const rank = ranks[char];
-          const increase = nextCost(char);
-          const refund = prevRefund(char);
-          const isExpanded =
-            expandedItem?.type === "characteristic" && expandedItem.id === char;
-
-          return (
-            <StatCard
-              key={char}
-              name={t(`characteristics.${char}`)}
-              rank={rank}
-              isExpanded={isExpanded}
-              onToggle={() => toggleChar(char)}
-              onIncrease={() => changeRank(char, 1)}
-              onDecrease={() => changeRank(char, -1)}
-              canIncrease={canIncrease(char)}
-              canDecrease={rank > MIN_RANK}
-              increaseTooltip={
-                increase !== null
-                  ? t("creation.costTooltip", { count: increase })
-                  : t("creation.maxRank")
-              }
-              decreaseTooltip={
-                refund !== null
-                  ? t("creation.refundTooltip", { count: refund })
-                  : t("creation.minRank")
-              }
-              rankColor={charRankColor(rank)}
-              ariaLabel={char}
-            >
-              <p className="text-sm italic text-gray-400 mb-2">
-                {t(`characteristics.${char}.description`)}
-              </p>
-              <p className="text-sm text-gray-300">
-                <span className="font-bold text-white">
-                  {PATRON_DEITIES[char]}
-                </span>
-                {" — "}
-                {t(`characteristics.${char}.deity`)}
-              </p>
-            </StatCard>
-          );
-        })}
-      </div>
-
-      <Divider className="my-6" />
+            return (
+              <StatCard
+                key={char}
+                name={t(`characteristics.${char}`)}
+                rank={rank}
+                isExpanded={isExpanded}
+                onToggle={() => toggleChar(char)}
+                onIncrease={() => changeRank(char, 1)}
+                onDecrease={() => changeRank(char, -1)}
+                canIncrease={canIncrease(char)}
+                canDecrease={rank > MIN_RANK}
+                increaseTooltip={
+                  increase !== null
+                    ? t("creation.costTooltip", { count: increase })
+                    : t("creation.maxRank")
+                }
+                decreaseTooltip={
+                  refund !== null
+                    ? t("creation.refundTooltip", { count: refund })
+                    : t("creation.minRank")
+                }
+                rankColor={charRankColor(rank)}
+                ariaLabel={char}
+              >
+                <p className="text-sm italic text-gray-400 mb-2">
+                  {t(`characteristics.${char}.description`)}
+                </p>
+                <p className="text-sm text-gray-300">
+                  <span className="font-bold text-white">
+                    {PATRON_DEITIES[char]}
+                  </span>
+                  {" — "}
+                  {t(`characteristics.${char}.deity`)}
+                </p>
+              </StatCard>
+            );
+          })}
+        </div>
+      </CollapsibleSection>
 
       {/* Abilities Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.abilitiesSection")}
-      </h2>
+      <CollapsibleSection
+        title={t("creation.abilitiesSection")}
+        badge={abilSpent > 0 ? `${abilSpent} pts` : undefined}
+      >
+        {ABILITY_SETS.map((set) => {
+          const abilities = grouped[set];
+          if (abilities.length === 0) return null;
 
-      {ABILITY_SETS.map((set) => {
-        const abilities = grouped[set];
-        if (abilities.length === 0) return null;
+          return (
+            <div key={set} className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                {t(`abilities.sets.${set}`)}
+              </h3>
 
-        return (
-          <div key={set} className="mb-6">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-              {t(`abilities.sets.${set}`)}
-            </h3>
+              <div className="flex flex-col gap-3">
+                {abilities.map((ability) => {
+                  const rank = abilityRanks[ability.name];
+                  const cost = abilityNextCost(ability.name);
+                  const refund = abilityPrevRefund(ability.name);
+                  const isExpanded =
+                    expandedItem?.type === "ability" &&
+                    expandedItem.id === ability.name;
 
-            <div className="flex flex-col gap-3">
-              {abilities.map((ability) => {
-                const rank = abilityRanks[ability.name];
-                const cost = abilityNextCost(ability.name);
-                const refund = abilityPrevRefund(ability.name);
-                const isExpanded =
-                  expandedItem?.type === "ability" &&
-                  expandedItem.id === ability.name;
-
-                return (
-                  <StatCard
-                    key={ability.name}
-                    name={t(`abilities.${ability.name}`)}
-                    rank={rank}
-                    isExpanded={isExpanded}
-                    onToggle={() => toggleAbility(ability.name)}
-                    onIncrease={() => changeAbilityRank(ability.name, 1)}
-                    onDecrease={() => changeAbilityRank(ability.name, -1)}
-                    canIncrease={canIncreaseAbility(ability.name)}
-                    canDecrease={canDecreaseAbility(ability.name)}
-                    increaseTooltip={
-                      rank < 3 && cost !== null
-                        ? t("creation.costTooltip", { count: cost })
-                        : t("creation.maxRank")
-                    }
-                    decreaseTooltip={
-                      rank > ABILITY_MIN_RANK && refund !== null
-                        ? t("creation.refundTooltip", { count: refund })
-                        : t("creation.minRank")
-                    }
-                    rankColor={abilityRankColor(rank)}
-                    ariaLabel={ability.name}
-                  >
-                    <p className="text-sm italic text-gray-400 mb-2">
-                      {t(`abilities.${ability.name}.description`)}
-                    </p>
-
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 mb-1">
-                      <span>
-                        <span className="text-gray-500">{t("abilities.governing")}: </span>
-                        {ability.governingCharacteristics
-                          .map((c) => t(`characteristics.${c}`))
-                          .join(", ")}
-                      </span>
-                      <span>
-                        <span className="text-gray-500">{t("abilities.category")}: </span>
-                        {t(`abilities.categories.${ability.category}`)}
-                        {" ("}
-                        {cost} {t("abilities.ptsPerRank")}
-                        {")"}  
-                      </span>
-                      {ability.load !== undefined && (
-                        <span>
-                          <span className="text-gray-500">{t("abilities.load")}: </span>
-                          {ability.load}
-                        </span>
-                      )}
-                    </div>
-
-                    {ability.equipment && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        <span className="font-medium">{t("abilities.equipment")}: </span>
-                        {t(`abilities.${ability.name}.equipment`)}
+                  return (
+                    <StatCard
+                      key={ability.name}
+                      name={t(`abilities.${ability.name}`)}
+                      rank={rank}
+                      isExpanded={isExpanded}
+                      onToggle={() => toggleAbility(ability.name)}
+                      onIncrease={() => changeAbilityRank(ability.name, 1)}
+                      onDecrease={() => changeAbilityRank(ability.name, -1)}
+                      canIncrease={canIncreaseAbility(ability.name)}
+                      canDecrease={canDecreaseAbility(ability.name)}
+                      increaseTooltip={
+                        rank < 3 && cost !== null
+                          ? t("creation.costTooltip", { count: cost })
+                          : t("creation.maxRank")
+                      }
+                      decreaseTooltip={
+                        rank > ABILITY_MIN_RANK && refund !== null
+                          ? t("creation.refundTooltip", { count: refund })
+                          : t("creation.minRank")
+                      }
+                      rankColor={abilityRankColor(rank)}
+                      ariaLabel={ability.name}
+                    >
+                      <p className="text-sm italic text-gray-400 mb-2">
+                        {t(`abilities.${ability.name}.description`)}
                       </p>
-                    )}
 
-                    <AbilityChart ability={ability} />
-                  </StatCard>
-                );
-              })}
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 mb-1">
+                        <span>
+                          <span className="text-gray-500">{t("abilities.governing")}: </span>
+                          {ability.governingCharacteristics
+                            .map((c) => t(`characteristics.${c}`))
+                            .join(", ")}
+                        </span>
+                        <span>
+                          <span className="text-gray-500">{t("abilities.category")}: </span>
+                          {t(`abilities.categories.${ability.category}`)}
+                          {" ("}
+                          {cost} {t("abilities.ptsPerRank")}
+                          {")"}
+                        </span>
+                        {ability.load !== undefined && (
+                          <span>
+                            <span className="text-gray-500">{t("abilities.load")}: </span>
+                            {ability.load}
+                          </span>
+                        )}
+                      </div>
+
+                      {ability.equipment && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          <span className="font-medium">{t("abilities.equipment")}: </span>
+                          {t(`abilities.${ability.name}.equipment`)}
+                        </p>
+                      )}
+
+                      <AbilityChart ability={ability} />
+                    </StatCard>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
-
-      <Divider className="my-6" />
+          );
+        })}
+      </CollapsibleSection>
 
       {/* Extra Hit Points Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.extraHitPointsSection")}
-      </h2>
-
-      <div className="flex flex-col gap-3 mb-6">
-        <StatCard
-          name={t("creation.extraHitPoints")}
-          rank={extraHPPoints}
-          isExpanded={expandedItem?.type === "extraHP"}
-          onToggle={() =>
-            setExpandedItem((prev) =>
-              prev?.type === "extraHP" ? null : { type: "extraHP" },
-            )
-          }
-          onIncrease={() => changeExtraHP(1)}
-          onDecrease={() => changeExtraHP(-1)}
-          canIncrease={canIncreaseExtraHP}
-          canDecrease={canDecreaseExtraHP}
-          increaseTooltip={
-            canIncreaseExtraHP
-              ? t("creation.costTooltip", { count: 1 })
-              : t("creation.maxRank")
-          }
-          decreaseTooltip={
-            canDecreaseExtraHP
-              ? t("creation.refundTooltip", { count: 1 })
-              : t("creation.minRank")
-          }
-          rankColor={extraHPPoints > 0 ? "text-green-400" : "text-gray-400"}
-          ariaLabel="Extra Hit Points"
-          rankAnnotation={
-            extraHPGain > 0
-              ? t("creation.extraHitPointsGain", { count: extraHPGain })
-              : undefined
-          }
-        >
-          <p className="text-sm italic text-gray-400 mb-2">
-            {t("creation.extraHitPointsDescription")}
-          </p>
-          <div className="flex flex-col gap-1 text-xs text-gray-400">
-            <span>
-              {t("creation.startingHitPoints", { count: startingHP })}
-            </span>
-            <span>
-              {t("creation.hpPerPoint", { count: hpPerPoint })}
-            </span>
-          </div>
-        </StatCard>
-      </div>
-
-      <Divider className="my-6" />
+      <CollapsibleSection
+        title={t("creation.extraHitPointsSection")}
+        badge={extraHPPoints > 0 ? `+${extraHPPoints} pts` : undefined}
+      >
+        <div className="flex flex-col gap-3">
+          <StatCard
+            name={t("creation.extraHitPoints")}
+            rank={extraHPPoints}
+            isExpanded={expandedItem?.type === "extraHP"}
+            onToggle={() =>
+              setExpandedItem((prev) =>
+                prev?.type === "extraHP" ? null : { type: "extraHP" },
+              )
+            }
+            onIncrease={() => changeExtraHP(1)}
+            onDecrease={() => changeExtraHP(-1)}
+            canIncrease={canIncreaseExtraHP}
+            canDecrease={canDecreaseExtraHP}
+            increaseTooltip={
+              canIncreaseExtraHP
+                ? t("creation.costTooltip", { count: 1 })
+                : t("creation.maxRank")
+            }
+            decreaseTooltip={
+              canDecreaseExtraHP
+                ? t("creation.refundTooltip", { count: 1 })
+                : t("creation.minRank")
+            }
+            rankColor={extraHPPoints > 0 ? "text-green-400" : "text-gray-400"}
+            ariaLabel="Extra Hit Points"
+            rankAnnotation={
+              extraHPGain > 0
+                ? t("creation.extraHitPointsGain", { count: extraHPGain })
+                : undefined
+            }
+          >
+            <p className="text-sm italic text-gray-400 mb-2">
+              {t("creation.extraHitPointsDescription")}
+            </p>
+            <div className="flex flex-col gap-1 text-xs text-gray-400">
+              <span>
+                {t("creation.startingHitPoints", { count: startingHP })}
+              </span>
+              <span>
+                {t("creation.hpPerPoint", { count: hpPerPoint })}
+              </span>
+            </div>
+          </StatCard>
+        </div>
+      </CollapsibleSection>
 
       {/* Weapons Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.weaponsSection")}
-        <span className="ml-2 text-gray-600">
-          {selectedWeapons.length}/{MAX_WEAPONS}
-        </span>
-      </h2>
+      <CollapsibleSection
+        title={t("creation.weaponsSection")}
+        badge={`${selectedWeapons.length} / ${MAX_WEAPONS}`}
+      >
+        <div className="flex flex-col gap-3">
+          {SELECTABLE_WEAPONS.map((weapon) => {
+            const isSelected = selectedWeapons.includes(weapon.id);
+            const canSelect = canSelectWeapon(weapon.id);
+            const isExpanded =
+              expandedItem?.type === "equipment" && expandedItem.id === weapon.id;
 
-      <div className="flex flex-col gap-3 mb-6">
-        {SELECTABLE_WEAPONS.map((weapon) => {
-          const isSelected = selectedWeapons.includes(weapon.id);
-          const canSelect = canSelectWeapon(weapon.id);
-          const isExpanded =
-            expandedItem?.type === "equipment" && expandedItem.id === weapon.id;
-
-          return (
-            <EquipmentCard
-              key={weapon.id}
-              name={t(`equipment.${weapon.id}`)}
-              isExpanded={isExpanded}
-              onToggle={() => toggleEquipment(weapon.id)}
-              isSelected={isSelected}
-              onSelect={() => toggleWeapon(weapon.id)}
-              canSelect={canSelect}
-              selectTooltip={
-                isSelected
-                  ? t("creation.deselectEquipment")
-                  : canSelect
-                    ? t("creation.selectEquipment")
-                    : t("creation.maxWeapons")
-              }
-              ariaLabel={t(`equipment.${weapon.id}`)}
-              stats={<CombatEquipmentStatsRow equipment={weapon} />}
-            >
-              <CombatEquipmentDetails
-                equipment={weapon}
-                showDescription={weapon.id === "barbNet" || weapon.id === "flagon"}
-              />
-            </EquipmentCard>
-          );
-        })}
-      </div>
-
-      <Divider className="my-6" />
+            return (
+              <EquipmentCard
+                key={weapon.id}
+                name={t(`equipment.${weapon.id}`)}
+                isExpanded={isExpanded}
+                onToggle={() => toggleEquipment(weapon.id)}
+                isSelected={isSelected}
+                onSelect={() => toggleWeapon(weapon.id)}
+                canSelect={canSelect}
+                selectTooltip={
+                  isSelected
+                    ? t("creation.deselectEquipment")
+                    : canSelect
+                      ? t("creation.selectEquipment")
+                      : t("creation.maxWeapons")
+                }
+                ariaLabel={t(`equipment.${weapon.id}`)}
+                stats={<CombatEquipmentStatsRow equipment={weapon} />}
+              >
+                <CombatEquipmentDetails
+                  equipment={weapon}
+                  showDescription={weapon.id === "barbNet" || weapon.id === "flagon"}
+                />
+              </EquipmentCard>
+            );
+          })}
+        </div>
+      </CollapsibleSection>
 
       {/* Shields Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.shieldsSection")}
-      </h2>
+      <CollapsibleSection
+        title={t("creation.shieldsSection")}
+        badge={`${selectedShield ? 1 : 0} / 1`}
+      >
+        <div className="flex flex-col gap-3">
+          {SELECTABLE_SHIELDS.map((shield) => {
+            const isSelected = selectedShield === shield.id;
+            const isExpanded =
+              expandedItem?.type === "equipment" && expandedItem.id === shield.id;
 
-      <div className="flex flex-col gap-3 mb-6">
-        {SELECTABLE_SHIELDS.map((shield) => {
-          const isSelected = selectedShield === shield.id;
-          const isExpanded =
-            expandedItem?.type === "equipment" && expandedItem.id === shield.id;
-
-          return (
-            <EquipmentCard
-              key={shield.id}
-              name={t(`equipment.${shield.id}`)}
-              isExpanded={isExpanded}
-              onToggle={() => toggleEquipment(shield.id)}
-              isSelected={isSelected}
-              onSelect={() => toggleShield(shield.id)}
-              canSelect={true}
-              selectTooltip={
-                isSelected
-                  ? t("creation.deselectEquipment")
-                  : t("creation.selectEquipment")
-              }
-              ariaLabel={t(`equipment.${shield.id}`)}
-              stats={<CombatEquipmentStatsRow equipment={shield} />}
-            >
-              <CombatEquipmentDetails equipment={shield} />
-            </EquipmentCard>
-          );
-        })}
-      </div>
-
-      <Divider className="my-6" />
+            return (
+              <EquipmentCard
+                key={shield.id}
+                name={t(`equipment.${shield.id}`)}
+                isExpanded={isExpanded}
+                onToggle={() => toggleEquipment(shield.id)}
+                isSelected={isSelected}
+                onSelect={() => toggleShield(shield.id)}
+                canSelect={true}
+                selectTooltip={
+                  isSelected
+                    ? t("creation.deselectEquipment")
+                    : t("creation.selectEquipment")
+                }
+                ariaLabel={t(`equipment.${shield.id}`)}
+                stats={<CombatEquipmentStatsRow equipment={shield} />}
+              >
+                <CombatEquipmentDetails equipment={shield} />
+              </EquipmentCard>
+            );
+          })}
+        </div>
+      </CollapsibleSection>
 
       {/* Armors Section */}
-      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
-        {t("creation.armorsSection")}
-      </h2>
+      <CollapsibleSection
+        title={t("creation.armorsSection")}
+        badge={`${selectedArmor ? 1 : 0} / 1`}
+      >
+        <div className="flex flex-col gap-3">
+          {SELECTABLE_ARMORS.map((armor) => {
+            const isSelected = selectedArmor === armor.id;
+            const isExpanded =
+              expandedItem?.type === "equipment" && expandedItem.id === armor.id;
 
-      <div className="flex flex-col gap-3 mb-6">
-        {SELECTABLE_ARMORS.map((armor) => {
-          const isSelected = selectedArmor === armor.id;
-          const isExpanded =
-            expandedItem?.type === "equipment" && expandedItem.id === armor.id;
-
-          return (
-            <EquipmentCard
-              key={armor.id}
-              name={t(`equipment.${armor.id}`)}
-              isExpanded={isExpanded}
-              onToggle={() => toggleEquipment(armor.id)}
-              isSelected={isSelected}
-              onSelect={() => toggleArmor(armor.id)}
-              canSelect={true}
-              selectTooltip={
-                isSelected
-                  ? t("creation.deselectEquipment")
-                  : t("creation.selectEquipment")
-              }
-              ariaLabel={t(`equipment.${armor.id}`)}
-              stats={<ArmorStatsRow armor={armor} />}
-            >
-              <ArmorDetails armor={armor} />
-            </EquipmentCard>
-          );
-        })}
-      </div>
+            return (
+              <EquipmentCard
+                key={armor.id}
+                name={t(`equipment.${armor.id}`)}
+                isExpanded={isExpanded}
+                onToggle={() => toggleEquipment(armor.id)}
+                isSelected={isSelected}
+                onSelect={() => toggleArmor(armor.id)}
+                canSelect={true}
+                selectTooltip={
+                  isSelected
+                    ? t("creation.deselectEquipment")
+                    : t("creation.selectEquipment")
+                }
+                ariaLabel={t(`equipment.${armor.id}`)}
+                stats={<ArmorStatsRow armor={armor} />}
+              >
+                <ArmorDetails armor={armor} />
+              </EquipmentCard>
+            );
+          })}
+        </div>
+      </CollapsibleSection>
 
       {/* Reset Confirmation Modal */}
       <Modal isOpen={isResetOpen} onOpenChange={setIsResetOpen} placement="center">

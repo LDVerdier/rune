@@ -110,6 +110,8 @@ export function useCharacterCreation() {
   return {
     // Shared pool
     remainingPoints: remaining,
+    charSpent,
+    abilSpent,
 
     // Characteristics
     ranks,
