@@ -17,6 +17,7 @@ import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abiliti
 import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
+import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -173,9 +174,15 @@ export default function CharacterCreation() {
             </div>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
-              {t("creation.totalHitPoints")}
-            </p>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-xs uppercase tracking-wider text-gray-500">
+                {t("creation.totalHitPoints")}
+              </p>
+              <HPBreakdownPopover
+                strengthRank={ranks.Strength}
+                staminaRank={ranks.Stamina}
+              />
+            </div>
             <div className="flex items-baseline gap-1.5">
               <span className="text-3xl font-bold tabular-nums text-white">
                 {totalHP}

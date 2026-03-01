@@ -40,6 +40,20 @@
       "title": "Leave the Forge?",
       "cancel": "Stay",
       "confirm": "Leave"
+    },
+    "hpBreakdown": {
+      "triggerLabel": "How is this calculated?",
+      "formula": "Total HP = Starting HP + (Points Spent × HP per Point)",
+      "startingHPTitle": "Starting HP",
+      "hpPerPointTitle": "HP per Point",
+      "colStrStaSum": "STR + STA",
+      "colStartingHP": "Starting HP",
+      "colStamina": "Stamina",
+      "colHPPerPt": "HP / pt",
+      "rangeAtMost": "≤ {{value}}",
+      "rangeBetween": "{{from}} to {{to}}",
+      "rangeExact": "{{value}}",
+      "rangeAtLeast": "≥ {{value}}"
     }
   },
   "characteristics": {

@@ -40,6 +40,20 @@
       "title": "Quitter la Forge ?",
       "cancel": "Rester",
       "confirm": "Quitter"
+    },
+    "hpBreakdown": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formula": "PV totaux = PV de base + (Points dépensés × PV par point)",
+      "startingHPTitle": "PV de base",
+      "hpPerPointTitle": "PV par point",
+      "colStrStaSum": "FOR + END",
+      "colStartingHP": "PV de base",
+      "colStamina": "Endurance",
+      "colHPPerPt": "PV / pt",
+      "rangeAtMost": "≤ {{value}}",
+      "rangeBetween": "{{from}} à {{to}}",
+      "rangeExact": "{{value}}",
+      "rangeAtLeast": "≥ {{value}}"
     }
   },
   "characteristics": {
