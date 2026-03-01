@@ -17,8 +17,10 @@ import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abiliti
 import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
+import { EquipmentCard } from "~/components/EquipmentCard";
 import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
+import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -33,6 +35,7 @@ type ExpandedItem =
   | { type: "characteristic"; id: Characteristic }
   | { type: "ability"; id: string }
   | { type: "extraHP" }
+  | { type: "equipment"; id: string }
   | null;
 
 function charRankColor(rank: number): string {
@@ -107,6 +110,13 @@ export default function CharacterCreation() {
     extraHPGain,
     totalHP,
     woundThreshold,
+    selectedWeapons,
+    selectedShield,
+    selectedArmor,
+    toggleWeapon,
+    toggleShield,
+    toggleArmor,
+    canSelectWeapon,
     resetAll,
   } = useCharacterCreation();
   const { t } = useTranslation();
@@ -135,6 +145,14 @@ export default function CharacterCreation() {
       prev?.type === "ability" && prev.id === name
         ? null
         : { type: "ability", id: name },
+    );
+  }
+
+  function toggleEquipment(id: string) {
+    setExpandedItem((prev) =>
+      prev?.type === "equipment" && prev.id === id
+        ? null
+        : { type: "equipment", id },
     );
   }
 
@@ -415,6 +433,123 @@ export default function CharacterCreation() {
             </span>
           </div>
         </StatCard>
+      </div>
+
+      <Divider className="my-6" />
+
+      {/* Weapons Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.weaponsSection")}
+        <span className="ml-2 text-gray-600">
+          {selectedWeapons.length}/3
+        </span>
+      </h2>
+
+      <div className="flex flex-col gap-3 mb-6">
+        {WEAPONS.map((weapon) => {
+          const isSelected = selectedWeapons.includes(weapon.id);
+          const canSelect = canSelectWeapon(weapon.id);
+          const isExpanded =
+            expandedItem?.type === "equipment" && expandedItem.id === weapon.id;
+
+          return (
+            <EquipmentCard
+              key={weapon.id}
+              name={t(`equipment.${weapon.id}`)}
+              isExpanded={isExpanded}
+              onToggle={() => toggleEquipment(weapon.id)}
+              isSelected={isSelected}
+              onSelect={() => toggleWeapon(weapon.id)}
+              canSelect={canSelect}
+              selectTooltip={
+                isSelected
+                  ? t("creation.deselectEquipment")
+                  : canSelect
+                    ? t("creation.selectEquipment")
+                    : t("creation.maxWeapons")
+              }
+              ariaLabel={t(`equipment.${weapon.id}`)}
+            >
+              <p className="text-sm italic text-gray-400">
+                {t(`equipment.${weapon.id}.description`)}
+              </p>
+            </EquipmentCard>
+          );
+        })}
+      </div>
+
+      <Divider className="my-6" />
+
+      {/* Shields Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.shieldsSection")}
+      </h2>
+
+      <div className="flex flex-col gap-3 mb-6">
+        {SHIELDS.map((shield) => {
+          const isSelected = selectedShield === shield.id;
+          const isExpanded =
+            expandedItem?.type === "equipment" && expandedItem.id === shield.id;
+
+          return (
+            <EquipmentCard
+              key={shield.id}
+              name={t(`equipment.${shield.id}`)}
+              isExpanded={isExpanded}
+              onToggle={() => toggleEquipment(shield.id)}
+              isSelected={isSelected}
+              onSelect={() => toggleShield(shield.id)}
+              canSelect={true}
+              selectTooltip={
+                isSelected
+                  ? t("creation.deselectEquipment")
+                  : t("creation.selectEquipment")
+              }
+              ariaLabel={t(`equipment.${shield.id}`)}
+            >
+              <p className="text-sm italic text-gray-400">
+                {t(`equipment.${shield.id}.description`)}
+              </p>
+            </EquipmentCard>
+          );
+        })}
+      </div>
+
+      <Divider className="my-6" />
+
+      {/* Armors Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.armorsSection")}
+      </h2>
+
+      <div className="flex flex-col gap-3 mb-6">
+        {ARMORS.map((armor) => {
+          const isSelected = selectedArmor === armor.id;
+          const isExpanded =
+            expandedItem?.type === "equipment" && expandedItem.id === armor.id;
+
+          return (
+            <EquipmentCard
+              key={armor.id}
+              name={t(`equipment.${armor.id}`)}
+              isExpanded={isExpanded}
+              onToggle={() => toggleEquipment(armor.id)}
+              isSelected={isSelected}
+              onSelect={() => toggleArmor(armor.id)}
+              canSelect={true}
+              selectTooltip={
+                isSelected
+                  ? t("creation.deselectEquipment")
+                  : t("creation.selectEquipment")
+              }
+              ariaLabel={t(`equipment.${armor.id}`)}
+            >
+              <p className="text-sm italic text-gray-400">
+                {t(`equipment.${armor.id}.description`)}
+              </p>
+            </EquipmentCard>
+          );
+        })}
       </div>
 
       {/* Reset Confirmation Modal */}

@@ -42,6 +42,12 @@
       "confirm": "Leave"
     },
     "woundThreshold": "Wound Threshold",
+    "weaponsSection": "Weapons",
+    "shieldsSection": "Shields",
+    "armorsSection": "Armors",
+    "selectEquipment": "Select",
+    "deselectEquipment": "Remove",
+    "maxWeapons": "Maximum 3 weapons",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",
       "colStamina": "Stamina",
@@ -306,5 +312,19 @@
         "25": "25 oz. silver"
       }
     }
+  },
+  "equipment": {
+    "sword": "Sword",
+    "bow": "Bow",
+    "buckler": "Buckler",
+    "roundShield": "Round Shield",
+    "heavyLeather": "Heavy Leather",
+    "studdedLeather": "Studded Leather",
+    "sword.description": "A versatile one-handed blade suited for close combat.",
+    "bow.description": "A ranged weapon requiring the Bows ability to use effectively.",
+    "buckler.description": "A small round shield offering light protection.",
+    "roundShield.description": "A medium shield providing solid defensive coverage.",
+    "heavyLeather.description": "Thick leather armor offering basic protection with good mobility.",
+    "studdedLeather.description": "Leather armor reinforced with metal studs for improved protection."
   }
 }

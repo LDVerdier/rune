@@ -28,6 +28,7 @@ import {
   extraHPPerPoint as domainExtraHPPerPoint,
 } from "~/domain/hit-points";
 import { computeWoundThreshold } from "~/domain/wound-threshold";
+import { MAX_WEAPONS, canSelectWeapon as domainCanSelectWeapon } from "~/domain/equipment";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -35,6 +36,9 @@ export function useCharacterCreation() {
     () => ({ ...INITIAL_ABILITY_RANKS }),
   );
   const [extraHPPoints, setExtraHPPoints] = useState(0);
+  const [selectedWeapons, setSelectedWeapons] = useState<string[]>([]);
+  const [selectedShield, setSelectedShield] = useState<string | null>(null);
+  const [selectedArmor, setSelectedArmor] = useState<string | null>(null);
 
   const charSpent = characteristicPointsSpent(ranks);
   const abilSpent = abilityPointsSpent(abilityRanks);
@@ -79,6 +83,28 @@ export function useCharacterCreation() {
     setRanks({ ...INITIAL_RANKS });
     setAbilityRanks({ ...INITIAL_ABILITY_RANKS });
     setExtraHPPoints(0);
+    setSelectedWeapons([]);
+    setSelectedShield(null);
+    setSelectedArmor(null);
+  }
+
+  // --- Equipment operations ---
+  function toggleWeapon(id: string) {
+    setSelectedWeapons((prev) =>
+      prev.includes(id)
+        ? prev.filter((w) => w !== id)
+        : prev.length < MAX_WEAPONS
+          ? [...prev, id]
+          : prev,
+    );
+  }
+
+  function toggleShield(id: string) {
+    setSelectedShield((prev) => (prev === id ? null : id));
+  }
+
+  function toggleArmor(id: string) {
+    setSelectedArmor((prev) => (prev === id ? null : id));
   }
 
   return {
@@ -113,6 +139,15 @@ export function useCharacterCreation() {
     extraHPGain,
     totalHP,
     woundThreshold,
+
+    // Equipment
+    selectedWeapons,
+    selectedShield,
+    selectedArmor,
+    toggleWeapon,
+    toggleShield,
+    toggleArmor,
+    canSelectWeapon: (id: string) => domainCanSelectWeapon(selectedWeapons, id),
 
     // Actions
     resetAll,

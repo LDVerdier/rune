@@ -42,6 +42,12 @@
       "confirm": "Quitter"
     },
     "woundThreshold": "Seuil de Blessure",
+    "weaponsSection": "Armes",
+    "shieldsSection": "Boucliers",
+    "armorsSection": "Armures",
+    "selectEquipment": "Choisir",
+    "deselectEquipment": "Retirer",
+    "maxWeapons": "Maximum 3 armes",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",
       "colStamina": "Endurance",
@@ -306,5 +312,19 @@
         "25": "25 oz. d'argent"
       }
     }
+  },
+  "equipment": {
+    "sword": "Épée",
+    "bow": "Arc",
+    "buckler": "Bocle",
+    "roundShield": "Bouclier rond",
+    "heavyLeather": "Cuir épais",
+    "studdedLeather": "Cuir clouté",
+    "sword.description": "Une lame polyvalente à une main adaptée au combat rapproché.",
+    "bow.description": "Une arme de tir à distance nécessitant la compétence Arcs pour être utilisée efficacement.",
+    "buckler.description": "Un petit bouclier rond offrant une protection légère.",
+    "roundShield.description": "Un bouclier de taille moyenne offrant une couverture défensive solide.",
+    "heavyLeather.description": "Une armure de cuir épais offrant une protection de base avec une bonne mobilité.",
+    "studdedLeather.description": "Une armure de cuir renforcée de clous métalliques pour une meilleure protection."
   }
 }
