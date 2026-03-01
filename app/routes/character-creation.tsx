@@ -147,7 +147,7 @@ export default function CharacterCreation() {
       </div>
 
       {/* Points Budget */}
-      <div className="mb-6">
+      <div className="sticky top-0 z-10 bg-[#0a0a0a] mb-6 pt-2 pb-1">
         <div className="flex items-end justify-between mb-2">
           <div>
             <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
