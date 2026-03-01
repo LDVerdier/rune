@@ -12,14 +12,13 @@ import {
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
 import type { Characteristic } from "~/domain/character-stats";
-import { CHARACTERISTICS, BASE_POINTS, MIN_RANK, PATRON_DEITIES } from "~/domain/character-stats";
+import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES } from "~/domain/character-stats";
 import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
 import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
-import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
-import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
+import { CharacterSummary } from "~/components/CharacterSummary";
 import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
 import i18n from "~/i18n";
 
@@ -157,9 +156,11 @@ export default function CharacterCreation() {
   }
 
   return (
-    <main className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen">
+      <div className="lg:flex lg:justify-center">
+        <main className="w-full max-w-2xl mx-auto lg:mx-0 lg:flex-none p-4 sm:p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
         <Button
           variant="light"
           size="sm"
@@ -178,62 +179,6 @@ export default function CharacterCreation() {
           {t("creation.heading")}
         </h1>
         <div className="min-w-20" />
-      </div>
-
-      {/* Points Budget */}
-      <div className="sticky top-0 z-10 bg-[#0a0a0a] mb-6 pt-2 pb-1">
-        <div className="flex items-end justify-between mb-2">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
-              {t("creation.pointsRemaining")}
-            </p>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold tabular-nums text-white">
-                {remainingPoints}
-              </span>
-              <span className="text-sm text-gray-500">/ {BASE_POINTS}</span>
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              <p className="text-xs uppercase tracking-wider text-gray-500">
-                {t("creation.totalHitPoints")}
-              </p>
-              <HPBreakdownPopover
-                strengthRank={ranks.Strength}
-                staminaRank={ranks.Stamina}
-              />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold tabular-nums text-white">
-                {totalHP}
-              </span>
-              <span className="text-sm text-gray-500">HP</span>
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              <p className="text-xs uppercase tracking-wider text-gray-500">
-                {t("creation.woundThreshold")}
-              </p>
-              <WoundThresholdPopover staminaRank={ranks.Stamina} />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold tabular-nums text-white">
-                {woundThreshold}
-              </span>
-              <span className="text-sm text-gray-500">HP</span>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            variant="flat"
-            className="text-gray-400"
-            onPress={() => setIsResetOpen(true)}
-          >
-            {t("creation.resetAll")}
-          </Button>
-        </div>
       </div>
 
       <Divider className="mb-6" />
@@ -614,6 +559,25 @@ export default function CharacterCreation() {
           )}
         </ModalContent>
       </Modal>
-    </main>
+        </main>
+
+        {/* Side summary — desktop only */}
+        <aside className="hidden lg:block lg:flex-none w-56 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
+          <div className="sticky top-4">
+            <CharacterSummary
+              remainingPoints={remainingPoints}
+              ranks={ranks}
+              abilityRanks={abilityRanks}
+              totalHP={totalHP}
+              woundThreshold={woundThreshold}
+              selectedWeapons={selectedWeapons}
+              selectedShield={selectedShield}
+              selectedArmor={selectedArmor}
+              onResetClick={() => setIsResetOpen(true)}
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
   );
 }

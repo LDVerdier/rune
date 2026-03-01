@@ -42,6 +42,8 @@
       "confirm": "Leave"
     },
     "woundThreshold": "Wound Threshold",
+    "summary": "Summary",
+    "equipmentSection": "Equipment",
     "weaponsSection": "Weapons",
     "shieldsSection": "Shields",
     "armorsSection": "Armors",

@@ -42,6 +42,8 @@
       "confirm": "Quitter"
     },
     "woundThreshold": "Seuil de Blessure",
+    "summary": "Résumé",
+    "equipmentSection": "Équipement",
     "weaponsSection": "Armes",
     "shieldsSection": "Boucliers",
     "armorsSection": "Armures",
