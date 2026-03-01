@@ -23,9 +23,16 @@
     "maxRank": "Rang maximum",
     "characteristicsSection": "Caractéristiques",
     "abilitiesSection": "Compétences",
+    "extraHitPointsSection": "Points de Vie supplémentaires",
+    "extraHitPoints": "Points de Vie supplémentaires",
+    "totalHitPoints": "Points de Vie totaux",
+    "extraHitPointsGain": "(+{{count}} PV)",
+    "extraHitPointsDescription": "Dépensez des points de création pour obtenir des points de vie supplémentaires. Votre rang d'Endurance détermine combien de PV chaque point achète.",
+    "startingHitPoints": "PV de base : {{count}}",
+    "hpPerPoint": "{{count}} PV par point de création (basé sur l'Endurance)",
     "resetModal": {
       "title": "Tout réinitialiser ?",
-      "body": "Cela réinitialisera toutes les caractéristiques et compétences à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
+      "body": "Cela réinitialisera toutes les caractéristiques, compétences et points de vie supplémentaires à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
       "cancel": "Annuler",
       "confirm": "Réinitialiser"
     }

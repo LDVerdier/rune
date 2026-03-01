@@ -23,9 +23,16 @@
     "maxRank": "Maximum rank",
     "characteristicsSection": "Characteristics",
     "abilitiesSection": "Abilities",
+    "extraHitPointsSection": "Extra Hit Points",
+    "extraHitPoints": "Extra Hit Points",
+    "totalHitPoints": "Total Hit Points",
+    "extraHitPointsGain": "(+{{count}} HP)",
+    "extraHitPointsDescription": "Spend creation points to gain additional hit points. Your Stamina rank determines how many HP each point buys.",
+    "startingHitPoints": "Starting HP: {{count}}",
+    "hpPerPoint": "{{count}} HP per creation point (based on Stamina)",
     "resetModal": {
       "title": "Reset Everything?",
-      "body": "This will reset all characteristics and abilities to their default values.\nAny changes you've made will be lost.",
+      "body": "This will reset all characteristics, abilities, and extra hit points to their default values.\nAny changes you've made will be lost.",
       "cancel": "Cancel",
       "confirm": "Reset"
     }

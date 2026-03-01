@@ -30,6 +30,7 @@ export function meta({}: Route.MetaArgs) {
 type ExpandedItem =
   | { type: "characteristic"; id: Characteristic }
   | { type: "ability"; id: string }
+  | { type: "extraHP" }
   | null;
 
 function charRankColor(rank: number): string {
@@ -94,6 +95,14 @@ export default function CharacterCreation() {
     canDecreaseAbility,
     abilityNextCost,
     abilityPrevRefund,
+    extraHPPoints,
+    changeExtraHP,
+    canIncreaseExtraHP,
+    canDecreaseExtraHP,
+    startingHP,
+    hpPerPoint,
+    extraHPGain,
+    totalHP,
     resetAll,
   } = useCharacterCreation();
   const { t } = useTranslation();
@@ -157,6 +166,17 @@ export default function CharacterCreation() {
                 {remainingPoints}
               </span>
               <span className="text-sm text-gray-500">/ {BASE_POINTS}</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
+              {t("creation.totalHitPoints")}
+            </p>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold tabular-nums text-white">
+                {totalHP}
+              </span>
+              <span className="text-sm text-gray-500">HP</span>
             </div>
           </div>
           <Button
@@ -290,7 +310,7 @@ export default function CharacterCreation() {
                         {t(`abilities.categories.${ability.category}`)}
                         {" ("}
                         {cost} {t("abilities.ptsPerRank")}
-                        {")"}
+                        {")"}  
                       </span>
                       {ability.load !== undefined && (
                         <span>
@@ -315,6 +335,59 @@ export default function CharacterCreation() {
           </div>
         );
       })}
+
+      <Divider className="my-6" />
+
+      {/* Extra Hit Points Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.extraHitPointsSection")}
+      </h2>
+
+      <div className="flex flex-col gap-3 mb-6">
+        <StatCard
+          name={t("creation.extraHitPoints")}
+          rank={extraHPPoints}
+          isExpanded={expandedItem?.type === "extraHP"}
+          onToggle={() =>
+            setExpandedItem((prev) =>
+              prev?.type === "extraHP" ? null : { type: "extraHP" },
+            )
+          }
+          onIncrease={() => changeExtraHP(1)}
+          onDecrease={() => changeExtraHP(-1)}
+          canIncrease={canIncreaseExtraHP}
+          canDecrease={canDecreaseExtraHP}
+          increaseTooltip={
+            canIncreaseExtraHP
+              ? t("creation.costTooltip", { count: 1 })
+              : t("creation.maxRank")
+          }
+          decreaseTooltip={
+            canDecreaseExtraHP
+              ? t("creation.refundTooltip", { count: 1 })
+              : t("creation.minRank")
+          }
+          rankColor={extraHPPoints > 0 ? "text-green-400" : "text-gray-400"}
+          ariaLabel="Extra Hit Points"
+          rankAnnotation={
+            extraHPGain > 0
+              ? t("creation.extraHitPointsGain", { count: extraHPGain })
+              : undefined
+          }
+        >
+          <p className="text-sm italic text-gray-400 mb-2">
+            {t("creation.extraHitPointsDescription")}
+          </p>
+          <div className="flex flex-col gap-1 text-xs text-gray-400">
+            <span>
+              {t("creation.startingHitPoints", { count: startingHP })}
+            </span>
+            <span>
+              {t("creation.hpPerPoint", { count: hpPerPoint })}
+            </span>
+          </div>
+        </StatCard>
+      </div>
 
       {/* Reset Confirmation Modal */}
       <Modal isOpen={isResetOpen} onOpenChange={setIsResetOpen} placement="center">

@@ -20,6 +20,8 @@ interface StatCardProps {
   decreaseTooltip: string;
   rankColor: string;
   ariaLabel: string;
+  /** Optional annotation shown below the top row (visible without expanding). */
+  rankAnnotation?: ReactNode;
   children?: ReactNode;
 }
 
@@ -36,6 +38,7 @@ export function StatCard({
   decreaseTooltip,
   rankColor,
   ariaLabel,
+  rankAnnotation,
   children,
 }: StatCardProps) {
   return (
@@ -118,6 +121,13 @@ export function StatCard({
             </Tooltip>
           </div>
         </div>
+
+        {/* Optional annotation below the top row */}
+        {rankAnnotation && (
+          <div className="mt-1 text-xs text-gray-400 text-right">
+            {rankAnnotation}
+          </div>
+        )}
 
         {/* Expandable detail section */}
         <AnimatePresence initial={false}>
