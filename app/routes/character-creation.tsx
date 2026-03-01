@@ -591,6 +591,9 @@ export default function CharacterCreation() {
         {/* Side summary — desktop only */}
         <aside className="hidden lg:block lg:flex-none w-64 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
           <div className="sticky top-4">
+            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
+              {t("creation.summary")}
+            </h2>
             <CharacterSummary
               heroName={heroName}
               cognomen={cognomen}

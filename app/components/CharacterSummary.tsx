@@ -66,25 +66,6 @@ export function CharacterSummary({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-        {t("creation.summary")}
-      </h2>
-
-      {/* Name */}
-      {(heroName || cognomen) && (
-        <>
-          <div>
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-              {t("creation.nameSection")}
-            </h3>
-            <p className="text-sm text-white">
-              {[heroName, cognomen].filter(Boolean).join(" ")}
-            </p>
-          </div>
-          <Divider />
-        </>
-      )}
-
       {/* Points + Reset */}
       <div className="flex items-start justify-between gap-2">
         <div>
@@ -111,6 +92,21 @@ export function CharacterSummary({
       </div>
 
       <Divider />
+
+      {/* Name */}
+      {(heroName || cognomen) && (
+        <>
+          <div>
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+              {t("creation.nameSection")}
+            </h3>
+            <p className="text-sm text-white">
+              {[heroName, cognomen].filter(Boolean).join(" ")}
+            </p>
+          </div>
+          <Divider />
+        </>
+      )}
 
       {/* HP + Wound Threshold */}
       <div className="grid grid-cols-2 gap-3">
