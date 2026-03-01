@@ -60,7 +60,7 @@ Add a gender selector (male/female) just before the Name input, preset to male. 
 ---
 
 ## Feature 2: Name Suggestion
-**Status: [ ] Not started**
+**Status: [X] Done**
 
 ### What
 Add a CTA button next to the Name input. On click, show a Popover with a list of Viking names (male or female depending on the selected gender). On click on a name, fill the input.

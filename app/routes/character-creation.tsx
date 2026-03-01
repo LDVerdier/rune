@@ -27,6 +27,8 @@ import { AbilityChart } from "~/components/AbilityChart";
 import { CombatEquipmentStatsRow, CombatEquipmentDetails } from "~/components/CombatEquipment";
 import { ArmorStatsRow, ArmorDetails } from "~/components/Armor";
 import { ConfirmationModal } from "~/components/ConfirmationModal";
+import { NameSuggestionPopover } from "~/components/NameSuggestionPopover";
+import { MALE_NAMES, FEMALE_NAMES } from "~/domain/names";
 import {
   SELECTABLE_WEAPONS,
   SELECTABLE_SHIELDS,
@@ -175,7 +177,7 @@ export default function CharacterCreation() {
       </div>
 
       {/* Hero name */}
-      <div className="mb-6">
+      <div className="mb-6 flex items-end gap-2">
         <Input
           label={t("creation.heroName")}
           placeholder={t("creation.heroNamePlaceholder")}
@@ -184,6 +186,11 @@ export default function CharacterCreation() {
           variant="bordered"
           size="sm"
           classNames={{ label: "text-gray-400", input: "text-white" }}
+          className="flex-1"
+        />
+        <NameSuggestionPopover
+          names={gender === "male" ? MALE_NAMES : FEMALE_NAMES}
+          onSelect={setHeroName}
         />
       </div>
 

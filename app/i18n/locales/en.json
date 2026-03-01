@@ -55,6 +55,7 @@
     "genderFemale": "Female",
     "heroName": "Name",
     "heroNamePlaceholder": "Enter your hero's name...",
+    "suggestName": "Suggest",
     "exportPdf": "Export PDF",
     "exporting": "Exporting...",
     "woundThresholdBreakdown": {
