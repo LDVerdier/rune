@@ -35,6 +35,11 @@
       "body": "Cela réinitialisera toutes les caractéristiques, compétences et points de vie supplémentaires à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
       "cancel": "Annuler",
       "confirm": "Réinitialiser"
+    },
+    "backModal": {
+      "title": "Quitter la Forge ?",
+      "cancel": "Rester",
+      "confirm": "Quitter"
     }
   },
   "characteristics": {

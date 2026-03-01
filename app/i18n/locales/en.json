@@ -35,6 +35,11 @@
       "body": "This will reset all characteristics, abilities, and extra hit points to their default values.\nAny changes you've made will be lost.",
       "cancel": "Cancel",
       "confirm": "Reset"
+    },
+    "backModal": {
+      "title": "Leave the Forge?",
+      "cancel": "Stay",
+      "confirm": "Leave"
     }
   },
   "characteristics": {

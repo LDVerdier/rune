@@ -61,7 +61,7 @@ export function useCharacterCreation() {
     setExtraHPPoints((prev) => {
       const next = prev + delta;
       if (next < 0) return prev;
-      if (delta > 0 && !domainCanIncreaseExtraHP(hpBudget)) return prev;
+      if (delta > 0 && !domainCanIncreaseExtraHP(hpBudget - prev)) return prev;
       return next;
     });
   }
@@ -104,7 +104,7 @@ export function useCharacterCreation() {
     // Hit Points
     extraHPPoints,
     changeExtraHP,
-    canIncreaseExtraHP: domainCanIncreaseExtraHP(hpBudget),
+    canIncreaseExtraHP: domainCanIncreaseExtraHP(remaining),
     canDecreaseExtraHP: domainCanDecreaseExtraHP(extraHPPoints),
     startingHP,
     hpPerPoint,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import {
   Button,
   Divider,
@@ -106,8 +106,15 @@ export default function CharacterCreation() {
     resetAll,
   } = useCharacterCreation();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isResetOpen, setIsResetOpen] = useState(false);
+  const [isBackOpen, setIsBackOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
+
+  const hasAllocations =
+    Object.values(ranks).some((r) => r !== 0) ||
+    Object.values(abilityRanks).some((r) => r !== 0) ||
+    extraHPPoints !== 0;
 
   const grouped = abilitiesBySet();
 
@@ -132,11 +139,16 @@ export default function CharacterCreation() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <Button
-          as={Link}
-          to="/"
           variant="light"
           size="sm"
           className="text-gray-400 hover:text-white"
+          onPress={() => {
+            if (hasAllocations) {
+              setIsBackOpen(true);
+            } else {
+              void navigate("/");
+            }
+          }}
         >
           &larr; {t("creation.back")}
         </Button>
@@ -154,15 +166,7 @@ export default function CharacterCreation() {
               {t("creation.pointsRemaining")}
             </p>
             <div className="flex items-baseline gap-1.5">
-              <span
-                className={`text-3xl font-bold tabular-nums ${
-                  remainingPoints < 0
-                    ? "text-danger"
-                    : remainingPoints === 0
-                      ? "text-success"
-                      : "text-white"
-                }`}
-              >
+              <span className="text-3xl font-bold tabular-nums text-white">
                 {remainingPoints}
               </span>
               <span className="text-sm text-gray-500">/ {BASE_POINTS}</span>
@@ -414,6 +418,37 @@ export default function CharacterCreation() {
                   }}
                 >
                   {t("creation.resetModal.confirm")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Back Confirmation Modal */}
+      <Modal isOpen={isBackOpen} onOpenChange={setIsBackOpen} placement="center">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-white">
+                {t("creation.backModal.title")}
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-400">
+                  {t("creation.resetModal.body")}
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  {t("creation.backModal.cancel")}
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    void navigate("/");
+                  }}
+                >
+                  {t("creation.backModal.confirm")}
                 </Button>
               </ModalFooter>
             </>
