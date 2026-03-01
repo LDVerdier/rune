@@ -86,8 +86,10 @@ export function CharacterSummary({
         </Button>
       </div>
 
+      <Divider />
+
       {/* HP + Wound Threshold */}
-      <div className="flex gap-6">
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <div className="flex items-center gap-1 mb-0.5">
             <p className="text-[10px] uppercase tracking-wider text-gray-500">

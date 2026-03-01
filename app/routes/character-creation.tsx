@@ -12,14 +12,16 @@ import {
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
 import type { Characteristic } from "~/domain/character-stats";
-import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES } from "~/domain/character-stats";
+import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES, BASE_POINTS } from "~/domain/character-stats";
 import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
 import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
+import LanguageSwitcher from "~/components/LanguageSwitcher";
 import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
+import type { WeaponDefinition, WeaponAbility } from "~/domain/equipment";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -86,6 +88,85 @@ function AbilityChart({ ability }: { ability: AbilityDefinition }) {
   );
 }
 
+const WEAPON_ABILITY_KEYS: Record<WeaponAbility, string> = {
+  Brawling: "abilities.Brawling",
+  Bows: "abilities.Bows",
+  Chain: "abilities.ChainWeapon",
+  Great: "abilities.GreatWeapon",
+  Longshaft: "abilities.LongshaftWeapon",
+  Single: "abilities.SingleWeapon",
+  Thrown: "abilities.ThrownWeapon",
+  TwoWeapons: "abilities.TwoWeapons",
+};
+
+function formatStatNum(value: number): string {
+  return value >= 0 ? `+${value}` : `${value}`;
+}
+
+function WeaponStatsRow({ weapon }: { weapon: WeaponDefinition }) {
+  const { t } = useTranslation();
+  const stats = [
+    { label: t("equipment.init"), value: formatStatNum(weapon.init) },
+    { label: t("equipment.atk"), value: formatStatNum(weapon.atk) },
+    {
+      label: t("equipment.dfn"),
+      value: weapon.dfn !== null ? formatStatNum(weapon.dfn) : "—",
+    },
+    {
+      label: t("equipment.dam"),
+      value:
+        weapon.dam === "special"
+          ? t("equipment.special")
+          : formatStatNum(weapon.dam),
+    },
+  ];
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-1">
+      {stats.map(({ label, value }) => (
+        <span key={label} className="text-xs text-gray-500">
+          <span className="uppercase tracking-wide">{label}</span>{" "}
+          <span className="text-gray-300 font-mono">{value}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function WeaponDetails({ weapon }: { weapon: WeaponDefinition }) {
+  const { t } = useTranslation();
+  const hasDescription =
+    weapon.id === "barbNet" || weapon.id === "flagon";
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+        <span>
+          <span className="text-gray-500">{t("equipment.load")}: </span>
+          {weapon.load !== null ? weapon.load : t("equipment.na")}
+        </span>
+        <span>
+          <span className="text-gray-500">{t("equipment.ability")}: </span>
+          {t(WEAPON_ABILITY_KEYS[weapon.ability])}
+        </span>
+        <span>
+          <span className="text-gray-500">{t("equipment.availability")}: </span>
+          {weapon.availability === "Common"
+            ? t("equipment.common")
+            : weapon.availability === "Rare"
+              ? t("equipment.rare")
+              : weapon.availability === "Special"
+                ? t("equipment.special")
+                : t("equipment.na")}
+        </span>
+      </div>
+      {hasDescription && (
+        <p className="text-sm italic text-gray-400">
+          {t(`equipment.${weapon.id}.description`)}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function CharacterCreation() {
   const {
     ranks,
@@ -123,6 +204,7 @@ export default function CharacterCreation() {
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [isBackOpen, setIsBackOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
+  const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
 
   const hasAllocations =
     Object.values(ranks).some((r) => r !== 0) ||
@@ -158,6 +240,8 @@ export default function CharacterCreation() {
   return (
     <div className="min-h-screen">
       <div className="lg:flex lg:justify-center">
+        {/* Ghost spacer — mirrors aside width so main content is visually centered */}
+        <div className="hidden lg:block lg:flex-none w-64" />
         <main className="w-full max-w-2xl mx-auto lg:mx-0 lg:flex-none p-4 sm:p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -178,7 +262,9 @@ export default function CharacterCreation() {
         <h1 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">
           {t("creation.heading")}
         </h1>
-        <div className="min-w-20" />
+        <div className="min-w-20 flex justify-end lg:hidden">
+          <LanguageSwitcher inline />
+        </div>
       </div>
 
       <Divider className="mb-6" />
@@ -414,10 +500,9 @@ export default function CharacterCreation() {
                     : t("creation.maxWeapons")
               }
               ariaLabel={t(`equipment.${weapon.id}`)}
+              stats={<WeaponStatsRow weapon={weapon} />}
             >
-              <p className="text-sm italic text-gray-400">
-                {t(`equipment.${weapon.id}.description`)}
-              </p>
+              <WeaponDetails weapon={weapon} />
             </EquipmentCard>
           );
         })}
@@ -559,10 +644,47 @@ export default function CharacterCreation() {
           )}
         </ModalContent>
       </Modal>
+
+      {/* Mobile summary modal */}
+      <Modal
+        isOpen={isMobileSummaryOpen}
+        onOpenChange={setIsMobileSummaryOpen}
+        placement="bottom"
+        scrollBehavior="inside"
+      >
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                {t("creation.summary")}
+              </ModalHeader>
+              <ModalBody className="pb-6">
+                <CharacterSummary
+                  remainingPoints={remainingPoints}
+                  ranks={ranks}
+                  abilityRanks={abilityRanks}
+                  totalHP={totalHP}
+                  woundThreshold={woundThreshold}
+                  selectedWeapons={selectedWeapons}
+                  selectedShield={selectedShield}
+                  selectedArmor={selectedArmor}
+                  onResetClick={() => {
+                    setIsMobileSummaryOpen(false);
+                    setIsResetOpen(true);
+                  }}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Spacer so last content isn't obscured by the sticky bar on mobile */}
+      <div className="h-20 lg:hidden" />
         </main>
 
         {/* Side summary — desktop only */}
-        <aside className="hidden lg:block lg:flex-none w-56 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
+        <aside className="hidden lg:block lg:flex-none w-64 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
           <div className="sticky top-4">
             <CharacterSummary
               remainingPoints={remainingPoints}
@@ -577,6 +699,41 @@ export default function CharacterCreation() {
             />
           </div>
         </aside>
+      </div>
+
+      {/* Mobile sticky summary bar */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-white/10 bg-black/80 backdrop-blur-sm">
+        <button
+          type="button"
+          className="w-full px-4 py-3 flex items-center justify-between"
+          onClick={() => setIsMobileSummaryOpen(true)}
+        >
+          <div className="flex items-center gap-6">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
+                {t("creation.pointsRemaining")}
+              </p>
+              <span className="text-base font-bold tabular-nums text-white">
+                {remainingPoints}{" "}
+                <span className="text-xs font-normal text-gray-500">
+                  / {BASE_POINTS}
+                </span>
+              </span>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
+                {t("creation.totalHitPoints")}
+              </p>
+              <span className="text-base font-bold tabular-nums text-white">
+                {totalHP}{" "}
+                <span className="text-xs font-normal text-gray-500">HP</span>
+              </span>
+            </div>
+          </div>
+          <span className="text-xs text-gray-400">
+            ↑ {t("creation.summary")}
+          </span>
+        </button>
       </div>
     </div>
   );

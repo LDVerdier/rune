@@ -11,6 +11,7 @@ interface EquipmentCardProps {
   canSelect: boolean;
   selectTooltip: string;
   ariaLabel: string;
+  stats?: ReactNode;
   children?: ReactNode;
 }
 
@@ -23,6 +24,7 @@ export function EquipmentCard({
   canSelect,
   selectTooltip,
   ariaLabel,
+  stats,
   children,
 }: EquipmentCardProps) {
   return (
@@ -90,6 +92,9 @@ export function EquipmentCard({
             </Tooltip>
           </div>
         </div>
+
+        {/* Inline stats row (always visible when provided) */}
+        {stats && <div className="mt-2">{stats}</div>}
 
         {/* Expandable detail section */}
         <AnimatePresence initial={false}>
