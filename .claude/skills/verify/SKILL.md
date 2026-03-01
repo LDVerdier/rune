@@ -1,18 +1,17 @@
 ---
 name: verify
-description: After finishing the execution of a plan, run the full verification suite: linter, typecheck, tests, Documentation. Fix any issues found.
+description: After finishing the execution of a plan, run the full verification suite: linter, typecheck, tests. Fix any issues found.
 ---
 
 # Final verification checklist
 
-Run these four checks sequentially:
+Run these three checks sequentially:
 
 1. **Lint** — `npm run lint`
 2. **Typecheck** — `npm run typecheck`
 3. **Tests** — `npm run test`
-4. **Documentation** — Update or create AI-destined documentation files (in `.claude/memory/`) to store any new directives, conventions, or decisions about the project that emerged during the work. This ensures future sessions have the right context. Only write what is stable and confirmed — skip session-specific or speculative notes.
 
-Report a summary at the end with the status of each check and any documentation updates made.
+Report a summary at the end with the status of each check.
 
 For each step:
 - Run the command
