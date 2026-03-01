@@ -8,6 +8,23 @@ import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import { charRankColor, formatRank } from "~/utils/formatting";
 
+interface SummaryLabeledRowProps {
+  label: string;
+  value: string | number;
+  color: string;
+}
+
+function SummaryLabeledRow({ label, value, color }: SummaryLabeledRowProps) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-xs text-gray-400 truncate mr-2">{label}</span>
+      <span className={`text-xs font-bold tabular-nums shrink-0 ${color}`}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
 interface CharacterSummaryProps {
   remainingPoints: number;
   ranks: Ranks;
@@ -120,16 +137,12 @@ export function CharacterSummary({
           {CHARACTERISTICS.map((char) => {
             const rank = ranks[char];
             return (
-              <div key={char} className="flex items-center justify-between">
-                <span className="text-xs text-gray-400 truncate mr-2">
-                  {t(`characteristics.${char}`)}
-                </span>
-                <span
-                  className={`text-xs font-bold tabular-nums shrink-0 ${charRankColor(rank)}`}
-                >
-                  {formatRank(rank)}
-                </span>
-              </div>
+              <SummaryLabeledRow
+                key={char}
+                label={t(`characteristics.${char}`)}
+                value={formatRank(rank)}
+                color={charRankColor(rank)}
+              />
             );
           })}
         </div>
@@ -156,17 +169,12 @@ export function CharacterSummary({
                     </p>
                     <div className="flex flex-col gap-0.5">
                       {purchased.map((a) => (
-                        <div
+                        <SummaryLabeledRow
                           key={a.name}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-xs text-gray-400 truncate mr-2">
-                            {t(`abilities.${a.name}`)}
-                          </span>
-                          <span className="text-xs font-bold tabular-nums text-green-400 shrink-0">
-                            {abilityRanks[a.name]}
-                          </span>
-                        </div>
+                          label={t(`abilities.${a.name}`)}
+                          value={abilityRanks[a.name]}
+                          color="text-green-400"
+                        />
                       ))}
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, Tooltip } from "@heroui/react";
-import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { ExpandArrow, ExpandableContent } from "~/components/expand";
 
 interface EquipmentCardProps {
   name: string;
@@ -43,14 +43,7 @@ export function EquipmentCard({
             className="flex items-center gap-2 flex-1 cursor-pointer select-none"
             onClick={onToggle}
           >
-            <span
-              className="text-xs text-gray-500 transition-transform duration-200"
-              style={{
-                transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-              }}
-            >
-              &#9656;
-            </span>
+            <ExpandArrow isExpanded={isExpanded} />
             <span
               className={`text-sm font-semibold uppercase tracking-wide transition-colors duration-200 ${
                 isSelected ? "text-warning" : "text-white"
@@ -97,21 +90,9 @@ export function EquipmentCard({
         {stats && <div className="mt-2">{stats}</div>}
 
         {/* Expandable detail section */}
-        <AnimatePresence initial={false}>
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <div className="pt-3 mt-3 border-t border-content3">
-                {children}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <ExpandableContent isExpanded={isExpanded}>
+          {children}
+        </ExpandableContent>
       </CardBody>
     </Card>
   );

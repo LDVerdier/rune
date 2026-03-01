@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { ArmorDefinition } from "~/domain/equipment";
 import { formatRank } from "~/utils/formatting";
+import { StatsRow } from "~/components/StatsRow";
 
 interface ArmorStatsRowProps {
   armor: ArmorDefinition;
@@ -12,16 +13,7 @@ export function ArmorStatsRow({ armor }: ArmorStatsRowProps) {
     { label: t("equipment.prt"), value: `+${armor.prt}` },
     { label: t("equipment.init"), value: formatRank(armor.init) },
   ];
-  return (
-    <div className="flex flex-wrap gap-x-3 gap-y-1">
-      {stats.map(({ label, value }) => (
-        <span key={label} className="text-xs text-gray-500">
-          <span className="uppercase tracking-wide">{label}</span>{" "}
-          <span className="text-gray-300 font-mono">{value}</span>
-        </span>
-      ))}
-    </div>
-  );
+  return <StatsRow stats={stats} />;
 }
 
 interface ArmorDetailsProps {

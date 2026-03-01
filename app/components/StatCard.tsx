@@ -4,8 +4,8 @@ import {
   CardBody,
   Tooltip,
 } from "@heroui/react";
-import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { ExpandArrow, ExpandableContent } from "~/components/expand";
 
 interface StatCardProps {
   name: string;
@@ -55,14 +55,7 @@ export function StatCard({
           onClick={onToggle}
         >
           <div className="flex items-center gap-2">
-            <span
-              className="text-xs text-gray-500 transition-transform duration-200"
-              style={{
-                transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-              }}
-            >
-              &#9656;
-            </span>
+            <ExpandArrow isExpanded={isExpanded} />
             <span className="text-sm font-semibold text-white uppercase tracking-wide">
               {name}
             </span>
@@ -130,21 +123,9 @@ export function StatCard({
         )}
 
         {/* Expandable detail section */}
-        <AnimatePresence initial={false}>
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <div className="pt-3 mt-3 border-t border-content3">
-                {children}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <ExpandableContent isExpanded={isExpanded}>
+          {children}
+        </ExpandableContent>
       </CardBody>
     </Card>
   );

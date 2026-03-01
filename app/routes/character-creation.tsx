@@ -6,7 +6,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
@@ -23,6 +22,7 @@ import LanguageSwitcher from "~/components/LanguageSwitcher";
 import { AbilityChart } from "~/components/AbilityChart";
 import { CombatEquipmentStatsRow, CombatEquipmentDetails } from "~/components/CombatEquipment";
 import { ArmorStatsRow, ArmorDetails } from "~/components/Armor";
+import { ConfirmationModal } from "~/components/ConfirmationModal";
 import {
   SELECTABLE_WEAPONS,
   SELECTABLE_SHIELDS,
@@ -459,67 +459,26 @@ export default function CharacterCreation() {
       </CollapsibleSection>
 
       {/* Reset Confirmation Modal */}
-      <Modal isOpen={isResetOpen} onOpenChange={setIsResetOpen} placement="center">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="text-white">
-                {t("creation.resetModal.title")}
-              </ModalHeader>
-              <ModalBody>
-                <p className="text-gray-400">
-                  {t("creation.resetModal.body")}
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="light" onPress={onClose}>
-                  {t("creation.resetModal.cancel")}
-                </Button>
-                <Button
-                  color="danger"
-                  onPress={() => {
-                    resetAll();
-                    onClose();
-                  }}
-                >
-                  {t("creation.resetModal.confirm")}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ConfirmationModal
+        isOpen={isResetOpen}
+        onOpenChange={setIsResetOpen}
+        title={t("creation.resetModal.title")}
+        body={t("creation.resetModal.body")}
+        cancelLabel={t("creation.resetModal.cancel")}
+        confirmLabel={t("creation.resetModal.confirm")}
+        onConfirm={resetAll}
+      />
 
       {/* Back Confirmation Modal */}
-      <Modal isOpen={isBackOpen} onOpenChange={setIsBackOpen} placement="center">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="text-white">
-                {t("creation.backModal.title")}
-              </ModalHeader>
-              <ModalBody>
-                <p className="text-gray-400">
-                  {t("creation.resetModal.body")}
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="light" onPress={onClose}>
-                  {t("creation.backModal.cancel")}
-                </Button>
-                <Button
-                  color="danger"
-                  onPress={() => {
-                    void navigate("/");
-                  }}
-                >
-                  {t("creation.backModal.confirm")}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ConfirmationModal
+        isOpen={isBackOpen}
+        onOpenChange={setIsBackOpen}
+        title={t("creation.backModal.title")}
+        body={t("creation.resetModal.body")}
+        cancelLabel={t("creation.backModal.cancel")}
+        confirmLabel={t("creation.backModal.confirm")}
+        onConfirm={() => void navigate("/")}
+      />
 
       {/* Mobile summary modal */}
       <Modal
