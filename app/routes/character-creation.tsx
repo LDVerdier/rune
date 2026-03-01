@@ -13,6 +13,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import type { Route } from "./+types/character-creation";
+import { CHARACTERISTICS, BASE_POINTS, MIN_RANK } from "~/domain/character-stats";
+import { useCharacterStats } from "~/hooks/use-character-stats";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -20,39 +22,6 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Create your Rune character" },
   ];
 }
-
-const CHARACTERISTICS = [
-  "Strength",
-  "Stamina",
-  "Dexterity",
-  "Quickness",
-  "Intelligence",
-  "Perception",
-  "Presence",
-  "Communication",
-] as const;
-
-type Characteristic = (typeof CHARACTERISTICS)[number];
-
-// Cumulative cost at each rank (-3 to +3)
-const COST_TABLE: Record<Characteristic, Record<number, number>> = {
-  Strength:      { [-3]: -12, [-2]: -8,  [-1]: -4, [0]: 0, [1]: 4, [2]: 8,  [3]: 16 },
-  Stamina:       { [-3]: -16, [-2]: -10, [-1]: -6, [0]: 0, [1]: 4, [2]: 8,  [3]: 16 },
-  Dexterity:     { [-3]: -12, [-2]: -8,  [-1]: -4, [0]: 0, [1]: 4, [2]: 8,  [3]: 16 },
-  Quickness:     { [-3]: -12, [-2]: -8,  [-1]: -4, [0]: 0, [1]: 4, [2]: 8,  [3]: 16 },
-  Intelligence:  { [-3]: -6,  [-2]: -4,  [-1]: -2, [0]: 0, [1]: 2, [2]: 4,  [3]: 8  },
-  Perception:    { [-3]: -6,  [-2]: -4,  [-1]: -2, [0]: 0, [1]: 2, [2]: 4,  [3]: 8  },
-  Presence:      { [-3]: -2,  [-2]: -2,  [-1]: -2, [0]: 0, [1]: 2, [2]: 4,  [3]: 8  },
-  Communication: { [-3]: -2,  [-2]: -2,  [-1]: -2, [0]: 0, [1]: 2, [2]: 4,  [3]: 8  },
-};
-
-const BASE_POINTS = 60;
-const MIN_RANK = -3;
-const MAX_RANK = 3;
-
-const INITIAL_RANKS = Object.fromEntries(
-  CHARACTERISTICS.map((c) => [c, 0]),
-) as Record<Characteristic, number>;
 
 function rankTextColor(rank: number): string {
   if (rank === -3) return "text-red-500";
@@ -65,47 +34,16 @@ function rankTextColor(rank: number): string {
 }
 
 export default function CharacterCreation() {
-  const [ranks, setRanks] = useState<Record<Characteristic, number>>(
-    () => ({ ...INITIAL_RANKS }),
-  );
+  const {
+    ranks,
+    remainingPoints,
+    changeRank,
+    resetAll,
+    canIncrease,
+    nextCost,
+    prevRefund,
+  } = useCharacterStats();
   const [isResetOpen, setIsResetOpen] = useState(false);
-
-  const pointsSpent = CHARACTERISTICS.reduce(
-    (sum, c) => sum + COST_TABLE[c][ranks[c]],
-    0,
-  );
-  const remainingPoints = BASE_POINTS - pointsSpent;
-
-  function changeRank(char: Characteristic, delta: number) {
-    const newRank = ranks[char] + delta;
-    if (newRank < MIN_RANK || newRank > MAX_RANK) return;
-
-    const costDelta = COST_TABLE[char][newRank] - COST_TABLE[char][ranks[char]];
-    if (costDelta > remainingPoints) return;
-
-    setRanks((prev) => ({ ...prev, [char]: newRank }));
-  }
-
-  function canIncrease(char: Characteristic): boolean {
-    if (ranks[char] >= MAX_RANK) return false;
-    const costDelta =
-      COST_TABLE[char][ranks[char] + 1] - COST_TABLE[char][ranks[char]];
-    return costDelta <= remainingPoints;
-  }
-
-  function nextCost(char: Characteristic): number | null {
-    if (ranks[char] >= MAX_RANK) return null;
-    return COST_TABLE[char][ranks[char] + 1] - COST_TABLE[char][ranks[char]];
-  }
-
-  function prevRefund(char: Characteristic): number | null {
-    if (ranks[char] <= MIN_RANK) return null;
-    return COST_TABLE[char][ranks[char]] - COST_TABLE[char][ranks[char] - 1];
-  }
-
-  function resetAll() {
-    setRanks({ ...INITIAL_RANKS });
-  }
 
   return (
     <main className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">

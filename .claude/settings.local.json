@@ -28,7 +28,10 @@
       "Bash(npm install @heroui/react framer-motion)",
       "Bash(npx vitest run app/routes/home.test.tsx)",
       "Bash(npm run test)",
-      "Bash(ls /Users/laurent/Documents/perso/rune/node_modules/@heroui/modal/dist/chunk-*.mjs)"
+      "Bash(ls /Users/laurent/Documents/perso/rune/node_modules/@heroui/modal/dist/chunk-*.mjs)",
+      "Bash(test -d /Users/laurent/Documents/perso/rune/app/domain)",
+      "Bash(test -d /Users/laurent/Documents/perso/rune/app/hooks)",
+      "Bash(test -d /Users/laurent/Documents/perso/rune/app/lib)"
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune",
