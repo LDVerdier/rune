@@ -20,7 +20,11 @@ import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
-import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
+import {
+  SELECTABLE_WEAPONS,
+  SELECTABLE_SHIELDS,
+  SELECTABLE_ARMORS,
+} from "~/domain/equipment";
 import type { WeaponDefinition, ShieldDefinition, ArmorDefinition, WeaponAbility } from "~/domain/equipment";
 import i18n from "~/i18n";
 
@@ -96,7 +100,6 @@ const WEAPON_ABILITY_KEYS: Record<WeaponAbility, string> = {
   Longshaft: "abilities.LongshaftWeapon",
   Single: "abilities.SingleWeapon",
   Thrown: "abilities.ThrownWeapon",
-  TwoWeapons: "abilities.TwoWeapons",
 };
 
 function formatStatNum(value: number): string {
@@ -571,7 +574,7 @@ export default function CharacterCreation() {
       </h2>
 
       <div className="flex flex-col gap-3 mb-6">
-        {WEAPONS.map((weapon) => {
+        {SELECTABLE_WEAPONS.map((weapon) => {
           const isSelected = selectedWeapons.includes(weapon.id);
           const canSelect = canSelectWeapon(weapon.id);
           const isExpanded =
@@ -610,7 +613,7 @@ export default function CharacterCreation() {
       </h2>
 
       <div className="flex flex-col gap-3 mb-6">
-        {SHIELDS.map((shield) => {
+        {SELECTABLE_SHIELDS.map((shield) => {
           const isSelected = selectedShield === shield.id;
           const isExpanded =
             expandedItem?.type === "equipment" && expandedItem.id === shield.id;
@@ -646,7 +649,7 @@ export default function CharacterCreation() {
       </h2>
 
       <div className="flex flex-col gap-3 mb-6">
-        {ARMORS.map((armor) => {
+        {SELECTABLE_ARMORS.map((armor) => {
           const isSelected = selectedArmor === armor.id;
           const isExpanded =
             expandedItem?.type === "equipment" && expandedItem.id === armor.id;

@@ -10,8 +10,8 @@ export type WeaponAbility =
   | "Great"
   | "Longshaft"
   | "Single"
-  | "Thrown"
-  | "TwoWeapons";
+  | "Thrown";
+
 
 export type WeaponAvailability = "Common" | "Rare" | "NA" | "Special";
 
@@ -86,14 +86,11 @@ export const WEAPONS: WeaponDefinition[] = [
   { id: "shortBow", kind: "weapon", init: 0, atk: 0, dfn: null, dam: 6, load: 0.5, ability: "Bows", availability: "Common" },
   { id: "shortspear", kind: "weapon", init: 5, atk: 1, dfn: 2, dam: 3, load: 0.5, ability: "Single", availability: "Common" },
   { id: "shortsword", kind: "weapon", init: 4, atk: 2, dfn: 3, dam: 3, load: 0.5, ability: "Single", availability: "Common" },
-  { id: "shortswordDagger", kind: "weapon", init: 6, atk: 5, dfn: 6, dam: 5, load: 0.75, ability: "TwoWeapons", availability: "Common" },
   { id: "sling", kind: "weapon", init: 2, atk: 2, dfn: null, dam: 3, load: 0.1, ability: "Thrown", availability: "Common" },
   { id: "spearThrown", kind: "weapon", init: 0, atk: 2, dfn: 0, dam: 6, load: 1, ability: "Thrown", availability: "Common" },
   { id: "spearLance", kind: "weapon", init: 5, atk: 6, dfn: 4, dam: 6, load: 1, ability: "Longshaft", availability: "Common" },
   { id: "throwingAxe", kind: "weapon", init: 1, atk: 1, dfn: 0, dam: 4, load: 0.5, ability: "Thrown", availability: "Common" },
   { id: "throwingKnife", kind: "weapon", init: 1, atk: 1, dfn: null, dam: 3, load: 0.2, ability: "Thrown", availability: "Common" },
-  { id: "twoHandAxes", kind: "weapon", init: 4, atk: 5, dfn: 3, dam: 7, load: 1, ability: "TwoWeapons", availability: "Common" },
-  { id: "twoShortSwords", kind: "weapon", init: 6, atk: 3, dfn: 5, dam: 7, load: 1, ability: "TwoWeapons", availability: "Common" },
   { id: "vikingAxe", kind: "weapon", init: 5, atk: 3, dfn: 4, dam: 10, load: 1.5, ability: "Great", availability: "Common" },
   { id: "vikingBroadsword", kind: "weapon", init: 5, atk: 3, dfn: 4, dam: 6, load: 1, ability: "Single", availability: "Common" },
   { id: "warMaul", kind: "weapon", init: 5, atk: 2, dfn: 5, dam: 10, load: 1.5, ability: "Great", availability: "Common" },
@@ -114,6 +111,20 @@ export const ARMORS: ArmorDefinition[] = [
   { id: "chainMail", kind: "armor", prt: 7, init: -5, load: 2.5, availability: "Common" },
   { id: "steelScaleMail", kind: "armor", prt: 9, init: -7, load: 3.0, availability: "Rare" },
 ];
+
+const NON_SELECTABLE_WEAPON_IDS = new Set(["punyKnife", "rock"]);
+
+export const SELECTABLE_WEAPONS = WEAPONS.filter(
+  (w) => w.availability === "Common" && !NON_SELECTABLE_WEAPON_IDS.has(w.id),
+);
+
+export const SELECTABLE_SHIELDS = SHIELDS.filter(
+  (s) => s.availability === "Common",
+);
+
+export const SELECTABLE_ARMORS = ARMORS.filter(
+  (a) => a.availability === "Common",
+);
 
 export function canSelectWeapon(selected: string[], id: string): boolean {
   return selected.includes(id) || selected.length < MAX_WEAPONS;
