@@ -4,9 +4,12 @@ import {
   Button,
   Card,
   CardBody,
-  Chip,
   Divider,
-  Progress,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Tooltip,
 } from "@heroui/react";
 import type { Route } from "./+types/character-creation";
@@ -47,36 +50,25 @@ const BASE_POINTS = 60;
 const MIN_RANK = -3;
 const MAX_RANK = 3;
 
-function rankToProgress(rank: number): number {
-  return ((rank - MIN_RANK) / (MAX_RANK - MIN_RANK)) * 100;
-}
+const INITIAL_RANKS = Object.fromEntries(
+  CHARACTERISTICS.map((c) => [c, 0]),
+) as Record<Characteristic, number>;
 
-function rankLabel(rank: number): string {
-  if (rank <= -2) return "Feeble";
-  if (rank === -1) return "Poor";
-  if (rank === 0) return "Average";
-  if (rank === 1) return "Good";
-  if (rank === 2) return "Great";
-  return "Heroic";
-}
-
-function rankColor(
-  rank: number,
-): "default" | "danger" | "warning" | "primary" | "success" {
-  if (rank <= -2) return "danger";
-  if (rank === -1) return "warning";
-  if (rank === 0) return "default";
-  if (rank <= 2) return "primary";
-  return "success";
+function rankTextColor(rank: number): string {
+  if (rank === -3) return "text-red-500";
+  if (rank === -2) return "text-orange-400";
+  if (rank === -1) return "text-yellow-400";
+  if (rank === 0) return "text-gray-400";
+  if (rank === 1) return "text-green-400";
+  if (rank === 2) return "text-green-500";
+  return "text-green-600";
 }
 
 export default function CharacterCreation() {
   const [ranks, setRanks] = useState<Record<Characteristic, number>>(
-    () =>
-      Object.fromEntries(
-        CHARACTERISTICS.map((c) => [c, 0]),
-      ) as Record<Characteristic, number>,
+    () => ({ ...INITIAL_RANKS }),
   );
+  const [isResetOpen, setIsResetOpen] = useState(false);
 
   const pointsSpent = CHARACTERISTICS.reduce(
     (sum, c) => sum + COST_TABLE[c][ranks[c]],
@@ -111,6 +103,10 @@ export default function CharacterCreation() {
     return COST_TABLE[char][ranks[char]] - COST_TABLE[char][ranks[char] - 1];
   }
 
+  function resetAll() {
+    setRanks({ ...INITIAL_RANKS });
+  }
+
   return (
     <main className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
       {/* Header */}
@@ -127,45 +123,40 @@ export default function CharacterCreation() {
         <h1 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">
           The Forge
         </h1>
-        <div className="text-right min-w-20">
-          <p className="text-xs uppercase tracking-wider text-gray-500">
-            Points
-          </p>
-          <p
-            className={`text-2xl font-bold tabular-nums ${
-              remainingPoints < 0
-                ? "text-red-500"
-                : remainingPoints === 0
-                  ? "text-green-500"
-                  : "text-white"
-            }`}
-          >
-            {remainingPoints}
-          </p>
-        </div>
+        <div className="min-w-20" />
       </div>
 
-      {/* Points Budget Progress */}
+      {/* Points Budget */}
       <div className="mb-6">
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
-          <span>Spent: {pointsSpent}</span>
-          <span>Budget: {BASE_POINTS}</span>
+        <div className="flex items-end justify-between mb-2">
+          <div>
+            <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
+              Points remaining
+            </p>
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={`text-3xl font-bold tabular-nums ${
+                  remainingPoints < 0
+                    ? "text-danger"
+                    : remainingPoints === 0
+                      ? "text-success"
+                      : "text-white"
+                }`}
+              >
+                {remainingPoints}
+              </span>
+              <span className="text-sm text-gray-500">/ {BASE_POINTS}</span>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="flat"
+            className="text-gray-400"
+            onPress={() => setIsResetOpen(true)}
+          >
+            Reset All
+          </Button>
         </div>
-        <Progress
-          value={(pointsSpent / BASE_POINTS) * 100}
-          color={
-            remainingPoints < 0
-              ? "danger"
-              : remainingPoints === 0
-                ? "success"
-                : "primary"
-          }
-          size="sm"
-          classNames={{
-            track: "bg-content2",
-          }}
-          aria-label="Points spent"
-        />
       </div>
 
       <Divider className="mb-6" />
@@ -174,7 +165,6 @@ export default function CharacterCreation() {
       <div className="flex flex-col gap-3">
         {CHARACTERISTICS.map((char) => {
           const rank = ranks[char];
-          const cost = COST_TABLE[char][rank];
           const increase = nextCost(char);
           const refund = prevRefund(char);
 
@@ -187,100 +177,108 @@ export default function CharacterCreation() {
               }}
             >
               <CardBody className="py-3 px-4">
-                {/* Top row: name, rank chip, cost */}
+                {/* Top row: name + compact controls */}
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-white uppercase tracking-wide w-32">
+                  <span className="text-sm font-semibold text-white uppercase tracking-wide">
                     {char}
                   </span>
 
-                  <Chip
-                    size="sm"
-                    variant="flat"
-                    color={rankColor(rank)}
-                    classNames={{
-                      base: "min-w-20 justify-center",
-                    }}
-                  >
-                    {rankLabel(rank)}
-                  </Chip>
-
-                  <span className="w-16 text-right text-xs text-gray-500 tabular-nums">
-                    {cost} pts
-                  </span>
-                </div>
-
-                {/* Bottom row: minus button, progress bar, plus button */}
-                <div className="flex items-center gap-3">
-                  <Tooltip
-                    content={
-                      refund !== null
-                        ? `Refund ${refund} pts`
-                        : "Minimum rank"
-                    }
-                    placement="bottom"
-                    size="sm"
-                    delay={400}
-                  >
-                    <span className="inline-flex">
-                      <Button
-                        size="sm"
-                        variant="bordered"
-                        isIconOnly
-                        className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
-                        onPress={() => changeRank(char, -1)}
-                        isDisabled={rank <= MIN_RANK}
-                        aria-label={`Decrease ${char}`}
-                      >
-                        &minus;
-                      </Button>
-                    </span>
-                  </Tooltip>
-
-                  <div className="flex-1 flex items-center gap-3">
-                    <Progress
-                      value={rankToProgress(rank)}
-                      color="primary"
+                  <div className="flex items-center gap-1">
+                    <Tooltip
+                      content={
+                        refund !== null
+                          ? `Refund ${refund} pts`
+                          : "Minimum rank"
+                      }
+                      placement="bottom"
                       size="sm"
-                      classNames={{
-                        track: "bg-content3",
-                      }}
-                      aria-label={`${char} rank`}
-                    />
-                    <span className="w-8 text-center text-base font-bold text-white tabular-nums shrink-0">
+                      delay={400}
+                    >
+                      <span className="inline-flex">
+                        <Button
+                          size="sm"
+                          variant="bordered"
+                          isIconOnly
+                          className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
+                          onPress={() => changeRank(char, -1)}
+                          isDisabled={rank <= MIN_RANK}
+                          aria-label={`Decrease ${char}`}
+                        >
+                          &minus;
+                        </Button>
+                      </span>
+                    </Tooltip>
+
+                    <span
+                      className={`w-10 text-center text-xl font-bold tabular-nums ${rankTextColor(rank)}`}
+                    >
                       {rank > 0 ? `+${rank}` : rank}
                     </span>
-                  </div>
 
-                  <Tooltip
-                    content={
-                      increase !== null
-                        ? `Cost: ${increase} pts`
-                        : "Maximum rank"
-                    }
-                    placement="bottom"
-                    size="sm"
-                    delay={400}
-                  >
-                    <span className="inline-flex">
-                      <Button
-                        size="sm"
-                        variant="bordered"
-                        isIconOnly
-                        className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
-                        onPress={() => changeRank(char, 1)}
-                        isDisabled={!canIncrease(char)}
-                        aria-label={`Increase ${char}`}
-                      >
-                        +
-                      </Button>
-                    </span>
-                  </Tooltip>
+                    <Tooltip
+                      content={
+                        increase !== null
+                          ? `Cost: ${increase} pts`
+                          : "Maximum rank"
+                      }
+                      placement="bottom"
+                      size="sm"
+                      delay={400}
+                    >
+                      <span className="inline-flex">
+                        <Button
+                          size="sm"
+                          variant="bordered"
+                          isIconOnly
+                          className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
+                          onPress={() => changeRank(char, 1)}
+                          isDisabled={!canIncrease(char)}
+                          aria-label={`Increase ${char}`}
+                        >
+                          +
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </div>
                 </div>
               </CardBody>
             </Card>
           );
         })}
       </div>
+
+      {/* Reset Confirmation Modal */}
+      <Modal isOpen={isResetOpen} onOpenChange={setIsResetOpen} placement="center">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="text-white">
+                Reset All Characteristics?
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-400">
+                  This will reset all characteristics to their default values.
+                  Any changes you&apos;ve made will be lost.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    resetAll();
+                    onClose();
+                  }}
+                >
+                  Reset
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </main>
   );
 }

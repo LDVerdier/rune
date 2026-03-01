@@ -27,7 +27,8 @@
       "WebFetch(domain:www.heroui.com)",
       "Bash(npm install @heroui/react framer-motion)",
       "Bash(npx vitest run app/routes/home.test.tsx)",
-      "Bash(npm run test)"
+      "Bash(npm run test)",
+      "Bash(ls /Users/laurent/Documents/perso/rune/node_modules/@heroui/modal/dist/chunk-*.mjs)"
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune",
