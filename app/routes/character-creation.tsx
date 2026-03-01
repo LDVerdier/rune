@@ -2,22 +2,21 @@ import { useState } from "react";
 import { Link } from "react-router";
 import {
   Button,
-  Card,
-  CardBody,
   Divider,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Tooltip,
 } from "@heroui/react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
 import type { Characteristic } from "~/domain/character-stats";
 import { CHARACTERISTICS, BASE_POINTS, MIN_RANK, PATRON_DEITIES } from "~/domain/character-stats";
-import { useCharacterStats } from "~/hooks/use-character-stats";
+import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
+import type { AbilityDefinition } from "~/domain/abilities";
+import { useCharacterCreation } from "~/hooks/use-character-creation";
+import { StatCard } from "~/components/StatCard";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -28,7 +27,12 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-function rankTextColor(rank: number): string {
+type ExpandedItem =
+  | { type: "characteristic"; id: Characteristic }
+  | { type: "ability"; id: string }
+  | null;
+
+function charRankColor(rank: number): string {
   if (rank === -3) return "text-red-500";
   if (rank === -2) return "text-orange-400";
   if (rank === -1) return "text-yellow-400";
@@ -38,19 +42,81 @@ function rankTextColor(rank: number): string {
   return "text-green-600";
 }
 
+function abilityRankColor(rank: number): string {
+  if (rank === 0) return "text-gray-400";
+  if (rank === 1) return "text-green-400";
+  if (rank === 2) return "text-green-500";
+  return "text-green-600";
+}
+
+function AbilityChart({ ability }: { ability: AbilityDefinition }) {
+  if (!ability.chart) return null;
+  const { columns, rows } = ability.chart;
+  return (
+    <div className="mt-2 overflow-x-auto">
+      <table className="w-full text-xs text-gray-300">
+        <thead>
+          <tr>
+            {columns.map((col) => (
+              <th key={col} className="text-left py-1 px-2 text-gray-500 font-medium border-b border-content3">
+                {col}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i} className="border-b border-content3/50">
+              {columns.map((col) => (
+                <td key={col} className="py-1 px-2">
+                  {row[col]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function CharacterCreation() {
   const {
     ranks,
     remainingPoints,
     changeRank,
-    resetAll,
     canIncrease,
     nextCost,
     prevRefund,
-  } = useCharacterStats();
+    abilityRanks,
+    changeAbilityRank,
+    canIncreaseAbility,
+    canDecreaseAbility,
+    abilityNextCost,
+    abilityPrevRefund,
+    resetAll,
+  } = useCharacterCreation();
   const { t } = useTranslation();
   const [isResetOpen, setIsResetOpen] = useState(false);
-  const [expandedChar, setExpandedChar] = useState<Characteristic | null>(null);
+  const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
+
+  const grouped = abilitiesBySet();
+
+  function toggleChar(char: Characteristic) {
+    setExpandedItem((prev) =>
+      prev?.type === "characteristic" && prev.id === char
+        ? null
+        : { type: "characteristic", id: char },
+    );
+  }
+
+  function toggleAbility(name: string) {
+    setExpandedItem((prev) =>
+      prev?.type === "ability" && prev.id === name
+        ? null
+        : { type: "ability", id: name },
+    );
+  }
 
   return (
     <main className="min-h-screen p-4 sm:p-6 max-w-2xl mx-auto">
@@ -106,127 +172,149 @@ export default function CharacterCreation() {
 
       <Divider className="mb-6" />
 
-      {/* Characteristic Cards */}
+      {/* Characteristics Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.characteristicsSection")}
+      </h2>
+
       <div className="flex flex-col gap-3">
         {CHARACTERISTICS.map((char) => {
           const rank = ranks[char];
           const increase = nextCost(char);
           const refund = prevRefund(char);
-
-          const isExpanded = expandedChar === char;
+          const isExpanded =
+            expandedItem?.type === "characteristic" && expandedItem.id === char;
 
           return (
-            <Card
+            <StatCard
               key={char}
-              shadow="none"
-              classNames={{
-                base: "border border-content3 bg-content1",
-              }}
+              name={t(`characteristics.${char}`)}
+              rank={rank}
+              isExpanded={isExpanded}
+              onToggle={() => toggleChar(char)}
+              onIncrease={() => changeRank(char, 1)}
+              onDecrease={() => changeRank(char, -1)}
+              canIncrease={canIncrease(char)}
+              canDecrease={rank > MIN_RANK}
+              increaseTooltip={
+                increase !== null
+                  ? t("creation.costTooltip", { count: increase })
+                  : t("creation.maxRank")
+              }
+              decreaseTooltip={
+                refund !== null
+                  ? t("creation.refundTooltip", { count: refund })
+                  : t("creation.minRank")
+              }
+              rankColor={charRankColor(rank)}
+              ariaLabel={char}
             >
-              <CardBody className="py-3 px-4">
-                {/* Top row: name + compact controls */}
-                <div
-                  className="flex items-center justify-between cursor-pointer select-none"
-                  onClick={() => setExpandedChar(isExpanded ? null : char)}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 transition-transform duration-200"
-                      style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
-                    >
-                      &#9656;
-                    </span>
-                    <span className="text-sm font-semibold text-white uppercase tracking-wide">
-                      {t(`characteristics.${char}`)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                    <Tooltip
-                      content={
-                        refund !== null
-                          ? t("creation.refundTooltip", { count: refund })
-                          : t("creation.minRank")
-                      }
-                      placement="bottom"
-                      size="sm"
-                      delay={400}
-                    >
-                      <span className="inline-flex">
-                        <Button
-                          size="sm"
-                          variant="bordered"
-                          isIconOnly
-                          className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
-                          onPress={() => changeRank(char, -1)}
-                          isDisabled={rank <= MIN_RANK}
-                          aria-label={`Decrease ${char}`}
-                        >
-                          &minus;
-                        </Button>
-                      </span>
-                    </Tooltip>
-
-                    <span
-                      className={`w-10 text-center text-xl font-bold tabular-nums ${rankTextColor(rank)}`}
-                    >
-                      {rank > 0 ? `+${rank}` : rank}
-                    </span>
-
-                    <Tooltip
-                      content={
-                        increase !== null
-                          ? t("creation.costTooltip", { count: increase })
-                          : t("creation.maxRank")
-                      }
-                      placement="bottom"
-                      size="sm"
-                      delay={400}
-                    >
-                      <span className="inline-flex">
-                        <Button
-                          size="sm"
-                          variant="bordered"
-                          isIconOnly
-                          className="border-content3 text-gray-400 hover:text-white hover:border-primary min-w-8 w-8 h-8"
-                          onPress={() => changeRank(char, 1)}
-                          isDisabled={!canIncrease(char)}
-                          aria-label={`Increase ${char}`}
-                        >
-                          +
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </div>
-                </div>
-
-                {/* Expandable detail section */}
-                <AnimatePresence initial={false}>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-3 mt-3 border-t border-content3">
-                        <p className="text-sm italic text-gray-400 mb-2">
-                          {t(`characteristics.${char}.description`)}
-                        </p>
-                        <p className="text-sm text-gray-300">
-                          <span className="font-bold text-white">{PATRON_DEITIES[char]}</span>
-                          {" — "}
-                          {t(`characteristics.${char}.deity`)}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </CardBody>
-            </Card>
+              <p className="text-sm italic text-gray-400 mb-2">
+                {t(`characteristics.${char}.description`)}
+              </p>
+              <p className="text-sm text-gray-300">
+                <span className="font-bold text-white">
+                  {PATRON_DEITIES[char]}
+                </span>
+                {" — "}
+                {t(`characteristics.${char}.deity`)}
+              </p>
+            </StatCard>
           );
         })}
       </div>
+
+      <Divider className="my-6" />
+
+      {/* Abilities Section */}
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">
+        {t("creation.abilitiesSection")}
+      </h2>
+
+      {ABILITY_SETS.map((set) => {
+        const abilities = grouped[set];
+        if (abilities.length === 0) return null;
+
+        return (
+          <div key={set} className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              {t(`abilities.sets.${set}`)}
+            </h3>
+
+            <div className="flex flex-col gap-3">
+              {abilities.map((ability) => {
+                const rank = abilityRanks[ability.name];
+                const cost = abilityNextCost(ability.name);
+                const refund = abilityPrevRefund(ability.name);
+                const isExpanded =
+                  expandedItem?.type === "ability" &&
+                  expandedItem.id === ability.name;
+
+                return (
+                  <StatCard
+                    key={ability.name}
+                    name={t(`abilities.${ability.name}`)}
+                    rank={rank}
+                    isExpanded={isExpanded}
+                    onToggle={() => toggleAbility(ability.name)}
+                    onIncrease={() => changeAbilityRank(ability.name, 1)}
+                    onDecrease={() => changeAbilityRank(ability.name, -1)}
+                    canIncrease={canIncreaseAbility(ability.name)}
+                    canDecrease={canDecreaseAbility(ability.name)}
+                    increaseTooltip={
+                      rank < 3 && cost !== null
+                        ? t("creation.costTooltip", { count: cost })
+                        : t("creation.maxRank")
+                    }
+                    decreaseTooltip={
+                      rank > ABILITY_MIN_RANK && refund !== null
+                        ? t("creation.refundTooltip", { count: refund })
+                        : t("creation.minRank")
+                    }
+                    rankColor={abilityRankColor(rank)}
+                    ariaLabel={ability.name}
+                  >
+                    <p className="text-sm italic text-gray-400 mb-2">
+                      {t(`abilities.${ability.name}.description`)}
+                    </p>
+
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 mb-1">
+                      <span>
+                        <span className="text-gray-500">{t("abilities.governing")}: </span>
+                        {ability.governingCharacteristics
+                          .map((c) => t(`characteristics.${c}`))
+                          .join(", ")}
+                      </span>
+                      <span>
+                        <span className="text-gray-500">{t("abilities.category")}: </span>
+                        {t(`abilities.categories.${ability.category}`)}
+                        {" ("}
+                        {cost} {t("abilities.ptsPerRank")}
+                        {")"}
+                      </span>
+                      {ability.load !== undefined && (
+                        <span>
+                          <span className="text-gray-500">{t("abilities.load")}: </span>
+                          {ability.load}
+                        </span>
+                      )}
+                    </div>
+
+                    {ability.equipment && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        <span className="font-medium">{t("abilities.equipment")}: </span>
+                        {t(`abilities.${ability.name}.equipment`)}
+                      </p>
+                    )}
+
+                    <AbilityChart ability={ability} />
+                  </StatCard>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       {/* Reset Confirmation Modal */}
       <Modal isOpen={isResetOpen} onOpenChange={setIsResetOpen} placement="center">

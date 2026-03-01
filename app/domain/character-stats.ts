@@ -51,29 +51,37 @@ export function pointsSpent(ranks: Ranks): number {
   );
 }
 
-export function remainingPoints(ranks: Ranks): number {
-  return BASE_POINTS - pointsSpent(ranks);
+export function remainingPoints(
+  ranks: Ranks,
+  budget: number = BASE_POINTS,
+): number {
+  return budget - pointsSpent(ranks);
 }
 
 export function tryChangeRank(
   ranks: Ranks,
   char: Characteristic,
   delta: number,
+  budget: number = BASE_POINTS,
 ): Ranks | null {
   const newRank = ranks[char] + delta;
   if (newRank < MIN_RANK || newRank > MAX_RANK) return null;
 
   const costDelta = COST_TABLE[char][newRank] - COST_TABLE[char][ranks[char]];
-  if (costDelta > remainingPoints(ranks)) return null;
+  if (costDelta > remainingPoints(ranks, budget)) return null;
 
   return { ...ranks, [char]: newRank };
 }
 
-export function canIncrease(ranks: Ranks, char: Characteristic): boolean {
+export function canIncrease(
+  ranks: Ranks,
+  char: Characteristic,
+  budget: number = BASE_POINTS,
+): boolean {
   if (ranks[char] >= MAX_RANK) return false;
   const costDelta =
     COST_TABLE[char][ranks[char] + 1] - COST_TABLE[char][ranks[char]];
-  return costDelta <= remainingPoints(ranks);
+  return costDelta <= remainingPoints(ranks, budget);
 }
 
 export function nextCost(ranks: Ranks, char: Characteristic): number | null {

@@ -79,6 +79,36 @@ describe("pointsSpent / remainingPoints", () => {
     expect(pointsSpent(ranks)).toBe(4);
     expect(remainingPoints(ranks)).toBe(56);
   });
+
+  it("uses custom budget when provided", () => {
+    expect(remainingPoints(INITIAL_RANKS, 40)).toBe(40);
+    const ranks: Ranks = { ...INITIAL_RANKS, Strength: 1 }; // costs 4
+    expect(remainingPoints(ranks, 40)).toBe(36);
+  });
+});
+
+describe("tryChangeRank with custom budget", () => {
+  it("returns null when cost exceeds custom budget", () => {
+    // Strength 0→1 costs 4, budget is 3
+    expect(tryChangeRank(INITIAL_RANKS, "Strength", 1, 3)).toBeNull();
+  });
+
+  it("allows change when within custom budget", () => {
+    // Strength 0→1 costs 4, budget is 4
+    const result = tryChangeRank(INITIAL_RANKS, "Strength", 1, 4);
+    expect(result).not.toBeNull();
+    expect(result!.Strength).toBe(1);
+  });
+});
+
+describe("canIncrease with custom budget", () => {
+  it("returns false when cost exceeds custom budget", () => {
+    expect(canIncrease(INITIAL_RANKS, "Strength", 3)).toBe(false);
+  });
+
+  it("returns true when within custom budget", () => {
+    expect(canIncrease(INITIAL_RANKS, "Strength", 4)).toBe(true);
+  });
 });
 
 describe("canIncrease", () => {

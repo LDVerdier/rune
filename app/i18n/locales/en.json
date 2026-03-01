@@ -21,9 +21,11 @@
     "minRank": "Minimum rank",
     "costTooltip": "Cost: {{count}} pts",
     "maxRank": "Maximum rank",
+    "characteristicsSection": "Characteristics",
+    "abilitiesSection": "Abilities",
     "resetModal": {
-      "title": "Reset All Characteristics?",
-      "body": "This will reset all characteristics to their default values.\nAny changes you've made will be lost.",
+      "title": "Reset Everything?",
+      "body": "This will reset all characteristics and abilities to their default values.\nAny changes you've made will be lost.",
       "cancel": "Cancel",
       "confirm": "Reset"
     }
@@ -53,5 +55,161 @@
     "Perception.deity": "Watchful Heimdal, who guards the Bifrost Bridge linking Asgard and Midgard, is the god of Perception.",
     "Presence.deity": "Presence is the trait of chieftains and leaders, so it is fitting that Odin, chieftain of the gods, grants it to the heroes he favors.",
     "Communication.deity": "Freyr, the god of growing crops and bulging purses, blesses his favored heroes with the powers of Communication."
+  },
+  "abilities": {
+    "sets": {
+      "Fighting": "Fighting",
+      "Exploratory": "Exploratory",
+      "Interaction": "Interaction",
+      "Miscellaneous": "Miscellaneous"
+    },
+    "categories": {
+      "Primary": "Primary",
+      "Secondary": "Secondary"
+    },
+    "governing": "Governing",
+    "category": "Category",
+    "ptsPerRank": "pts/rank",
+    "load": "Load",
+    "equipment": "Equipment",
+
+    "Bows": "Bows",
+    "Bows.description": "You can hit targets with long-range missile weapons, like a crossbow or bow and arrow. Make sure you take Brawling, or you'll face a serious disadvantage when someone tries to hit you with a close-combat weapon.",
+
+    "Brawling": "Brawling",
+    "Brawling.description": "You are adept at unarmed combat. With fist and furious kick, you smash your foes. This is the best combat Ability to use during drunken melees between community members and other friends. This Ability is a must for missile users; you use it as the basis of your defense from close-combat attacks. Without it, you face a nasty penalty to your rolls to avoid blows.",
+
+    "ChainWeapon": "Chain Weapon",
+    "ChainWeapon.description": "There is no arguing with the mystique of the chain weapon. Whether you fight with morning stars, flails, or another flexible weapons, the distinctive clank of the chain links that grant its pummeling head additional force is in itself nearly as satisfying as the sound the weapon makes when it impacts with a goblin's skull.",
+
+    "GreatWeapon": "Great Weapon",
+    "GreatWeapon.description": "If you need two hands to wield it, and it rains down on its foe in a great slashing arc, it's a great weapon, whether it be a greatsword, pole-axe, or dwarven battle axe. Although cumbersome, any hit with such an enormous weapon can be devastating to a foe.",
+
+    "LongshaftWeapon": "Longshaft Weapon",
+    "LongshaftWeapon.description": "You can wield spears, pikes, and other long-hafted weapons intended to be held two-handed and jabbed into a foe.",
+
+    "SingleWeapon": "Single Weapon",
+    "SingleWeapon.description": "You fight well with comparatively small weapons meant to be wielded with one hand, including short swords, clubs, daggers, maces, and battle hatchets. And what do you do with your other hand? Use a great honking shield, of course. Skill with single weapons also assumes that you've learned to interpose a heavy shield between the foe's incoming blows and your own precious hide.",
+
+    "ThrownWeapon": "Thrown Weapon",
+    "ThrownWeapon.description": "You can ably hurl missiles at your enemies, whether they be rocks, sling stones, or special daggers or axes balanced for throwing. This Ability makes a nice supplement to your wreaking of mayhem, but is not to be relied on as a primary method of violent self-expression.",
+
+    "TwoWeapons": "Two Weapons",
+    "TwoWeapons.description": "You can fight with a single weapon in each hand, forgoing the protection of a shield for additional opportunities to strike your foe. The two-weapon combinations are the fastest in the game, and thus the most likely to give you multiple attacks during each round of combat.",
+
+    "Awareness": "Awareness",
+    "Awareness.description": "You are highly attuned to the world around you. This is the Ability you use to spot the telltale clues alerting you to danger. In the Underground or wilderness, any unusual sight or out-of-place sound can alert you to the presence of hidden enemies. You can spot hidden doors, sniff out the first hints of poisonous vapors, notice trip-wires and other indications of traps.",
+
+    "Dodge": "Dodge",
+    "Dodge.description": "This Ability allows you to evade blows, rolling rocks, bolts of arcane energy, and other swiftly incoming threats to your continued existence. Chief among these threats are missiles like arrows and crossbow bolts. Although you're not a total sitting duck for missile users if you forgo your Dodge skill, you may find yourself gazing enviously at your Dodge-adept comrades at the end of a fight.",
+
+    "Healer": "Healer",
+    "Healer.description": "Wounds, from the merely vexing to the spectacularly gaping, are a part of life for the Viking warrior — and, unless a man trained in their repair is at hand, a part of death. With this skill, you can identify illnesses, stop wounds from bleeding, find healing herbs, brew primitive medicines, and otherwise save the lives of your companions.",
+    "Healer.equipment": "Bandages, splints, grain alcohol, poultices, catgut, needle, and a variety of medicines",
+
+    "Sprint": "Sprint",
+    "Sprint.description": "You can run very quickly for short distances. This Ability is best used to outdistance pursuing foes, or to leap upon enemies foolish enough to try to escape your wrath. Being able to run quickly is also an offensive advantage; without this Ability, you can't properly charge into your opponents' midst, hacking and slaying as you go.",
+
+    "Stealth": "Stealth",
+    "Stealth.description": "By carefully placing one foot in front of the other, and moving with painstaking slowness, you can advance into enemy territory without attracting the attention of those who wish to slay you. You can step on a twig without breaking it, slosh through water without splashing, and swat at a marauding biting fly so that even it doesn't know you've killed it.",
+
+    "Traps": "Traps",
+    "Traps.description": "The byways of the Underground are laden with booby traps meant to maim or even kill unwary intruders. This skill allows you to safely proceed through areas your enemies wish to bar you from. Once you or an ally have spotted a trap, your supple fingers and knowledge of trap construction pair up to allow you to dismantle the trap without triggering it. You can also build traps.",
+    "Traps.equipment": "Rudimentary pliers, scissors, hammer, and pick",
+
+    "AnimalHandling": "Animal Handling",
+    "AnimalHandling.description": "You can tame wild horses and train commonly domesticated animals like dogs to perform their traditional tasks. When confronted with wild animals, you know how to behave to avoid arousing them to attack you.",
+
+    "Balance": "Balance",
+    "Balance.description": "You are blessed with a natural sense of balance. You can walk across narrow beams suspended over raging rivers, fight confidently on the edge of a cliff face, and avoid slipping in muddy or snowy terrain.",
+
+    "Bravery": "Bravery",
+    "Bravery.description": "You have trained yourself over many years to ignore the natural feeling of terror that grips a man in the face of danger. You have worked to suppress your survival instinct, and can wade unmoved into situations that would cause an ordinary man's conscious mind to seize up completely. However, your extreme Bravery can still be tested by supernatural manifestations or the presence of malign deities.",
+
+    "Climb": "Climb",
+    "Climb.description": "You can climb cliffs, walls or rocky surfaces without falling. You can find and tightly grip available handholds in all but the sheerest surfaces.",
+    "Climb.equipment": "50 feet of rope, pitons, grappling hook",
+
+    "Jump": "Jump",
+    "Jump.description": "You can leap high in the air, or a great distance forwards. This allows you to move around in the Underground, crossing its many raging rivers or leaping from one level to another. In the dangerous world of Rune, a missed jump can result in injury or even death.",
+
+    "Lore": "Lore",
+    "Lore.description": "You listened carefully to the stories told by the older warriors of your village when they returned from their raids of foreign lands and forays into the dank and dangerous underworld. As a result, you know all sorts of odd and interesting facts about the hazards that await explorers.",
+
+    "Map": "Map",
+    "Map.description": "You can make reasonably accurate sketch-maps of areas you explore. This Ability is especially useful in the Underground, a maze of underground passageways in which it is easy to get lost. You can use the maps you create to find your way home when you would otherwise lose your way.",
+    "Map.equipment": "An airtight, greased hide tube containing a piece of parchment, bottle of ink, and quill pen",
+
+    "PickLock": "Pick Lock",
+    "PickLock.description": "If equipped with a few strong iron pins or wires, you can, with time, open even sophisticated locks of mundane manufacture, whether they be on doors or guarding tantalizing chests which are surely full of valuable booty.",
+    "PickLock.equipment": "A selection of small, metal picks and saws",
+
+    "Pursuit": "Pursuit",
+    "Pursuit.description": "Escaping foes won't outdistance you for long. You can follow the trail of an enemy through snowy wilderness, rocky foothills, or even the moister chambers of the Underground. You can guess his planned route and figure out the best way to lay an ambush for him.",
+
+    "Repair": "Repair",
+    "Repair.description": "When important gear, including your armor and weapons, is damaged, you are able to repair it in the field. You know how to sharpen dulled blades, straighten bent swords, and reattach stray axe heads. Your repairs might not be pretty, but they extend the life of damaged equipment until you can replace it.",
+    "Repair.equipment": "A hammer, pliers, glue, thread, needles, and scrap leather",
+
+    "Ride": "Ride",
+    "Ride.description": "You are a skilled rider of horses, and can avoid being thrown when your mount leaps a gorge or rears up in terror when it sees a snake. You know how to preserve your mount's health, sensing when he is tired and needs a rest. You can fight from horseback.",
+
+    "Seamanship": "Seamanship",
+    "Seamanship.description": "Norse longships are terrors of the seas, serving as launching platforms from which hordes of screaming Viking warriors rush ashore to lay waste to a town, village, or monastery. You know your way around a longship, having performed duties ranging from repair to piloting.",
+
+    "Ski": "Ski",
+    "Ski.description": "The best way to travel down a wintry slope is on skis. You can execute daring maneuvers on skis, especially when giving chase — or being chased yourself.",
+    "Ski.equipment": "Skis and leather thongs to tie skis to boots",
+
+    "Sleep": "Sleep",
+    "Sleep.description": "You guffaw now that you see Sleep listed as a skill, but when you end up in a bone-chilling dungeon, you'll realize that the Ability to fall asleep quickly and remain in deep slumber is one any explorer covets. You can grab revivifying naps even in the direst of surroundings, and can drift off to dreamland even when you haven't been awake for long.",
+
+    "Survival": "Survival",
+    "Survival.description": "You are well versed in a variety of practical techniques to keep yourself and your companions healthy, dry, and relatively comfortable outdoors or underground. You can keep torches dry, find safe places to camp, and tell beneficial plants and fungi from poisonous ones.",
+    "Survival.equipment": "Flint, three days' worth of dry sticks suitable as torches, magnetic compass, and a small knife for butchery",
+
+    "Swim": "Swim",
+    "Swim.description": "Whether tossed by the raging storms of the Nordic oceans or dumped into the icy pools that dot the cavernous passageways of the Underground, the Ability to swim keeps you from drowning.",
+
+    "Bargain": "Bargain",
+    "Bargain.description": "Use this Ability when negotiating any reciprocal arrangement, whether you be dickering with a smith over the cost of a battle axe, convincing a dwarven chieftain to lend his forces to a sally against the dark elves, or trading political favors with the chieftain of a neighboring village.",
+
+    "Carouse": "Carouse",
+    "Carouse.description": "Vikings are impressed by a prodigious capacity for food and alcohol, which this Ability allows you to demonstrate. Use it to ingratiate yourself with Vikings from other villages or lands. It is also useful to win contests of drinking or eating, on which heavy wagers might be placed.",
+
+    "Deception": "Deception",
+    "Deception.description": "Like the trickster Loki, warriors with this skill have made careful study of the art of lying. They know how to present themselves as kindly and sincere individuals who have only the best interests of others at heart. They speak with conviction, looking into the eyes of those they address, as they tell outrageous lies.",
+
+    "Demeanor": "Demeanor",
+    "Demeanor.description": "You know how to present yourself to others in the manner most likely to create a favorable impression. In most cases, this is accomplished by adopting an attitude of confidence in yourself and respect towards those you address. You speak clearly and boldly, with a sense of passion. You defer to your betters without mealy-mouthed flattery.",
+
+    "Disguise": "Disguise",
+    "Disguise.description": "You can disguise your appearance so that you appear to be someone other than a Viking warrior. Disguise gets harder as the difference between your true appearance and the one you wish to adopt increases. Also, it is extremely difficult to impersonate a specific person if the people you want to fool are even slightly familiar with him.",
+
+    "Gamble": "Gamble",
+    "Gamble.description": "You are good at winning non-physical games, including die-rolling, stone-dividing, and board games. Typically you contest against other characters' Gamble Abilities.",
+    "Gamble.equipment": "A set of bone dice and a game board with pieces",
+
+    "Insight": "Insight",
+    "Insight.description": "After spending a few moments in conversation with an individual, you gain a sense for his character and motivations. You can predict how he will react to hypothetical situations, and what sorts of things he wishes to hear from you. A successful use of Insight on a particular person can often increase your chances of success when you then go on to use other interaction Abilities on him.",
+
+    "Leadership": "Leadership",
+    "Leadership.description": "You can convince others to follow your instructions. Your chances of success increase if the people you use your Leadership Abilities on already know and trust you, or if you hold some legitimate authority over them.",
+
+    "Music": "Music",
+    "Music.description": "You can play the lyre, a stringed instrument which often accompanies the rude and boisterous songs the warriors sing as they carouse. Your spirited (or, on occasion, soulful) playing can win the hearts of hard-hearted battlers and dewy-eyed maidens alike.",
+    "Music.equipment": "A lyre",
+
+    "Runes": "Runes",
+    "Runes.description": "Unlike most of your people, you can read. Your alphabet is composed of runes, no doubt handed down to you by wise Odin. If your rating at Runes is 3 or more, you can also read Latin, a language shared by many of the peoples you periodically raid.",
+
+    "Sing": "Sing",
+    "Sing.description": "A foreign visitor to Scandinavia once described the singing of the Norse as hoarse and barbaric yowling fit for no civilized ears. Your singing skill permits you to uphold that proud tradition. Spirited, passionate singing may create a favorable impression among your own people, or frighten away spirits and goblins.",
+
+    "Skald": "Skald",
+    "Skald.description": "The Viking people are heirs to a great tradition of poetry. Poetry, passed down orally from one generation to the next, is the means by which your people remember their history, recount the deeds of the gods, and preserve their ancient laws. You not only recite the poetry of the past, but create your own.",
+
+    "DivineAwareness": "Divine Awareness",
+    "DivineAwareness.description": "A few people are especially attuned to the workings of the gods. You are one of them. When the gods are watching you, or their handiwork is nearby, you can tell. Perhaps the hair on the back of your neck stands up. Maybe you feel a chill, or smell burning metal in the air. Divine Awareness also reflects your general luck, or favor of the gods."
   }
 }

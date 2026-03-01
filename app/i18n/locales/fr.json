@@ -21,9 +21,11 @@
     "minRank": "Rang minimum",
     "costTooltip": "Coût : {{count}} pts",
     "maxRank": "Rang maximum",
+    "characteristicsSection": "Caractéristiques",
+    "abilitiesSection": "Compétences",
     "resetModal": {
-      "title": "Réinitialiser toutes les caractéristiques ?",
-      "body": "Cela réinitialisera toutes les caractéristiques à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
+      "title": "Tout réinitialiser ?",
+      "body": "Cela réinitialisera toutes les caractéristiques et compétences à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
       "cancel": "Annuler",
       "confirm": "Réinitialiser"
     }
@@ -53,5 +55,161 @@
     "Perception.deity": "Le vigilant Heimdal, qui garde le pont Bifrost reliant Asgard et Midgard, est le dieu de la Perception.",
     "Presence.deity": "La Présence est le trait des chefs et des meneurs, il est donc naturel qu'Odin, chef des dieux, l'accorde aux héros qu'il favorise.",
     "Communication.deity": "Freyr, le dieu des récoltes abondantes et des bourses bien remplies, bénit ses héros favoris du don de Communication."
+  },
+  "abilities": {
+    "sets": {
+      "Fighting": "Combat",
+      "Exploratory": "Exploration",
+      "Interaction": "Interaction",
+      "Miscellaneous": "Divers"
+    },
+    "categories": {
+      "Primary": "Primaire",
+      "Secondary": "Secondaire"
+    },
+    "governing": "Gouvernée par",
+    "category": "Catégorie",
+    "ptsPerRank": "pts/rang",
+    "load": "Charge",
+    "equipment": "Équipement",
+
+    "Bows": "Arcs",
+    "Bows.description": "Vous pouvez atteindre des cibles avec des armes de jet à longue portée, comme une arbalète ou un arc et des flèches. Assurez-vous de prendre Bagarre, sinon vous subirez un sérieux désavantage quand quelqu'un tentera de vous frapper avec une arme de mêlée.",
+
+    "Brawling": "Bagarre",
+    "Brawling.description": "Vous êtes expert en combat à mains nues. À coups de poing et de pied furieux, vous écrasez vos ennemis. C'est la meilleure compétence de combat lors des mêlées entre membres de la communauté et autres amis. Cette compétence est indispensable pour les utilisateurs d'armes de jet ; vous l'utilisez comme base de votre défense contre les attaques de mêlée. Sans elle, vous subissez un malus aux jets pour éviter les coups.",
+
+    "ChainWeapon": "Arme à chaîne",
+    "ChainWeapon.description": "On ne discute pas la mystique de l'arme à chaîne. Que vous combattiez avec des étoiles du matin, des fléaux ou d'autres armes flexibles, le cliquetis distinctif des maillons de chaîne qui confèrent à sa tête de frappe une force supplémentaire est en soi presque aussi satisfaisant que le bruit que fait l'arme quand elle percute le crâne d'un gobelin.",
+
+    "GreatWeapon": "Arme lourde",
+    "GreatWeapon.description": "Si vous avez besoin de deux mains pour la manier, et qu'elle s'abat sur l'ennemi en un grand arc tranchant, c'est une arme lourde, qu'il s'agisse d'une épée à deux mains, d'une hache d'armes ou d'une hache de bataille naine. Bien qu'encombrante, tout coup porté avec une telle arme peut être dévastateur pour un ennemi.",
+
+    "LongshaftWeapon": "Arme d'hast",
+    "LongshaftWeapon.description": "Vous savez manier les lances, les piques et autres armes à long manche destinées à être tenues à deux mains et enfoncées dans l'ennemi.",
+
+    "SingleWeapon": "Arme simple",
+    "SingleWeapon.description": "Vous combattez bien avec des armes relativement petites destinées à être maniées d'une seule main, incluant les épées courtes, les gourdins, les dagues, les masses et les hachettes de combat. Et que faites-vous de l'autre main ? Vous utilisez un bon gros bouclier, bien sûr. La maîtrise des armes simples implique aussi que vous avez appris à interposer un bouclier lourd entre les coups entrants de l'ennemi et votre précieuse peau.",
+
+    "ThrownWeapon": "Arme de jet",
+    "ThrownWeapon.description": "Vous pouvez habilement lancer des projectiles sur vos ennemis, qu'il s'agisse de pierres, de balles de fronde ou de dagues ou haches spéciales équilibrées pour le lancer. Cette compétence est un bon complément à vos ravages, mais ne doit pas être considérée comme un moyen principal d'expression violente.",
+
+    "TwoWeapons": "Deux armes",
+    "TwoWeapons.description": "Vous pouvez combattre avec une arme dans chaque main, renonçant à la protection d'un bouclier pour des opportunités supplémentaires de frapper votre ennemi. Les combinaisons à deux armes sont les plus rapides du jeu, et donc les plus susceptibles de vous donner plusieurs attaques à chaque tour de combat.",
+
+    "Awareness": "Vigilance",
+    "Awareness.description": "Vous êtes particulièrement à l'écoute du monde qui vous entoure. C'est la compétence que vous utilisez pour repérer les indices révélateurs de danger. Dans le Souterrain ou en pleine nature, tout spectacle inhabituel ou son incongru peut vous alerter de la présence d'ennemis cachés. Vous pouvez repérer des portes secrètes, détecter les premiers signes de vapeurs toxiques, remarquer des fils-pièges et d'autres indices de pièges.",
+
+    "Dodge": "Esquive",
+    "Dodge.description": "Cette compétence vous permet d'esquiver les coups, les rochers qui roulent, les éclairs d'énergie arcanique et autres menaces qui arrivent rapidement et mettent en péril votre existence. Au premier rang de ces menaces se trouvent les projectiles comme les flèches et les carreaux d'arbalète. Même si vous n'êtes pas totalement sans défense face aux tireurs sans cette compétence, vous risquez de regarder avec envie vos compagnons esquiveurs à la fin d'un combat.",
+
+    "Healer": "Guérisseur",
+    "Healer.description": "Les blessures, des plus bénignes aux plus spectaculairement béantes, font partie de la vie du guerrier viking — et, à moins qu'un homme formé à leur réparation ne soit présent, de la mort aussi. Avec cette compétence, vous pouvez identifier les maladies, arrêter les hémorragies, trouver des herbes médicinales, préparer des remèdes primitifs et sauver la vie de vos compagnons.",
+    "Healer.equipment": "Bandages, attelles, alcool de grain, cataplasmes, catgut, aiguille et divers remèdes",
+
+    "Sprint": "Sprint",
+    "Sprint.description": "Vous pouvez courir très vite sur de courtes distances. Cette compétence est idéale pour distancer vos poursuivants, ou pour bondir sur les ennemis assez imprudents pour tenter d'échapper à votre courroux. Pouvoir courir vite est aussi un avantage offensif ; sans cette compétence, vous ne pouvez pas charger correctement au milieu de vos adversaires en taillant et pourfendant.",
+
+    "Stealth": "Discrétion",
+    "Stealth.description": "En plaçant soigneusement un pied devant l'autre et en vous déplaçant avec une lenteur méticuleuse, vous pouvez avancer en territoire ennemi sans attirer l'attention de ceux qui souhaitent vous tuer. Vous pouvez marcher sur une brindille sans la casser, patauger dans l'eau sans éclabousser, et écraser une mouche piqueuse maraudeuse sans même qu'elle sache que vous l'avez tuée.",
+
+    "Traps": "Pièges",
+    "Traps.description": "Les chemins du Souterrain sont truffés de pièges destinés à mutiler ou même tuer les intrus imprudents. Cette compétence vous permet de traverser en toute sécurité les zones que vos ennemis souhaitent vous interdire. Une fois que vous ou un allié avez repéré un piège, vos doigts agiles et votre connaissance de la construction des pièges vous permettent de le désamorcer sans le déclencher. Vous pouvez aussi construire des pièges.",
+    "Traps.equipment": "Pinces rudimentaires, ciseaux, marteau et pic",
+
+    "AnimalHandling": "Dressage",
+    "AnimalHandling.description": "Vous pouvez apprivoiser des chevaux sauvages et dresser des animaux domestiques courants comme les chiens à accomplir leurs tâches traditionnelles. Face à des animaux sauvages, vous savez comment vous comporter pour éviter de les pousser à vous attaquer.",
+
+    "Balance": "Équilibre",
+    "Balance.description": "Vous êtes doté d'un sens naturel de l'équilibre. Vous pouvez marcher sur des poutres étroites suspendues au-dessus de rivières déchaînées, combattre avec assurance au bord d'une falaise et éviter de glisser sur un terrain boueux ou enneigé.",
+
+    "Bravery": "Bravoure",
+    "Bravery.description": "Vous vous êtes entraîné pendant de nombreuses années à ignorer le sentiment naturel de terreur qui saisit un homme face au danger. Vous avez travaillé à supprimer votre instinct de survie et pouvez avancer impassible dans des situations qui feraient se figer complètement l'esprit d'un homme ordinaire. Cependant, votre extrême bravoure peut encore être mise à l'épreuve par des manifestations surnaturelles ou la présence de divinités malfaisantes.",
+
+    "Climb": "Escalade",
+    "Climb.description": "Vous pouvez escalader des falaises, des murs ou des surfaces rocheuses sans tomber. Vous pouvez trouver et agripper fermement les prises disponibles sur toutes les surfaces, sauf les plus lisses.",
+    "Climb.equipment": "15 mètres de corde, pitons, grappin",
+
+    "Jump": "Saut",
+    "Jump.description": "Vous pouvez sauter haut dans les airs, ou sur une grande distance en avant. Cela vous permet de vous déplacer dans le Souterrain, de traverser ses nombreuses rivières déchaînées ou de bondir d'un niveau à un autre. Dans le monde dangereux de Rune, un saut manqué peut entraîner des blessures voire la mort.",
+
+    "Lore": "Savoir",
+    "Lore.description": "Vous avez écouté attentivement les histoires racontées par les guerriers plus âgés de votre village quand ils revenaient de leurs raids en terres étrangères et de leurs incursions dans le souterrain sombre et dangereux. En conséquence, vous connaissez toutes sortes de faits étranges et intéressants sur les dangers qui attendent les explorateurs.",
+
+    "Map": "Cartographie",
+    "Map.description": "Vous pouvez dessiner des cartes raisonnablement précises des zones que vous explorez. Cette compétence est particulièrement utile dans le Souterrain, un labyrinthe de passages souterrains dans lequel il est facile de se perdre. Vous pouvez utiliser les cartes que vous créez pour retrouver votre chemin quand vous vous seriez autrement égaré.",
+    "Map.equipment": "Un tube en cuir graissé et étanche contenant un parchemin, une bouteille d'encre et une plume",
+
+    "PickLock": "Crochetage",
+    "PickLock.description": "Équipé de quelques solides épingles ou fils de fer, vous pouvez, avec du temps, ouvrir même les serrures les plus sophistiquées de fabrication ordinaire, qu'elles soient sur des portes ou gardant des coffres alléchants sûrement pleins de précieux butin.",
+    "PickLock.equipment": "Un assortiment de petits crochets et scies en métal",
+
+    "Pursuit": "Pistage",
+    "Pursuit.description": "Les ennemis en fuite ne vous distanceront pas longtemps. Vous pouvez suivre la piste d'un ennemi à travers la nature enneigée, les contreforts rocheux, ou même les chambres les plus humides du Souterrain. Vous pouvez deviner son itinéraire prévu et trouver la meilleure façon de lui tendre une embuscade.",
+
+    "Repair": "Réparation",
+    "Repair.description": "Quand votre équipement important, y compris votre armure et vos armes, est endommagé, vous êtes capable de le réparer sur le terrain. Vous savez comment aiguiser les lames émoussées, redresser les épées tordues et remettre les têtes de hache égarées. Vos réparations ne sont peut-être pas élégantes, mais elles prolongent la vie de l'équipement endommagé jusqu'à ce que vous puissiez le remplacer.",
+    "Repair.equipment": "Un marteau, des pinces, de la colle, du fil, des aiguilles et des chutes de cuir",
+
+    "Ride": "Équitation",
+    "Ride.description": "Vous êtes un cavalier accompli et pouvez éviter d'être désarçonné quand votre monture saute un ravin ou se cabre de terreur en voyant un serpent. Vous savez comment préserver la santé de votre monture, sentant quand elle est fatiguée et a besoin de repos. Vous pouvez combattre à cheval.",
+
+    "Seamanship": "Navigation",
+    "Seamanship.description": "Les drakkars nordiques sont la terreur des mers, servant de plateformes de lancement d'où des hordes de guerriers vikings hurlants se ruent à terre pour dévaster villes, villages ou monastères. Vous connaissez votre chemin autour d'un drakkar, ayant accompli des tâches allant de la réparation au pilotage.",
+
+    "Ski": "Ski",
+    "Ski.description": "Le meilleur moyen de descendre une pente hivernale est à skis. Vous pouvez exécuter des manœuvres audacieuses à skis, surtout lors d'une poursuite — que vous soyez le chasseur ou le chassé.",
+    "Ski.equipment": "Skis et lanières de cuir pour attacher les skis aux bottes",
+
+    "Sleep": "Sommeil",
+    "Sleep.description": "Vous ricanez en voyant Sommeil listé comme compétence, mais quand vous vous retrouverez dans un donjon glacial, les yeux collés par le mucus et la tête tournant d'un épuisement quasi hallucinatoire, vous réaliserez que la capacité de s'endormir rapidement et de rester dans un sommeil profond est convoitée par tout explorateur. Vous pouvez faire des siestes revitalisantes même dans les circonstances les plus terribles.",
+
+    "Survival": "Survie",
+    "Survival.description": "Vous maîtrisez une variété de techniques pratiques pour garder vous-même et vos compagnons en bonne santé, au sec et relativement confortables en extérieur ou sous terre. Vous pouvez garder les torches au sec, trouver des endroits sûrs pour camper et distinguer les plantes et champignons bénéfiques des toxiques.",
+    "Survival.equipment": "Silex, trois jours de bâtons secs pour torches, boussole magnétique et un petit couteau de boucherie",
+
+    "Swim": "Natation",
+    "Swim.description": "Que vous soyez ballotté par les tempêtes déchaînées des océans nordiques ou plongé dans les bassins glacés qui parsèment les passages caverneux du Souterrain, la capacité de nager vous empêche de vous noyer.",
+
+    "Bargain": "Marchandage",
+    "Bargain.description": "Utilisez cette compétence lors de toute négociation réciproque, que vous marchandiez avec un forgeron le prix d'une hache de bataille, que vous convainquiez un chef nain de prêter ses forces pour une attaque contre les elfes noirs, ou que vous échangiez des faveurs politiques avec le chef d'un village voisin.",
+
+    "Carouse": "Festoyer",
+    "Carouse.description": "Les Vikings sont impressionnés par une capacité prodigieuse pour la nourriture et l'alcool, que cette compétence vous permet de démontrer. Utilisez-la pour vous faire bien voir des Vikings d'autres villages ou contrées. Elle est aussi utile pour gagner des concours de boisson ou de nourriture, sur lesquels de gros paris peuvent être placés.",
+
+    "Deception": "Tromperie",
+    "Deception.description": "Comme le rusé Loki, les guerriers dotés de cette compétence ont étudié avec soin l'art du mensonge. Ils savent se présenter comme des individus bienveillants et sincères qui n'ont à cœur que les meilleurs intérêts des autres. Ils parlent avec conviction, regardant dans les yeux ceux à qui ils s'adressent, tandis qu'ils débitent des mensonges éhontés.",
+
+    "Demeanor": "Contenance",
+    "Demeanor.description": "Vous savez vous présenter aux autres de la manière la plus susceptible de créer une impression favorable. Dans la plupart des cas, cela s'accomplit en adoptant une attitude de confiance en vous-même et de respect envers ceux à qui vous vous adressez. Vous parlez clairement et hardiment, avec passion. Vous déférez à vos supérieurs sans flatterie obséquieuse.",
+
+    "Disguise": "Déguisement",
+    "Disguise.description": "Vous pouvez déguiser votre apparence de sorte que vous sembliez être quelqu'un d'autre qu'un guerrier viking. Le déguisement devient plus difficile à mesure que la différence entre votre vraie apparence et celle que vous souhaitez adopter augmente. De plus, il est extrêmement difficile d'usurper l'identité d'une personne spécifique si les gens que vous voulez tromper la connaissent même légèrement.",
+
+    "Gamble": "Jeux de hasard",
+    "Gamble.description": "Vous excellez aux jeux non physiques, incluant les jeux de dés, de partage de pierres et les jeux de plateau. Généralement, vous affrontez les compétences de Jeux de hasard des autres personnages.",
+    "Gamble.equipment": "Un jeu de dés en os et un plateau de jeu avec des pièces",
+
+    "Insight": "Perspicacité",
+    "Insight.description": "Après avoir passé quelques instants en conversation avec un individu, vous percevez son caractère et ses motivations. Vous pouvez prédire comment il réagira à des situations hypothétiques, et quel genre de choses il souhaite entendre de votre part. Une utilisation réussie de Perspicacité sur une personne peut souvent augmenter vos chances de succès quand vous utilisez ensuite d'autres compétences d'interaction sur elle.",
+
+    "Leadership": "Commandement",
+    "Leadership.description": "Vous pouvez convaincre les autres de suivre vos instructions. Vos chances de succès augmentent si les personnes sur lesquelles vous utilisez vos compétences de Commandement vous connaissent déjà et vous font confiance, ou si vous détenez une autorité légitime sur elles.",
+
+    "Music": "Musique",
+    "Music.description": "Vous savez jouer de la lyre, un instrument à cordes qui accompagne souvent les chants grossiers et tapageurs que les guerriers entonnent lors des festins. Votre jeu enlevé (ou, à l'occasion, émouvant) peut conquérir le cœur des combattants endurcis et des jeunes filles aux yeux humides.",
+    "Music.equipment": "Une lyre",
+
+    "Runes": "Runes",
+    "Runes.description": "Contrairement à la plupart de votre peuple, vous savez lire. Votre alphabet est composé de runes, sans doute transmises par le sage Odin. Si votre rang en Runes est de 3 ou plus, vous pouvez aussi lire le latin, une langue partagée par beaucoup des peuples que vous pillez périodiquement.",
+
+    "Sing": "Chant",
+    "Sing.description": "Un visiteur étranger en Scandinavie a un jour décrit le chant des Nordiques comme un hurlement rauque et barbare impropre à toute oreille civilisée. Votre compétence en chant vous permet de perpétuer cette fière tradition. Un chant passionné et enlevé peut créer une impression favorable parmi votre peuple, ou effrayer les esprits et les gobelins.",
+
+    "Skald": "Scalde",
+    "Skald.description": "Le peuple viking est l'héritier d'une grande tradition poétique. La poésie, transmise oralement de génération en génération, est le moyen par lequel votre peuple se souvient de son histoire, raconte les exploits des dieux et préserve ses lois anciennes. Vous ne vous contentez pas de réciter la poésie du passé, vous créez la vôtre.",
+
+    "DivineAwareness": "Sens divin",
+    "DivineAwareness.description": "Quelques personnes sont particulièrement à l'écoute des actions des dieux. Vous en faites partie. Quand les dieux vous observent, ou que leur œuvre est proche, vous le sentez. Peut-être les cheveux de votre nuque se hérissent-ils. Peut-être ressentez-vous un frisson, ou sentez-vous une odeur de métal brûlant dans l'air. Le Sens divin reflète aussi votre chance générale, ou la faveur des dieux."
   }
 }
