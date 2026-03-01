@@ -338,7 +338,7 @@ export default function CharacterCreation() {
         <div className="hidden lg:block lg:flex-none w-64" />
         <main className="w-full max-w-2xl mx-auto lg:mx-0 lg:flex-none p-4 sm:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="relative flex items-center justify-between mb-8">
         <Button
           variant="light"
           size="sm"
@@ -353,7 +353,7 @@ export default function CharacterCreation() {
         >
           &larr; {t("creation.back")}
         </Button>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider whitespace-nowrap">
           {t("creation.heading")}
         </h1>
         <div className="min-w-20 flex justify-end lg:hidden">
