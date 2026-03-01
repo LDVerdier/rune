@@ -57,6 +57,16 @@ jobs:
           name: Run tests
           command: npm test
 
+  build:
+    executor: node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build
+          command: npm run build
+
   deploy:
     executor: node
     steps:
@@ -77,11 +87,15 @@ workflows:
       - test:
           requires:
             - install
+      - build:
+          requires:
+            - install
       - deploy:
           requires:
             - lint
             - typecheck
             - test
+            - build
           filters:
             branches:
               only: main
