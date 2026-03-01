@@ -12,7 +12,7 @@
  * Look-up: combined Strength + Stamina → starting hit points.
  *
  * Sums that fall in a range (e.g. -3 to -1) all map to the same value.
- * Sums ≤ -4 are clamped to 37.
+ * Sums ≤ -4 are clamped to 18.
  */
 export function computeStartingHP(
   strengthRank: number,
@@ -20,13 +20,13 @@ export function computeStartingHP(
 ): number {
   const sum = strengthRank + staminaRank;
 
-  if (sum <= -4) return 37;
-  if (sum <= -1) return 40;
-  if (sum === 0) return 44;
-  if (sum <= 3) return 48;
-  if (sum === 4) return 52;
-  if (sum === 5) return 56;
-  /* sum >= 6 */ return 60;
+  if (sum <= -4) return 18;
+  if (sum <= -1) return 20;
+  if (sum === 0) return 22;
+  if (sum <= 3) return 24;
+  if (sum === 4) return 26;
+  if (sum === 5) return 28;
+  /* sum >= 6 */ return 30;
 }
 
 // ── Extra Hit Points ───────────────────────────────────────────────

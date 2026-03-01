@@ -52,6 +52,7 @@ function abilityRankColor(rank: number): string {
 }
 
 function AbilityChart({ ability }: { ability: AbilityDefinition }) {
+  const { t } = useTranslation();
   if (!ability.chart) return null;
   const { columns, rows } = ability.chart;
   return (
@@ -61,7 +62,7 @@ function AbilityChart({ ability }: { ability: AbilityDefinition }) {
           <tr>
             {columns.map((col) => (
               <th key={col} className="text-left py-1 px-2 text-gray-500 font-medium border-b border-content3">
-                {col}
+                {t(col)}
               </th>
             ))}
           </tr>
@@ -71,7 +72,7 @@ function AbilityChart({ ability }: { ability: AbilityDefinition }) {
             <tr key={i} className="border-b border-content3/50">
               {columns.map((col) => (
                 <td key={col} className="py-1 px-2">
-                  {row[col]}
+                  {t(row[col])}
                 </td>
               ))}
             </tr>

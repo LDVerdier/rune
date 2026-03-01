@@ -236,6 +236,69 @@
     "Skald.description": "The Viking people are heirs to a great tradition of poetry. Poetry, passed down orally from one generation to the next, is the means by which your people remember their history, recount the deeds of the gods, and preserve their ancient laws. You not only recite the poetry of the past, but create your own.",
 
     "DivineAwareness": "Divine Awareness",
-    "DivineAwareness.description": "A few people are especially attuned to the workings of the gods. You are one of them. When the gods are watching you, or their handiwork is nearby, you can tell. Perhaps the hair on the back of your neck stands up. Maybe you feel a chill, or smell burning metal in the air. Divine Awareness also reflects your general luck, or favor of the gods."
+    "DivineAwareness.description": "A few people are especially attuned to the workings of the gods. You are one of them. When the gods are watching you, or their handiwork is nearby, you can tell. Perhaps the hair on the back of your neck stands up. Maybe you feel a chill, or smell burning metal in the air. Divine Awareness also reflects your general luck, or favor of the gods.",
+
+    "charts": {
+      "score": "Score",
+      "halfAction": "Half Action",
+      "fullAction": "Full Action",
+      "jumpUpwards": "Jump Upwards",
+      "jumpForwards": "Jump Forwards",
+      "bargainResult": "Bargain Result",
+      "commonItem": "Common Item",
+      "rareItem": "Rare Item",
+      "pace": {
+        "1": "1 pace",
+        "2": "2 paces",
+        "3": "3 paces",
+        "4": "4 paces",
+        "5": "5 paces",
+        "6": "6 paces",
+        "7": "7 paces",
+        "8": "8 paces",
+        "9": "9 paces",
+        "10": "10 paces",
+        "12": "12 paces",
+        "13": "13 paces",
+        "14": "14 paces",
+        "15": "15 paces",
+        "16": "16 paces",
+        "18": "18 paces",
+        "20": "20 paces",
+        "25": "25 paces",
+        "30": "30 paces"
+      },
+      "formula": {
+        "sprint4Half": "15 + 2.5/pt over 3",
+        "sprint4Full": "30 + 10/pt over 3",
+        "balance4Half": "9 + 2/pt over 3",
+        "balance4Full": "18 + 4/pt over 3",
+        "climbSwim4Half": "16 + 3/pt over 3",
+        "climbSwim4Full": "30 + 5/pt over 3",
+        "jump4Upwards": "4 + 1/pt over 3",
+        "jump4Forwards": "15 + 5/pt over 3"
+      },
+      "bargain": {
+        "buyerWins6": "Buyer Wins By 6+",
+        "buyerWins25": "Buyer Wins By 2-5",
+        "buyerWins1": "Buyer Wins By 1",
+        "sellerWins1": "Seller Wins By 1",
+        "sellerWins25": "Seller Wins By 2-5",
+        "sellerWins6": "Seller Wins By 6+",
+        "diffOz": "Diff. in oz.",
+        "diffX5Oz": "Diff. x5 in oz."
+      },
+      "silver": {
+        "1": "1 oz. silver",
+        "2": "2 oz. silver",
+        "3": "3 oz. silver",
+        "4": "4 oz. silver",
+        "5": "5 oz. silver",
+        "10": "10 oz. silver",
+        "15": "15 oz. silver",
+        "20": "20 oz. silver",
+        "25": "25 oz. silver"
+      }
+    }
   }
 }

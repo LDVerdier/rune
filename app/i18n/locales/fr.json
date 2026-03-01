@@ -236,6 +236,69 @@
     "Skald.description": "Le peuple viking est l'héritier d'une grande tradition poétique. La poésie, transmise oralement de génération en génération, est le moyen par lequel votre peuple se souvient de son histoire, raconte les exploits des dieux et préserve ses lois anciennes. Vous ne vous contentez pas de réciter la poésie du passé, vous créez la vôtre.",
 
     "DivineAwareness": "Sens divin",
-    "DivineAwareness.description": "Quelques personnes sont particulièrement à l'écoute des actions des dieux. Vous en faites partie. Quand les dieux vous observent, ou que leur œuvre est proche, vous le sentez. Peut-être les cheveux de votre nuque se hérissent-ils. Peut-être ressentez-vous un frisson, ou sentez-vous une odeur de métal brûlant dans l'air. Le Sens divin reflète aussi votre chance générale, ou la faveur des dieux."
+    "DivineAwareness.description": "Quelques personnes sont particulièrement à l'écoute des actions des dieux. Vous en faites partie. Quand les dieux vous observent, ou que leur œuvre est proche, vous le sentez. Peut-être les cheveux de votre nuque se hérissent-ils. Peut-être ressentez-vous un frisson, ou sentez-vous une odeur de métal brûlant dans l'air. Le Sens divin reflète aussi votre chance générale, ou la faveur des dieux.",
+
+    "charts": {
+      "score": "Score",
+      "halfAction": "Demi-action",
+      "fullAction": "Action complète",
+      "jumpUpwards": "Saut en hauteur",
+      "jumpForwards": "Saut en longueur",
+      "bargainResult": "Résultat du marchandage",
+      "commonItem": "Objet courant",
+      "rareItem": "Objet rare",
+      "pace": {
+        "1": "1 pas",
+        "2": "2 pas",
+        "3": "3 pas",
+        "4": "4 pas",
+        "5": "5 pas",
+        "6": "6 pas",
+        "7": "7 pas",
+        "8": "8 pas",
+        "9": "9 pas",
+        "10": "10 pas",
+        "12": "12 pas",
+        "13": "13 pas",
+        "14": "14 pas",
+        "15": "15 pas",
+        "16": "16 pas",
+        "18": "18 pas",
+        "20": "20 pas",
+        "25": "25 pas",
+        "30": "30 pas"
+      },
+      "formula": {
+        "sprint4Half": "15 + 2.5/pt au-delà de 3",
+        "sprint4Full": "30 + 10/pt au-delà de 3",
+        "balance4Half": "9 + 2/pt au-delà de 3",
+        "balance4Full": "18 + 4/pt au-delà de 3",
+        "climbSwim4Half": "16 + 3/pt au-delà de 3",
+        "climbSwim4Full": "30 + 5/pt au-delà de 3",
+        "jump4Upwards": "4 + 1/pt au-delà de 3",
+        "jump4Forwards": "15 + 5/pt au-delà de 3"
+      },
+      "bargain": {
+        "buyerWins6": "L'acheteur gagne de 6+",
+        "buyerWins25": "L'acheteur gagne de 2 à 5",
+        "buyerWins1": "L'acheteur gagne de 1",
+        "sellerWins1": "Le vendeur gagne de 1",
+        "sellerWins25": "Le vendeur gagne de 2 à 5",
+        "sellerWins6": "Le vendeur gagne de 6+",
+        "diffOz": "Diff. en oz.",
+        "diffX5Oz": "Diff. x5 en oz."
+      },
+      "silver": {
+        "1": "1 oz. d'argent",
+        "2": "2 oz. d'argent",
+        "3": "3 oz. d'argent",
+        "4": "4 oz. d'argent",
+        "5": "5 oz. d'argent",
+        "10": "10 oz. d'argent",
+        "15": "15 oz. d'argent",
+        "20": "20 oz. d'argent",
+        "25": "25 oz. d'argent"
+      }
+    }
   }
 }
