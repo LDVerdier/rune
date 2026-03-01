@@ -1,4 +1,4 @@
-import templateUrl from "~/assets/character_sheet_with_positions.pdf?url";
+import templateUrl from "~/assets/character_sheet.pdf?url";
 
 export async function exportToPdf(): Promise<Uint8Array> {
   const response = await fetch(templateUrl);
