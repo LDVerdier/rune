@@ -26,9 +26,10 @@ import {
   computeStartingHP,
   computeTotalHP,
   extraHPPerPoint as domainExtraHPPerPoint,
+  tryChangeExtraHP as domainTryChangeExtraHP,
 } from "~/domain/hit-points";
 import { computeWoundThreshold } from "~/domain/wound-threshold";
-import { MAX_WEAPONS, canSelectWeapon as domainCanSelectWeapon } from "~/domain/equipment";
+import { canSelectWeapon as domainCanSelectWeapon, tryToggleWeapon } from "~/domain/equipment";
 import {
   computeTotalLoad,
   computeEncumbranceDegree,
@@ -68,12 +69,7 @@ export function useCharacterCreation() {
 
   // --- Extra Hit Points operations ---
   function changeExtraHP(delta: number) {
-    setExtraHPPoints((prev) => {
-      const next = prev + delta;
-      if (next < 0) return prev;
-      if (delta > 0 && !domainCanIncreaseExtraHP(hpBudget - prev)) return prev;
-      return next;
-    });
+    setExtraHPPoints((prev) => domainTryChangeExtraHP(prev, delta, hpBudget) ?? prev);
   }
 
   // --- Derived HP values ---
@@ -88,6 +84,12 @@ export function useCharacterCreation() {
   const encumbranceDegree = computeEncumbranceDegree(ranks.Strength, totalLoad);
   const encumbranceDecrease = computeEncumbranceDecrease(encumbranceDegree);
 
+  // --- Derived flags ---
+  const hasAllocations =
+    Object.values(ranks).some((r) => r !== 0) ||
+    Object.values(abilityRanks).some((r) => r !== 0) ||
+    extraHPPoints !== 0;
+
   // --- Reset ---
   function resetAll() {
     setRanks({ ...INITIAL_RANKS });
@@ -100,13 +102,7 @@ export function useCharacterCreation() {
 
   // --- Equipment operations ---
   function toggleWeapon(id: string) {
-    setSelectedWeapons((prev) =>
-      prev.includes(id)
-        ? prev.filter((w) => w !== id)
-        : prev.length < MAX_WEAPONS
-          ? [...prev, id]
-          : prev,
-    );
+    setSelectedWeapons((prev) => tryToggleWeapon(prev, id));
   }
 
   function toggleShield(id: string) {
@@ -168,5 +164,6 @@ export function useCharacterCreation() {
 
     // Actions
     resetAll,
+    hasAllocations,
   };
 }

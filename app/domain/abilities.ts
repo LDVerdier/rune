@@ -293,15 +293,17 @@ export function prevRefund(name: string): number | null {
   return COST_PER_RANK[ability.category];
 }
 
-export function abilitiesBySet(): Record<AbilitySet, AbilityDefinition[]> {
-  const grouped: Record<AbilitySet, AbilityDefinition[]> = {
-    Fighting: [],
-    Exploratory: [],
-    Interaction: [],
-    Miscellaneous: [],
-  };
-  for (const ability of ABILITIES) {
-    grouped[ability.set].push(ability);
-  }
-  return grouped;
-}
+/** Pre-computed grouping of abilities by set (static data, computed once). */
+export const ABILITIES_BY_SET: Record<AbilitySet, AbilityDefinition[]> =
+  (() => {
+    const grouped: Record<AbilitySet, AbilityDefinition[]> = {
+      Fighting: [],
+      Exploratory: [],
+      Interaction: [],
+      Miscellaneous: [],
+    };
+    for (const ability of ABILITIES) {
+      grouped[ability.set].push(ability);
+    }
+    return grouped;
+  })();

@@ -7,6 +7,7 @@ import {
   computeStartingHP,
   computeTotalHP,
   extraHPPerPoint,
+  tryChangeExtraHP,
 } from "./hit-points";
 
 describe("computeStartingHP", () => {
@@ -114,5 +115,27 @@ describe("canDecreaseExtraHP", () => {
 
   it("returns false when points spent is at minimum", () => {
     expect(canDecreaseExtraHP(EXTRA_HP_MIN)).toBe(false);
+  });
+});
+
+describe("tryChangeExtraHP", () => {
+  it("increases when budget allows", () => {
+    expect(tryChangeExtraHP(0, 1, 5)).toBe(1);
+  });
+
+  it("decreases when above zero", () => {
+    expect(tryChangeExtraHP(3, -1, 5)).toBe(2);
+  });
+
+  it("returns null when decreasing below zero", () => {
+    expect(tryChangeExtraHP(0, -1, 5)).toBeNull();
+  });
+
+  it("returns null when budget exhausted", () => {
+    expect(tryChangeExtraHP(0, 1, 0)).toBeNull();
+  });
+
+  it("allows decrease even when budget is zero", () => {
+    expect(tryChangeExtraHP(2, -1, 0)).toBe(1);
   });
 });

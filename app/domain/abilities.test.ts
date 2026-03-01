@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   ABILITIES,
+  ABILITIES_BY_SET,
   ABILITY_MAX_RANK,
   ABILITY_MIN_RANK,
   INITIAL_ABILITY_RANKS,
   nextCost,
   abilityPointsSpent,
   prevRefund,
-  abilitiesBySet,
   canDecrease,
   canIncrease,
   tryChangeRank,
@@ -128,21 +128,19 @@ describe("nextCost / prevRefund", () => {
   });
 });
 
-describe("abilitiesBySet", () => {
+describe("ABILITIES_BY_SET", () => {
   it("groups abilities by their set", () => {
-    const grouped = abilitiesBySet();
-    expect(grouped.Fighting.length).toBe(8);
-    expect(grouped.Miscellaneous.length).toBe(1);
-    expect(grouped.Miscellaneous[0].name).toBe("DivineAwareness");
+    expect(ABILITIES_BY_SET.Fighting.length).toBe(8);
+    expect(ABILITIES_BY_SET.Miscellaneous.length).toBe(1);
+    expect(ABILITIES_BY_SET.Miscellaneous[0].name).toBe("DivineAwareness");
   });
 
   it("includes all abilities across groups", () => {
-    const grouped = abilitiesBySet();
     const total =
-      grouped.Fighting.length +
-      grouped.Exploratory.length +
-      grouped.Interaction.length +
-      grouped.Miscellaneous.length;
+      ABILITIES_BY_SET.Fighting.length +
+      ABILITIES_BY_SET.Exploratory.length +
+      ABILITIES_BY_SET.Interaction.length +
+      ABILITIES_BY_SET.Miscellaneous.length;
     expect(total).toBe(ABILITIES.length);
   });
 });

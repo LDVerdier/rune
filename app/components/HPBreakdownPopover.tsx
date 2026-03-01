@@ -1,6 +1,7 @@
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import { useTranslation } from "react-i18next";
-import { extraHPPerPoint } from "~/domain/hit-points";
+import { STARTING_HP_TABLE, EXTRA_HP_PER_POINT } from "~/domain/hit-points";
+import type { StartingHPEntry } from "~/domain/hit-points";
 import { formatRank } from "~/utils/formatting";
 
 interface Props {
@@ -8,62 +9,16 @@ interface Props {
   staminaRank: number;
 }
 
-type StartingHPRow = {
-  rangeKey: string;
-  rangeParams: Record<string, string>;
-  isActive: (sum: number) => boolean;
-  hp: number;
-};
+function rangeLabel(entry: StartingHPEntry, t: (key: string, params?: Record<string, string>) => string): string {
+  if (entry.min === null) return t("creation.hpBreakdown.rangeAtMost", { value: String(entry.max) });
+  if (entry.max === null) return t("creation.hpBreakdown.rangeAtLeast", { value: String(entry.min) });
+  if (entry.min === entry.max) return t("creation.hpBreakdown.rangeExact", { value: String(entry.min) });
+  return t("creation.hpBreakdown.rangeBetween", { from: String(entry.min), to: String(entry.max) });
+}
 
-const STARTING_HP_ROWS: StartingHPRow[] = [
-  {
-    rangeKey: "creation.hpBreakdown.rangeAtMost",
-    rangeParams: { value: "−4" },
-    isActive: (sum) => sum <= -4,
-    hp: 18,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeBetween",
-    rangeParams: { from: "−3", to: "−1" },
-    isActive: (sum) => sum >= -3 && sum <= -1,
-    hp: 20,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeExact",
-    rangeParams: { value: "0" },
-    isActive: (sum) => sum === 0,
-    hp: 22,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeBetween",
-    rangeParams: { from: "1", to: "3" },
-    isActive: (sum) => sum >= 1 && sum <= 3,
-    hp: 24,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeExact",
-    rangeParams: { value: "4" },
-    isActive: (sum) => sum === 4,
-    hp: 26,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeExact",
-    rangeParams: { value: "5" },
-    isActive: (sum) => sum === 5,
-    hp: 28,
-  },
-  {
-    rangeKey: "creation.hpBreakdown.rangeAtLeast",
-    rangeParams: { value: "6" },
-    isActive: (sum) => sum >= 6,
-    hp: 30,
-  },
-];
-
-const HP_PER_POINT_ROWS = [-3, -2, -1, 0, 1, 2, 3].map((stamina) => ({
-  stamina,
-  hp: extraHPPerPoint(stamina),
-}));
+function isActiveEntry(entry: StartingHPEntry, sum: number): boolean {
+  return (entry.min === null || sum >= entry.min) && (entry.max === null || sum <= entry.max);
+}
 
 export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
   const { t } = useTranslation();
@@ -107,11 +62,11 @@ export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {STARTING_HP_ROWS.map((row) => {
-                    const active = row.isActive(sum);
+                  {STARTING_HP_TABLE.map((entry) => {
+                    const active = isActiveEntry(entry, sum);
                     return (
                       <tr
-                        key={row.hp}
+                        key={entry.hp}
                         className={
                           active
                             ? "bg-amber-500/10 text-white"
@@ -119,13 +74,13 @@ export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
                         }
                       >
                         <td className="py-0.5 pr-2 tabular-nums">
-                          {t(row.rangeKey, row.rangeParams)}
+                          {rangeLabel(entry, t)}
                         </td>
                         <td className="py-0.5 text-right tabular-nums font-medium">
                           {active ? (
-                            <span className="text-amber-400">{row.hp}</span>
+                            <span className="text-amber-400">{entry.hp}</span>
                           ) : (
-                            row.hp
+                            entry.hp
                           )}
                         </td>
                       </tr>
@@ -152,7 +107,7 @@ export function HPBreakdownPopover({ strengthRank, staminaRank }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {HP_PER_POINT_ROWS.map((row) => {
+                  {EXTRA_HP_PER_POINT.map((row) => {
                     const active = row.stamina === staminaRank;
                     return (
                       <tr

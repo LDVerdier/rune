@@ -127,6 +127,13 @@ export function canSelectWeapon(selected: string[], id: string): boolean {
   return selected.includes(id) || selected.length < MAX_WEAPONS;
 }
 
+/** Toggle a weapon in the selection list, respecting the MAX_WEAPONS cap. */
+export function tryToggleWeapon(selected: string[], id: string): string[] {
+  if (selected.includes(id)) return selected.filter((w) => w !== id);
+  if (selected.length < MAX_WEAPONS) return [...selected, id];
+  return selected;
+}
+
 /**
  * Maps a WeaponAbility value to the corresponding ability name used in the
  * abilities domain and i18n keys (e.g. "Chain" → "ChainWeapon").

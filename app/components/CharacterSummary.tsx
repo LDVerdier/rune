@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { Ranks } from "~/domain/character-stats";
 import { CHARACTERISTICS, BASE_POINTS } from "~/domain/character-stats";
 import type { AbilityRanks } from "~/domain/abilities";
-import { ABILITY_SETS, abilitiesBySet } from "~/domain/abilities";
+import { ABILITY_SETS, ABILITIES_BY_SET } from "~/domain/abilities";
 import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import { charRankColor, formatRank } from "~/utils/formatting";
@@ -61,7 +61,6 @@ export function CharacterSummary({
   onResetClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
-  const grouped = abilitiesBySet();
 
   const degreeColor: Record<EncumbranceDegree, string> = {
     Light: "text-green-400",
@@ -72,7 +71,7 @@ export function CharacterSummary({
   };
 
   const hasPurchasedAbilities = ABILITY_SETS.some((set) =>
-    grouped[set].some((a) => abilityRanks[a.name] > 0),
+    ABILITIES_BY_SET[set].some((a) => abilityRanks[a.name] > 0),
   );
 
   const hasEquipment =
@@ -191,7 +190,7 @@ export function CharacterSummary({
             </h3>
             <div className="flex flex-col gap-3">
               {ABILITY_SETS.map((set) => {
-                const purchased = grouped[set].filter(
+                const purchased = ABILITIES_BY_SET[set].filter(
                   (a) => abilityRanks[a.name] > 0,
                 );
                 if (purchased.length === 0) return null;
