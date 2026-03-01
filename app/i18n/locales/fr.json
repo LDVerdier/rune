@@ -41,6 +41,12 @@
       "cancel": "Rester",
       "confirm": "Quitter"
     },
+    "woundThreshold": "Seuil de Blessure",
+    "woundThresholdBreakdown": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "colStamina": "Endurance",
+      "colThreshold": "Seuil"
+    },
     "hpBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",
       "formula": "PV totaux = PV de base + (Points dépensés × PV par point)",

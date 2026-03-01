@@ -18,6 +18,7 @@ import type { AbilityDefinition } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { StatCard } from "~/components/StatCard";
 import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
+import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -105,6 +106,7 @@ export default function CharacterCreation() {
     hpPerPoint,
     extraHPGain,
     totalHP,
+    woundThreshold,
     resetAll,
   } = useCharacterCreation();
   const { t } = useTranslation();
@@ -187,6 +189,20 @@ export default function CharacterCreation() {
             <div className="flex items-baseline gap-1.5">
               <span className="text-3xl font-bold tabular-nums text-white">
                 {totalHP}
+              </span>
+              <span className="text-sm text-gray-500">HP</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-1 mb-1">
+              <p className="text-xs uppercase tracking-wider text-gray-500">
+                {t("creation.woundThreshold")}
+              </p>
+              <WoundThresholdPopover staminaRank={ranks.Stamina} />
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold tabular-nums text-white">
+                {woundThreshold}
               </span>
               <span className="text-sm text-gray-500">HP</span>
             </div>

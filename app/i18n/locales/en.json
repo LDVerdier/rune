@@ -41,6 +41,12 @@
       "cancel": "Stay",
       "confirm": "Leave"
     },
+    "woundThreshold": "Wound Threshold",
+    "woundThresholdBreakdown": {
+      "triggerLabel": "How is this calculated?",
+      "colStamina": "Stamina",
+      "colThreshold": "Threshold"
+    },
     "hpBreakdown": {
       "triggerLabel": "How is this calculated?",
       "formula": "Total HP = Starting HP + (Points Spent × HP per Point)",

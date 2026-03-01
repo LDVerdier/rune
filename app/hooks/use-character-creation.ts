@@ -27,6 +27,7 @@ import {
   computeTotalHP,
   extraHPPerPoint as domainExtraHPPerPoint,
 } from "~/domain/hit-points";
+import { computeWoundThreshold } from "~/domain/wound-threshold";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -71,6 +72,7 @@ export function useCharacterCreation() {
   const hpPerPoint = domainExtraHPPerPoint(ranks.Stamina);
   const extraHPGain = computeExtraHPGain(extraHPPoints, ranks.Stamina);
   const totalHP = computeTotalHP(ranks.Strength, ranks.Stamina, extraHPPoints);
+  const woundThreshold = computeWoundThreshold(ranks.Stamina);
 
   // --- Reset ---
   function resetAll() {
@@ -110,6 +112,7 @@ export function useCharacterCreation() {
     hpPerPoint,
     extraHPGain,
     totalHP,
+    woundThreshold,
 
     // Actions
     resetAll,
