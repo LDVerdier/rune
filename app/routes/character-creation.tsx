@@ -91,16 +91,7 @@ export default function CharacterCreation() {
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
   const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
 
-  const { exportPdf, isExporting } = useExportPdf({
-    heroName,
-    ranks,
-    abilityRanks,
-    totalHP,
-    woundThreshold,
-    selectedWeapons,
-    selectedShield,
-    selectedArmor,
-  });
+  const { exportPdf, isExporting } = useExportPdf();
 
   const hasAllocations =
     Object.values(ranks).some((r) => r !== 0) ||
