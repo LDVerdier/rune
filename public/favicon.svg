@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#1a1028"/>
+
+  <!-- Axe tilted 40° clockwise around center -->
+  <g transform="rotate(40, 16, 16)">
+
+    <!-- Left blade — near the tip (top of handle) -->
+    <path d="
+      M 14 6
+      C 10 4, 3 6, 3 12
+      C 3 18, 10 20, 14 18
+      C 10 17, 8 15, 8 12
+      C 8 9, 10 7, 14 6
+      Z"
+      fill="#d4ac3a"/>
+
+    <!-- Right blade (mirror) -->
+    <path d="
+      M 18 6
+      C 22 4, 29 6, 29 12
+      C 29 18, 22 20, 18 18
+      C 22 17, 24 15, 24 12
+      C 24 9, 22 7, 18 6
+      Z"
+      fill="#d4ac3a"/>
+
+    <!-- Handle -->
+    <rect x="14.5" y="3" width="3" height="26" rx="1.5" fill="#c8922e"/>
+
+    <!-- Grip wrapping detail (lower half of handle) -->
+    <rect x="14.5" y="21" width="3" height="2" rx="0.5" fill="#a06820" opacity="0.7"/>
+    <rect x="14.5" y="24" width="3" height="2" rx="0.5" fill="#a06820" opacity="0.7"/>
+
+    <!-- Top pommel -->
+    <ellipse cx="16" cy="4" rx="2.5" ry="1.5" fill="#c8922e"/>
+
+    <!-- Bottom pommel -->
+    <ellipse cx="16" cy="28" rx="2.5" ry="1.5" fill="#c8922e"/>
+  </g>
+</svg>
