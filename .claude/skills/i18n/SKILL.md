@@ -61,6 +61,32 @@ t("myFeature.cost", { count: 5 })
 // en.json: "Cost: {{count}} pts"
 ```
 
+### Flat dot-notation keys for entity-like data
+
+For **entity-like data** (characteristics, abilities, etc.) where each entry has a name plus associated metadata (description, deity, …), use **flat dot-notation keys** instead of nested objects:
+
+```json
+{
+  "characteristics": {
+    "Strength": "Force",
+    "Strength.description": "La Force représente...",
+    "Strength.deity": "Thor le Tonnerre..."
+  }
+}
+```
+
+**Why?** This allows the entity key to serve as both a direct translation for the display name _and_ a prefix for related metadata:
+
+```tsx
+t(`characteristics.${char.name}`)              // → "Force"
+t(`characteristics.${char.name}.description`)   // → "La Force représente..."
+t(`characteristics.${char.name}.deity`)          // → "Thor le Tonnerre..."
+```
+
+With nested objects, the top-level key would be an object and could not simultaneously hold a string value, forcing an extra `.name` level everywhere.
+
+i18next treats `"Strength.description"` as a literal key inside the `characteristics` namespace — not as a nested path — because the dot is inside the JSON key string, not in the JSON structure.
+
 ### Proper names are NOT translated
 
 Names of places, people, gods, creatures, and other proper nouns from the setting (e.g. "Ragnarok", "Odin", "Midgard", "Rune") must remain identical in all language files. They are part of the world's identity, not generic UI text.
@@ -72,3 +98,4 @@ Names of places, people, gods, creatures, and other proper nouns from the settin
 - [ ] Component uses `useTranslation()` hook — no hardcoded strings in JSX
 - [ ] Multi-line text uses `\n` in JSON and is split/rendered in the component
 - [ ] Translation keys follow the existing nested structure (`page.section.key`)
+- [ ] Entity-like data uses flat dot-notation keys (e.g. `"Strength.description"`) rather than nested objects
