@@ -8,6 +8,8 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  Radio,
+  RadioGroup,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
@@ -86,6 +88,7 @@ export default function CharacterCreation() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [heroName, setHeroName] = useState("");
+  const [gender, setGender] = useState<"male" | "female">("male");
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [isBackOpen, setIsBackOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
@@ -155,6 +158,21 @@ export default function CharacterCreation() {
       </div>
 
       <Divider className="mb-6" />
+
+      {/* Gender selection */}
+      <div className="mb-4">
+        <RadioGroup
+          label={t("creation.gender")}
+          orientation="horizontal"
+          size="sm"
+          value={gender}
+          onValueChange={(v) => setGender(v as "male" | "female")}
+          classNames={{ label: "text-gray-400 text-sm" }}
+        >
+          <Radio value="male">{t("creation.genderMale")}</Radio>
+          <Radio value="female">{t("creation.genderFemale")}</Radio>
+        </RadioGroup>
+      </div>
 
       {/* Hero name */}
       <div className="mb-6">
@@ -484,7 +502,11 @@ export default function CharacterCreation() {
         body={t("creation.resetModal.body")}
         cancelLabel={t("creation.resetModal.cancel")}
         confirmLabel={t("creation.resetModal.confirm")}
-        onConfirm={resetAll}
+        onConfirm={() => {
+          resetAll();
+          setGender("male");
+          setHeroName("");
+        }}
       />
 
       {/* Back Confirmation Modal */}

@@ -25,7 +25,7 @@ The CTA button label: **"Suggest"** / **"Suggérer"** — short, meaningful in b
 ---
 
 ## Feature 1: Gender Selection
-**Status: [ ] Not started**
+**Status: [X] Done**
 
 ### What
 Add a gender selector (male/female) just before the Name input, preset to male. Not exported in PDF.
