@@ -60,8 +60,7 @@
     "cognomenPlaceholder": "ex. Thorkelsson",
     "suggestCognomen": "Suggérer",
     "deriveFromFather": "Dériver du nom du père",
-    "exportPdf": "Exporter en PDF",
-    "exporting": "Export en cours...",
+    "nameSection": "Nom",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",
       "colStamina": "Endurance",

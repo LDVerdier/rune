@@ -17,7 +17,7 @@ import type { Characteristic } from "~/domain/character-stats";
 import { CHARACTERISTICS, MIN_RANK, PATRON_DEITIES, BASE_POINTS } from "~/domain/character-stats";
 import { ABILITY_SETS, ABILITY_MIN_RANK, abilitiesBySet } from "~/domain/abilities";
 import { useCharacterCreation } from "~/hooks/use-character-creation";
-import { useExportPdf } from "~/hooks/use-export-pdf";
+
 import { StatCard } from "~/components/StatCard";
 import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
@@ -97,7 +97,6 @@ export default function CharacterCreation() {
   const [expandedItem, setExpandedItem] = useState<ExpandedItem>(null);
   const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
 
-  const { exportPdf, isExporting } = useExportPdf();
 
   const hasAllocations =
     Object.values(ranks).some((r) => r !== 0) ||
@@ -564,6 +563,8 @@ export default function CharacterCreation() {
               </ModalHeader>
               <ModalBody className="pb-6">
                 <CharacterSummary
+                  heroName={heroName}
+                  cognomen={cognomen}
                   remainingPoints={remainingPoints}
                   ranks={ranks}
                   abilityRanks={abilityRanks}
@@ -576,11 +577,6 @@ export default function CharacterCreation() {
                     setIsMobileSummaryOpen(false);
                     setIsResetOpen(true);
                   }}
-                  onExportPdf={() => {
-                    setIsMobileSummaryOpen(false);
-                    void exportPdf();
-                  }}
-                  isExporting={isExporting}
                 />
               </ModalBody>
             </>
@@ -596,6 +592,8 @@ export default function CharacterCreation() {
         <aside className="hidden lg:block lg:flex-none w-64 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
           <div className="sticky top-4">
             <CharacterSummary
+              heroName={heroName}
+              cognomen={cognomen}
               remainingPoints={remainingPoints}
               ranks={ranks}
               abilityRanks={abilityRanks}
@@ -605,8 +603,6 @@ export default function CharacterCreation() {
               selectedShield={selectedShield}
               selectedArmor={selectedArmor}
               onResetClick={() => setIsResetOpen(true)}
-              onExportPdf={() => void exportPdf()}
-              isExporting={isExporting}
             />
           </div>
         </aside>

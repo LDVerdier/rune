@@ -26,6 +26,8 @@ function SummaryLabeledRow({ label, value, color }: SummaryLabeledRowProps) {
 }
 
 interface CharacterSummaryProps {
+  heroName: string;
+  cognomen: string;
   remainingPoints: number;
   ranks: Ranks;
   abilityRanks: AbilityRanks;
@@ -35,11 +37,11 @@ interface CharacterSummaryProps {
   selectedShield: string | null;
   selectedArmor: string | null;
   onResetClick: () => void;
-  onExportPdf?: () => void;
-  isExporting?: boolean;
 }
 
 export function CharacterSummary({
+  heroName,
+  cognomen,
   remainingPoints,
   ranks,
   abilityRanks,
@@ -49,8 +51,6 @@ export function CharacterSummary({
   selectedShield,
   selectedArmor,
   onResetClick,
-  onExportPdf,
-  isExporting = false,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
   const grouped = abilitiesBySet();
@@ -70,7 +70,22 @@ export function CharacterSummary({
         {t("creation.summary")}
       </h2>
 
-      {/* Points + Reset + Export */}
+      {/* Name */}
+      {(heroName || cognomen) && (
+        <>
+          <div>
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+              {t("creation.nameSection")}
+            </h3>
+            <p className="text-sm text-white">
+              {[heroName, cognomen].filter(Boolean).join(" ")}
+            </p>
+          </div>
+          <Divider />
+        </>
+      )}
+
+      {/* Points + Reset */}
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
@@ -92,18 +107,6 @@ export function CharacterSummary({
           >
             {t("creation.resetAll")}
           </Button>
-          {onExportPdf && (
-            <Button
-              size="sm"
-              variant="flat"
-              className="text-gray-400 text-xs"
-              onPress={onExportPdf}
-              isLoading={isExporting}
-              isDisabled={isExporting}
-            >
-              {isExporting ? t("creation.exporting") : t("creation.exportPdf")}
-            </Button>
-          )}
         </div>
       </div>
 
