@@ -1,32 +1,42 @@
 import { Link } from "react-router";
 import { Button, Divider } from "@heroui/react";
+import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/home";
+import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
+  const t = i18n.t;
   return [
-    { title: "Rune" },
-    { name: "description", content: "Tools for the land of the Vikings" },
+    { title: t("home.title") },
+    { name: "description", content: t("home.meta.description") },
   ];
 }
 
 export default function Home() {
+  const { t } = useTranslation();
+
+  const subtitleLines = t("home.subtitle").split("\n");
+
   return (
     <main className="flex items-center justify-center min-h-screen px-4">
       <div className="flex flex-col items-center gap-8 max-w-md text-center">
         <div className="flex flex-col items-center gap-2">
           <h1 className="text-6xl font-black tracking-tight text-white uppercase">
-            Rune
+            {t("home.title")}
           </h1>
           <Divider className="w-16 bg-primary" />
           <p className="text-sm uppercase tracking-[0.3em] text-gray-500 mt-2">
-            At the edge of Ragnarok
+            {t("home.tagline")}
           </p>
         </div>
 
         <p className="text-lg text-gray-400 leading-relaxed">
-          Forge your warrior. Shape your fate.
-          <br />
-          The final battle awaits.
+          {subtitleLines.map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < subtitleLines.length - 1 && <br />}
+            </span>
+          ))}
         </p>
 
         <Button
@@ -37,7 +47,7 @@ export default function Home() {
           size="lg"
           className="font-semibold uppercase tracking-wider px-10"
         >
-          Enter the Forge
+          {t("home.cta")}
         </Button>
       </div>
     </main>

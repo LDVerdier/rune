@@ -12,14 +12,17 @@ import {
   ModalHeader,
   Tooltip,
 } from "@heroui/react";
+import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/character-creation";
 import { CHARACTERISTICS, BASE_POINTS, MIN_RANK } from "~/domain/character-stats";
 import { useCharacterStats } from "~/hooks/use-character-stats";
+import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
+  const t = i18n.t;
   return [
-    { title: "Rune - Character Creation" },
-    { name: "description", content: "Create your Rune character" },
+    { title: t("creation.title") },
+    { name: "description", content: t("creation.meta.description") },
   ];
 }
 
@@ -43,6 +46,7 @@ export default function CharacterCreation() {
     nextCost,
     prevRefund,
   } = useCharacterStats();
+  const { t } = useTranslation();
   const [isResetOpen, setIsResetOpen] = useState(false);
 
   return (
@@ -56,10 +60,10 @@ export default function CharacterCreation() {
           size="sm"
           className="text-gray-400 hover:text-white"
         >
-          &larr; Back
+          &larr; {t("creation.back")}
         </Button>
         <h1 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider">
-          The Forge
+          {t("creation.heading")}
         </h1>
         <div className="min-w-20" />
       </div>
@@ -69,7 +73,7 @@ export default function CharacterCreation() {
         <div className="flex items-end justify-between mb-2">
           <div>
             <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">
-              Points remaining
+              {t("creation.pointsRemaining")}
             </p>
             <div className="flex items-baseline gap-1.5">
               <span
@@ -92,7 +96,7 @@ export default function CharacterCreation() {
             className="text-gray-400"
             onPress={() => setIsResetOpen(true)}
           >
-            Reset All
+            {t("creation.resetAll")}
           </Button>
         </div>
       </div>
@@ -118,15 +122,15 @@ export default function CharacterCreation() {
                 {/* Top row: name + compact controls */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-white uppercase tracking-wide">
-                    {char}
+                    {t(`characteristics.${char}`)}
                   </span>
 
                   <div className="flex items-center gap-1">
                     <Tooltip
                       content={
                         refund !== null
-                          ? `Refund ${refund} pts`
-                          : "Minimum rank"
+                          ? t("creation.refundTooltip", { count: refund })
+                          : t("creation.minRank")
                       }
                       placement="bottom"
                       size="sm"
@@ -156,8 +160,8 @@ export default function CharacterCreation() {
                     <Tooltip
                       content={
                         increase !== null
-                          ? `Cost: ${increase} pts`
-                          : "Maximum rank"
+                          ? t("creation.costTooltip", { count: increase })
+                          : t("creation.maxRank")
                       }
                       placement="bottom"
                       size="sm"
@@ -191,17 +195,16 @@ export default function CharacterCreation() {
           {(onClose) => (
             <>
               <ModalHeader className="text-white">
-                Reset All Characteristics?
+                {t("creation.resetModal.title")}
               </ModalHeader>
               <ModalBody>
                 <p className="text-gray-400">
-                  This will reset all characteristics to their default values.
-                  Any changes you&apos;ve made will be lost.
+                  {t("creation.resetModal.body")}
                 </p>
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose}>
-                  Cancel
+                  {t("creation.resetModal.cancel")}
                 </Button>
                 <Button
                   color="danger"
@@ -210,7 +213,7 @@ export default function CharacterCreation() {
                     onClose();
                   }}
                 >
-                  Reset
+                  {t("creation.resetModal.confirm")}
                 </Button>
               </ModalFooter>
             </>

@@ -7,9 +7,12 @@ import {
   ScrollRestoration,
 } from "react-router";
 import { HeroUIProvider } from "@heroui/react";
+import { useTranslation } from "react-i18next";
+import "~/i18n";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import LanguageSwitcher from "~/components/LanguageSwitcher";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,8 +28,10 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { i18n } = useTranslation();
+
   return (
-    <html lang="en" className="dark">
+    <html lang={i18n.language} className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -45,6 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <HeroUIProvider disableRipple>
+      <LanguageSwitcher />
       <Outlet />
     </HeroUIProvider>
   );

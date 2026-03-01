@@ -1,0 +1,41 @@
+{
+  "home": {
+    "title": "Rune",
+    "meta": {
+      "description": "Outils pour la terre des Vikings"
+    },
+    "tagline": "Au bord du Ragnarok",
+    "subtitle": "Forge ton guerrier. Façonne ton destin.\nLa bataille finale approche.",
+    "cta": "Entrer dans la Forge"
+  },
+  "creation": {
+    "title": "Rune - Création de personnage",
+    "meta": {
+      "description": "Créez votre personnage Rune"
+    },
+    "heading": "La Forge",
+    "back": "Retour",
+    "pointsRemaining": "Points restants",
+    "resetAll": "Tout réinitialiser",
+    "refundTooltip": "Remboursement : {{count}} pts",
+    "minRank": "Rang minimum",
+    "costTooltip": "Coût : {{count}} pts",
+    "maxRank": "Rang maximum",
+    "resetModal": {
+      "title": "Réinitialiser toutes les caractéristiques ?",
+      "body": "Cela réinitialisera toutes les caractéristiques à leurs valeurs par défaut.\nToutes vos modifications seront perdues.",
+      "cancel": "Annuler",
+      "confirm": "Réinitialiser"
+    }
+  },
+  "characteristics": {
+    "Strength": "Force",
+    "Stamina": "Endurance",
+    "Dexterity": "Dextérité",
+    "Quickness": "Vivacité",
+    "Intelligence": "Intelligence",
+    "Perception": "Perception",
+    "Presence": "Présence",
+    "Communication": "Communication"
+  }
+}
