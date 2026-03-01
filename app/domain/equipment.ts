@@ -26,6 +26,17 @@ export interface WeaponDefinition extends EquipmentDefinition {
   readonly availability: WeaponAvailability;
 }
 
+export interface ShieldDefinition extends EquipmentDefinition {
+  readonly kind: "shield";
+  readonly init: number;
+  readonly atk: number;
+  readonly dfn: number | null;
+  readonly dam: number | "special";
+  readonly load: number | null;
+  readonly ability: WeaponAbility;
+  readonly availability: WeaponAvailability;
+}
+
 export const MAX_WEAPONS = 3;
 export const MAX_SHIELDS = 1;
 export const MAX_ARMORS = 1;
@@ -81,9 +92,11 @@ export const WEAPONS: WeaponDefinition[] = [
   { id: "whip", kind: "weapon", init: 0, atk: 6, dfn: 0, dam: 2, load: 0.5, ability: "Chain", availability: "Common" },
 ];
 
-export const SHIELDS: EquipmentDefinition[] = [
-  { id: "buckler", kind: "shield" },
-  { id: "roundShield", kind: "shield" },
+export const SHIELDS: ShieldDefinition[] = [
+  { id: "buckler", kind: "shield", init: 0, atk: 0, dfn: 2, dam: 0, load: 0.25, ability: "Single", availability: "Common" },
+  { id: "roundShield", kind: "shield", init: 0, atk: 0, dfn: 3, dam: 0, load: 0.5, ability: "Single", availability: "Common" },
+  { id: "kiteShield", kind: "shield", init: -1, atk: -1, dfn: 4, dam: 0, load: 2, ability: "Single", availability: "Common" },
+  { id: "towerShield", kind: "shield", init: -2, atk: -2, dfn: 5, dam: 0, load: 3, ability: "Single", availability: "Rare" },
 ];
 
 export const ARMORS: EquipmentDefinition[] = [

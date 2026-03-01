@@ -21,7 +21,7 @@ import { EquipmentCard } from "~/components/EquipmentCard";
 import { CharacterSummary } from "~/components/CharacterSummary";
 import LanguageSwitcher from "~/components/LanguageSwitcher";
 import { WEAPONS, SHIELDS, ARMORS } from "~/domain/equipment";
-import type { WeaponDefinition, WeaponAbility } from "~/domain/equipment";
+import type { WeaponDefinition, ShieldDefinition, WeaponAbility } from "~/domain/equipment";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -163,6 +163,59 @@ function WeaponDetails({ weapon }: { weapon: WeaponDefinition }) {
           {t(`equipment.${weapon.id}.description`)}
         </p>
       )}
+    </div>
+  );
+}
+
+function ShieldStatsRow({ shield }: { shield: ShieldDefinition }) {
+  const { t } = useTranslation();
+  const stats = [
+    { label: t("equipment.init"), value: formatStatNum(shield.init) },
+    { label: t("equipment.atk"), value: formatStatNum(shield.atk) },
+    {
+      label: t("equipment.dfn"),
+      value: shield.dfn !== null ? formatStatNum(shield.dfn) : "—",
+    },
+    {
+      label: t("equipment.dam"),
+      value:
+        shield.dam === "special"
+          ? t("equipment.special")
+          : formatStatNum(shield.dam),
+    },
+  ];
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-1">
+      {stats.map(({ label, value }) => (
+        <span key={label} className="text-xs text-gray-500">
+          <span className="uppercase tracking-wide">{label}</span>{" "}
+          <span className="text-gray-300 font-mono">{value}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function ShieldDetails({ shield }: { shield: ShieldDefinition }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+      <span>
+        <span className="text-gray-500">{t("equipment.load")}: </span>
+        {shield.load !== null ? shield.load : t("equipment.na")}
+      </span>
+      <span>
+        <span className="text-gray-500">{t("equipment.ability")}: </span>
+        {t(WEAPON_ABILITY_KEYS[shield.ability])}
+      </span>
+      <span>
+        <span className="text-gray-500">{t("equipment.availability")}: </span>
+        {shield.availability === "Common"
+          ? t("equipment.common")
+          : shield.availability === "Rare"
+            ? t("equipment.rare")
+            : t("equipment.na")}
+      </span>
     </div>
   );
 }
@@ -536,10 +589,9 @@ export default function CharacterCreation() {
                   : t("creation.selectEquipment")
               }
               ariaLabel={t(`equipment.${shield.id}`)}
+              stats={<ShieldStatsRow shield={shield} />}
             >
-              <p className="text-sm italic text-gray-400">
-                {t(`equipment.${shield.id}.description`)}
-              </p>
+              <ShieldDetails shield={shield} />
             </EquipmentCard>
           );
         })}

@@ -379,6 +379,8 @@
     "flagon.description": "Préparez-vous à être moqué si vous portez une chope dans le but exprès d'augmenter vos dégâts de Bagarre. Ceci est mentionné pour son utilité dans les altercations improvisées autour d'une table de buveurs entre Vikings (relativement) amicaux.",
     "buckler": "Bocle",
     "roundShield": "Bouclier rond",
+    "kiteShield": "Écu",
+    "towerShield": "Pavois",
     "heavyLeather": "Cuir épais",
     "studdedLeather": "Cuir clouté",
     "buckler.description": "Un petit bouclier rond offrant une protection légère.",

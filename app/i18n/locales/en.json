@@ -379,6 +379,8 @@
     "flagon.description": "Prepare to be mocked if you carry a flagon around with you for the express purpose of increasing your Brawling damage. This is listed for its usefulness in impromptu, drinking-table altercations between (relatively) friendly Vikings.",
     "buckler": "Buckler",
     "roundShield": "Round Shield",
+    "kiteShield": "Kite Shield",
+    "towerShield": "Tower Shield",
     "heavyLeather": "Heavy Leather",
     "studdedLeather": "Studded Leather",
     "buckler.description": "A small round shield offering light protection.",
