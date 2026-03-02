@@ -35,7 +35,7 @@ export interface DefenseScore {
 }
 
 export interface DamageScore {
-  readonly kind: "armed" | "unarmed";
+  readonly kind: "armed" | "missile" | "unarmed";
   readonly weaponId: string | null;
   readonly score: number;
 }
@@ -253,7 +253,7 @@ export function computeAllDefenses(
 // Damage
 // ---------------------------------------------------------------------------
 
-/** Compute damage for a single weapon (melee/unarmed only). */
+/** Compute damage for a single melee weapon (Str + weapon dam). */
 export function computeArmedDamage(
   strength: number,
   weapon: WeaponDefinition,
@@ -262,6 +262,15 @@ export function computeArmedDamage(
     kind: "armed",
     weaponId: weapon.id,
     score: strength + (typeof weapon.dam === "number" ? weapon.dam : 0),
+  };
+}
+
+/** Compute damage for a single missile weapon (weapon dam only, no Str). */
+export function computeMissileDamage(weapon: WeaponDefinition): DamageScore {
+  return {
+    kind: "missile",
+    weaponId: weapon.id,
+    score: typeof weapon.dam === "number" ? weapon.dam : 0,
   };
 }
 
@@ -278,18 +287,24 @@ export function computeUnarmedDamage(strength: number): DamageScore {
 
 /**
  * Compute all damage scores for the character.
- * Returns one entry per selected melee weapon (excludes missile), plus unarmed.
+ * Melee: Str + weapon dam. Missile: weapon dam only. Plus unarmed.
  */
 export function computeAllDamages(
   strength: number,
   weaponIds: string[],
 ): DamageScore[] {
-  const armed = weaponIds
+  const weapons = weaponIds
     .map((id) => WEAPONS.find((w) => w.id === id))
     .filter((w): w is WeaponDefinition => w != null)
+    .filter((w) => typeof w.dam === "number");
+
+  const melee = weapons
     .filter((w) => !MISSILE_ABILITIES.has(w.ability))
-    .filter((w) => typeof w.dam === "number")
     .map((weapon) => computeArmedDamage(strength, weapon));
 
-  return [...armed, computeUnarmedDamage(strength)];
+  const missile = weapons
+    .filter((w) => MISSILE_ABILITIES.has(w.ability))
+    .map((weapon) => computeMissileDamage(weapon));
+
+  return [...melee, ...missile, computeUnarmedDamage(strength)];
 }

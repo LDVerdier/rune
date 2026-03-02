@@ -8,6 +8,7 @@ import {
   computeUnarmedDefense,
   computeAllDefenses,
   computeArmedDamage,
+  computeMissileDamage,
   computeUnarmedDamage,
   computeAllDamages,
 } from "./combat-scores";
@@ -186,6 +187,23 @@ describe("computeArmedDamage", () => {
   });
 });
 
+describe("computeMissileDamage", () => {
+  it("computes missile damage as weapon dam only (no Str)", () => {
+    // shortBow dam 6
+    const result = computeMissileDamage(shortBow);
+    expect(result.score).toBe(6);
+    expect(result.kind).toBe("missile");
+    expect(result.weaponId).toBe("shortBow");
+  });
+
+  it("computes thrown weapon damage", () => {
+    // sling dam 3
+    const result = computeMissileDamage(sling);
+    expect(result.score).toBe(3);
+    expect(result.kind).toBe("missile");
+  });
+});
+
 describe("computeUnarmedDamage", () => {
   it("computes unarmed damage as Str + 0", () => {
     // Str 1 + fistKick dam 0 = 1
@@ -280,23 +298,30 @@ describe("computeAllDamages", () => {
     expect(result[0].kind).toBe("unarmed");
   });
 
-  it("excludes missile weapons", () => {
+  it("includes missile weapons with weapon dam only", () => {
     // shortBow is Bows (missile), dagger is Single (melee)
-    const result = computeAllDamages(0, ["dagger", "shortBow"]);
-    expect(result).toHaveLength(2); // dagger + unarmed (shortBow excluded)
+    const result = computeAllDamages(2, ["dagger", "shortBow"]);
+    expect(result).toHaveLength(3); // dagger + shortBow + unarmed
     expect(result[0].kind).toBe("armed");
     expect(result[0].weaponId).toBe("dagger");
+    expect(result[0].score).toBe(5); // Str 2 + dagger dam 3
+    expect(result[1].kind).toBe("missile");
+    expect(result[1].weaponId).toBe("shortBow");
+    expect(result[1].score).toBe(6); // shortBow dam 6 (no Str)
+    expect(result[2].kind).toBe("unarmed");
+  });
+
+  it("includes thrown weapons with weapon dam only", () => {
+    // sling is Thrown (missile), dam 3
+    const result = computeAllDamages(2, ["sling"]);
+    expect(result).toHaveLength(2); // sling + unarmed
+    expect(result[0].kind).toBe("missile");
+    expect(result[0].score).toBe(3); // sling dam 3 (no Str)
     expect(result[1].kind).toBe("unarmed");
+    expect(result[1].score).toBe(2); // Str 2 + 0
   });
 
-  it("excludes thrown weapons from damage", () => {
-    // sling is Thrown (missile)
-    const result = computeAllDamages(0, ["sling"]);
-    expect(result).toHaveLength(1); // unarmed only
-    expect(result[0].kind).toBe("unarmed");
-  });
-
-  it("computes correct damage values", () => {
+  it("computes correct melee damage values", () => {
     // Str 2 + dagger dam 3 = 5
     const result = computeAllDamages(2, ["dagger"]);
     expect(result[0].score).toBe(5);

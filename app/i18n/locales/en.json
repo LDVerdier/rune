@@ -103,9 +103,10 @@
     "damage": {
       "unarmed": "Unarmed (Fist/Kick)",
       "triggerLabel": "How is this calculated?",
-      "formulaLabel": "Damage",
-      "formula": "Str + Weapon Dam",
-      "missileExcludedNote": "Missile weapons (Bows, Thrown) are excluded"
+      "formulaMeleeLabel": "Melee / Unarmed",
+      "formulaMelee": "Str + Weapon Dam",
+      "formulaMissileLabel": "Missile",
+      "formulaMissile": "Weapon Dam"
     },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {

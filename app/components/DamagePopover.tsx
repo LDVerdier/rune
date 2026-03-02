@@ -4,6 +4,17 @@ import { useTranslation } from "react-i18next";
 export function DamagePopover() {
   const { t } = useTranslation();
 
+  const formulas = [
+    {
+      label: t("creation.damage.formulaMeleeLabel"),
+      parts: t("creation.damage.formulaMelee"),
+    },
+    {
+      label: t("creation.damage.formulaMissileLabel"),
+      parts: t("creation.damage.formulaMissile"),
+    },
+  ];
+
   return (
     <Popover placement="bottom-end" showArrow>
       <PopoverTrigger>
@@ -19,17 +30,16 @@ export function DamagePopover() {
       </PopoverTrigger>
       <PopoverContent className="bg-[#111] border border-content2 p-4 max-w-xs w-80">
         <div className="w-full flex flex-col gap-3">
-          <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
-              {t("creation.damage.formulaLabel")}
-            </p>
-            <p className="text-xs text-gray-300 font-mono leading-relaxed">
-              {t("creation.damage.formula")}
-            </p>
-          </div>
-          <p className="text-[10px] text-gray-500 leading-relaxed">
-            {t("creation.damage.missileExcludedNote")}
-          </p>
+          {formulas.map((f) => (
+            <div key={f.label}>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                {f.label}
+              </p>
+              <p className="text-xs text-gray-300 font-mono leading-relaxed">
+                {f.parts}
+              </p>
+            </div>
+          ))}
         </div>
       </PopoverContent>
     </Popover>

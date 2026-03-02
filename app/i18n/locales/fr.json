@@ -103,9 +103,10 @@
     "damage": {
       "unarmed": "Mains nues (Poing/Pied)",
       "triggerLabel": "Comment est-ce calculé ?",
-      "formulaLabel": "Dégâts",
-      "formula": "For + Dég arme",
-      "missileExcludedNote": "Les armes de tir (Arcs, Jet) sont exclues"
+      "formulaMeleeLabel": "Mêlée / Mains nues",
+      "formulaMelee": "For + Dég arme",
+      "formulaMissileLabel": "Tir",
+      "formulaMissile": "Dég arme"
     },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
