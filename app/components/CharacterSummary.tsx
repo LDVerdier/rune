@@ -10,6 +10,7 @@ import { charRankColor, formatRank } from "~/utils/formatting";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
 import type { InitiativeScore } from "~/domain/initiative";
 import { EncumbrancePopover } from "~/components/EncumbrancePopover";
+import { InitiativePopover } from "~/components/InitiativePopover";
 
 interface SummaryLabeledRowProps {
   label: string;
@@ -299,9 +300,12 @@ export function CharacterSummary({
             />
             {/* Initiative Scores */}
             <Divider className="my-1" />
-            <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-0.5 mt-1">
-              {t("creation.initiativeSection")}
-            </p>
+            <div className="flex items-center gap-1 mb-0.5 mt-1">
+              <p className="text-[10px] text-gray-600 uppercase tracking-wider">
+                {t("creation.initiativeSection")}
+              </p>
+              <InitiativePopover />
+            </div>
             <div className="flex flex-col gap-0.5">
               {initiativeScores.map((init) => {
                 const label =

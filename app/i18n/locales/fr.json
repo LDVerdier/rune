@@ -68,7 +68,14 @@
     "initiative": {
       "unarmed": "Mains nues (Poing/Pied)",
       "nonCombat": "Hors combat",
-      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante"
+      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante",
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaArmedLabel": "Armé",
+      "formulaArmed": "Viv + Compétence d'arme* + Init arme + Init armure + Init bouclier − Pénalité d'enc.",
+      "formulaUnarmedLabel": "Mains nues",
+      "formulaUnarmed": "Viv + Bagarre* + Init poing/pied + Init armure + Init bouclier − Pénalité d'enc.",
+      "formulaNonCombatLabel": "Hors combat",
+      "formulaNonCombat": "Viv + Sprint* + Init armure + Init bouclier − Pénalité d'enc."
     },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {

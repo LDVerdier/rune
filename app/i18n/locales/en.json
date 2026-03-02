@@ -68,7 +68,14 @@
     "initiative": {
       "unarmed": "Unarmed (Fist/Kick)",
       "nonCombat": "Non-Combat",
-      "missingAbilityNote": "Includes -3 missing ability penalty"
+      "missingAbilityNote": "Includes -3 missing ability penalty",
+      "triggerLabel": "How is this calculated?",
+      "formulaArmedLabel": "Armed",
+      "formulaArmed": "Qik + Weapon Ability* + Weapon Init + Armor Init + Shield Init − Enc Decrease",
+      "formulaUnarmedLabel": "Unarmed",
+      "formulaUnarmed": "Qik + Brawling* + Fist/Kick Init + Armor Init + Shield Init − Enc Decrease",
+      "formulaNonCombatLabel": "Non-Combat",
+      "formulaNonCombat": "Qik + Sprint* + Armor Init + Shield Init − Enc Decrease"
     },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
