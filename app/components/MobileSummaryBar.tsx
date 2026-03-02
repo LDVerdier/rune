@@ -26,6 +26,10 @@ interface MobileSummaryBarProps {
   attackScores: AttackScore[];
   defenseScores: DefenseScore[];
   damageScores: DamageScore[];
+  soakScore: number;
+  moveScore: number;
+  engagementScore: number;
+  responseScore: number;
   isMobileSummaryOpen: boolean;
   setIsMobileSummaryOpen: (open: boolean) => void;
   onResetClick: () => void;
@@ -49,6 +53,10 @@ export function MobileSummaryBar({
   attackScores,
   defenseScores,
   damageScores,
+  soakScore,
+  moveScore,
+  engagementScore,
+  responseScore,
   isMobileSummaryOpen,
   setIsMobileSummaryOpen,
   onResetClick,
@@ -89,6 +97,10 @@ export function MobileSummaryBar({
                   attackScores={attackScores}
                   defenseScores={defenseScores}
                   damageScores={damageScores}
+                  soakScore={soakScore}
+                  moveScore={moveScore}
+                  engagementScore={engagementScore}
+                  responseScore={responseScore}
                   onResetClick={() => {
                     setIsMobileSummaryOpen(false);
                     onResetClick();

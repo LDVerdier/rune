@@ -41,6 +41,12 @@ import {
   computeAllDefenses,
   computeAllDamages,
 } from "~/domain/combat-scores";
+import {
+  computeSoak,
+  computeMove,
+  computeEngagement,
+  computeResponse,
+} from "~/domain/secondary-scores";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -119,6 +125,12 @@ export function useCharacterCreation() {
   );
 
   const damageScores = computeAllDamages(ranks.Strength, selectedWeapons);
+
+  // --- Secondary scores ---
+  const soakScore = computeSoak(ranks.Stamina, selectedArmor);
+  const moveScore = computeMove(abilityRanks["Sprint"] ?? 0);
+  const engagementScore = computeEngagement(ranks.Strength, abilityRanks);
+  const responseScore = computeResponse(ranks, abilityRanks);
 
   // --- Derived flags ---
   const hasAllocations =
@@ -205,6 +217,12 @@ export function useCharacterCreation() {
     attackScores,
     defenseScores,
     damageScores,
+
+    // Secondary scores
+    soakScore,
+    moveScore,
+    engagementScore,
+    responseScore,
 
     // Actions
     resetAll,

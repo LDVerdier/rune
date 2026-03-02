@@ -108,6 +108,47 @@
       "formulaMissileLabel": "Tir",
       "formulaMissile": "Dég arme"
     },
+    "soakSection": "Encaissement",
+    "soak": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaLabel": "Encaissement",
+      "formula": "End + Prt armure"
+    },
+    "moveSection": "Déplacement",
+    "move": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "description": "Déplacement complet (dérivé de Sprint)",
+      "colSprint": "Sprint",
+      "colMove": "Déplacement complet",
+      "pace15": "15 pas",
+      "pace20": "20 pas",
+      "pace25": "25 pas",
+      "pace30": "30 pas",
+      "paces": "pas"
+    },
+    "engagementSection": "Engagement",
+    "engagement": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaLabel": "Engagement",
+      "formula": "For + Meilleure compétence d'arme de mêlée"
+    },
+    "responseSection": "Réponse (RES)",
+    "response": {
+      "triggerLabel": "Comment est-ce calculé ?",
+      "description": "Plus haut modificateur global parmi :",
+      "awareness": "Vigilance",
+      "awarenessFormula": "Per + Vigilance",
+      "balance": "Équilibre",
+      "balanceFormula": "Dex + Équilibre",
+      "bravery": "Bravoure",
+      "braveryFormula": "End + Bravoure",
+      "dodge": "Esquive",
+      "dodgeFormula": "Viv + Esquive",
+      "sprint": "Sprint",
+      "sprintFormula": "For + Sprint",
+      "engagement": "Engagement",
+      "engagementFormula": "For + Meilleure mêlée"
+    },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",

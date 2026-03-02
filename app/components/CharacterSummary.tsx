@@ -15,6 +15,10 @@ import { InitiativePopover } from "~/components/InitiativePopover";
 import { AttackPopover } from "~/components/AttackPopover";
 import { DefensePopover } from "~/components/DefensePopover";
 import { DamagePopover } from "~/components/DamagePopover";
+import { SoakPopover } from "~/components/SoakPopover";
+import { MovePopover } from "~/components/MovePopover";
+import { EngagementPopover } from "~/components/EngagementPopover";
+import { ResponsePopover } from "~/components/ResponsePopover";
 
 interface SummaryLabeledRowProps {
   label: string;
@@ -51,6 +55,10 @@ interface CharacterSummaryProps {
   attackScores: AttackScore[];
   defenseScores: DefenseScore[];
   damageScores: DamageScore[];
+  soakScore: number;
+  moveScore: number;
+  engagementScore: number;
+  responseScore: number;
   onResetClick: () => void;
 }
 
@@ -72,6 +80,10 @@ export function CharacterSummary({
   attackScores,
   defenseScores,
   damageScores,
+  soakScore,
+  moveScore,
+  engagementScore,
+  responseScore,
   onResetClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
@@ -465,6 +477,55 @@ export function CharacterSummary({
                   </div>
                 );
               })}
+            </div>
+            {/* Soak */}
+            <Divider className="my-1" />
+            <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 truncate mr-1">
+                  {t("creation.soakSection")}
+                </span>
+                <SoakPopover />
+              </div>
+              <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
+                {soakScore}
+              </span>
+            </div>
+            {/* Move */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 truncate mr-1">
+                  {t("creation.moveSection")}
+                </span>
+                <MovePopover />
+              </div>
+              <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
+                {moveScore} {t("creation.move.paces")}
+              </span>
+            </div>
+            {/* Engagement */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 truncate mr-1">
+                  {t("creation.engagementSection")}
+                </span>
+                <EngagementPopover />
+              </div>
+              <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
+                {engagementScore}
+              </span>
+            </div>
+            {/* Response */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-400 truncate mr-1">
+                  {t("creation.responseSection")}
+                </span>
+                <ResponsePopover />
+              </div>
+              <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
+                {responseScore}
+              </span>
             </div>
           </div>
         </div>

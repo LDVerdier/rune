@@ -108,6 +108,47 @@
       "formulaMissileLabel": "Missile",
       "formulaMissile": "Weapon Dam"
     },
+    "soakSection": "Soak",
+    "soak": {
+      "triggerLabel": "How is this calculated?",
+      "formulaLabel": "Soak",
+      "formula": "Sta + Armor Prt"
+    },
+    "moveSection": "Move",
+    "move": {
+      "triggerLabel": "How is this calculated?",
+      "description": "Full Move (derived from Sprint)",
+      "colSprint": "Sprint",
+      "colMove": "Full Move",
+      "pace15": "15 paces",
+      "pace20": "20 paces",
+      "pace25": "25 paces",
+      "pace30": "30 paces",
+      "paces": "paces"
+    },
+    "engagementSection": "Engagement",
+    "engagement": {
+      "triggerLabel": "How is this calculated?",
+      "formulaLabel": "Engagement",
+      "formula": "Str + Best Melee Weapon Ability"
+    },
+    "responseSection": "Response (RES)",
+    "response": {
+      "triggerLabel": "How is this calculated?",
+      "description": "Highest overall modifier among:",
+      "awareness": "Awareness",
+      "awarenessFormula": "Per + Awareness",
+      "balance": "Balance",
+      "balanceFormula": "Dex + Balance",
+      "bravery": "Bravery",
+      "braveryFormula": "Sta + Bravery",
+      "dodge": "Dodge",
+      "dodgeFormula": "Qik + Dodge",
+      "sprint": "Sprint",
+      "sprintFormula": "Str + Sprint",
+      "engagement": "Engagement",
+      "engagementFormula": "Str + Best Melee"
+    },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",

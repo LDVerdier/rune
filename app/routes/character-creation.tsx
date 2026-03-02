@@ -222,6 +222,10 @@ export default function CharacterCreation() {
               attackScores={creation.attackScores}
               defenseScores={creation.defenseScores}
               damageScores={creation.damageScores}
+              soakScore={creation.soakScore}
+              moveScore={creation.moveScore}
+              engagementScore={creation.engagementScore}
+              responseScore={creation.responseScore}
               onResetClick={() => ui.setIsResetOpen(true)}
             />
           </div>
@@ -246,6 +250,10 @@ export default function CharacterCreation() {
         attackScores={creation.attackScores}
         defenseScores={creation.defenseScores}
         damageScores={creation.damageScores}
+        soakScore={creation.soakScore}
+        moveScore={creation.moveScore}
+        engagementScore={creation.engagementScore}
+        responseScore={creation.responseScore}
         isMobileSummaryOpen={ui.isMobileSummaryOpen}
         setIsMobileSummaryOpen={ui.setIsMobileSummaryOpen}
         onResetClick={() => ui.setIsResetOpen(true)}

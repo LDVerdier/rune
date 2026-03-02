@@ -230,6 +230,56 @@ describe("useCharacterCreation – equipment", () => {
   });
 });
 
+describe("useCharacterCreation – secondary scores", () => {
+  it("soakScore defaults to 0 (Sta=0, no armor)", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    expect(result.current.soakScore).toBe(0);
+  });
+
+  it("soakScore reflects stamina and armor", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    act(() => result.current.changeRank("Stamina", 1)); // Sta=1
+    act(() => result.current.toggleArmor("heavyLeather")); // prt=3
+    expect(result.current.soakScore).toBe(4);
+  });
+
+  it("moveScore defaults to 15 (Sprint=0)", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    expect(result.current.moveScore).toBe(15);
+  });
+
+  it("moveScore updates when Sprint changes", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    act(() => result.current.changeAbilityRank("Sprint", 1)); // Sprint=1
+    expect(result.current.moveScore).toBe(20);
+  });
+
+  it("engagementScore defaults to 0 (Str=0, no melee abilities)", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    expect(result.current.engagementScore).toBe(0);
+  });
+
+  it("engagementScore reflects strength and best melee ability", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    act(() => result.current.changeRank("Strength", 1)); // Str=1
+    act(() => result.current.changeAbilityRank("SingleWeapon", 1)); // SW=1
+    expect(result.current.engagementScore).toBe(2);
+  });
+
+  it("responseScore defaults to 0 (all characteristics and abilities at 0)", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    expect(result.current.responseScore).toBe(0);
+  });
+
+  it("responseScore picks the highest candidate", () => {
+    const { result } = renderHook(() => useCharacterCreation());
+    act(() => result.current.changeRank("Quickness", 1));  // Qik=1
+    act(() => result.current.changeAbilityRank("Dodge", 1)); // Dodge=1
+    // Dodge modifier = Qik 1 + Dodge 1 = 2
+    expect(result.current.responseScore).toBe(2);
+  });
+});
+
 describe("useCharacterCreation – resetAll", () => {
   it("resets everything to initial state", () => {
     const { result } = renderHook(() => useCharacterCreation());
