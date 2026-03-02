@@ -94,6 +94,9 @@ export const WEAPONS: WeaponDefinition[] = [
   { id: "whip", kind: "weapon", init: 0, atk: 6, dfn: 0, dam: 2, load: 0.5, ability: "Chain", availability: "Common" },
 ];
 
+/** Unarmed weapon entry used by initiative, attack, defense, and damage. */
+export const FIST_KICK: WeaponDefinition = WEAPONS.find((w) => w.id === "fistKick")!;
+
 export const SHIELDS: ShieldDefinition[] = [
   { id: "buckler", kind: "shield", init: 0, atk: 0, dfn: 2, dam: 0, load: 0.25, ability: "Single", availability: "Common" },
   { id: "roundShield", kind: "shield", init: 0, atk: 0, dfn: 3, dam: 0, load: 0.5, ability: "Single", availability: "Common" },
@@ -147,3 +150,47 @@ export const WEAPON_ABILITY_NAMES: Record<WeaponAbility, string> = {
   Single: "SingleWeapon",
   Thrown: "ThrownWeapon",
 };
+
+// ---------------------------------------------------------------------------
+// Melee / missile classification
+// ---------------------------------------------------------------------------
+
+/** Weapon abilities classified as missile (ranged). */
+export const MISSILE_WEAPON_ABILITIES: ReadonlySet<WeaponAbility> = new Set([
+  "Bows",
+  "Thrown",
+]);
+
+/**
+ * Ability rank names for melee weapon abilities (excludes Bows and ThrownWeapon).
+ * Includes "TwoWeapons" — a fighting style with no dedicated weapon type.
+ */
+export const MELEE_WEAPON_ABILITY_NAMES: readonly string[] = [
+  ...(Object.entries(WEAPON_ABILITY_NAMES) as [WeaponAbility, string][])
+    .filter(([key]) => !MISSILE_WEAPON_ABILITIES.has(key))
+    .map(([, name]) => name),
+  "TwoWeapons",
+];
+
+// ---------------------------------------------------------------------------
+// Equipment lookup helpers
+// ---------------------------------------------------------------------------
+
+/** Resolve weapon IDs to their definitions, silently skipping unknown IDs. */
+export function findWeapons(ids: string[]): WeaponDefinition[] {
+  return ids
+    .map((id) => WEAPONS.find((w) => w.id === id))
+    .filter((w): w is WeaponDefinition => w != null);
+}
+
+/** Resolve a shield ID to its definition, or null. */
+export function findShield(id: string | null): ShieldDefinition | null {
+  if (!id) return null;
+  return SHIELDS.find((s) => s.id === id) ?? null;
+}
+
+/** Resolve an armor ID to its definition, or null. */
+export function findArmor(id: string | null): ArmorDefinition | null {
+  if (!id) return null;
+  return ARMORS.find((a) => a.id === id) ?? null;
+}

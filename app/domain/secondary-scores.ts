@@ -11,27 +11,17 @@
 
 import type { AbilityRanks } from "./abilities";
 import type { Ranks } from "./character-stats";
-import { ARMORS } from "./equipment";
+import { MELEE_WEAPON_ABILITY_NAMES, findArmor } from "./equipment";
 
 /** Sprint rank → full move in paces. */
 const MOVE_BY_SPRINT: readonly number[] = [15, 20, 25, 30];
-
-/** Melee weapon ability names (excludes Bows and ThrownWeapon). */
-const MELEE_WEAPON_ABILITIES = [
-  "Brawling",
-  "ChainWeapon",
-  "GreatWeapon",
-  "LongshaftWeapon",
-  "SingleWeapon",
-  "TwoWeapons",
-] as const;
 
 /** Soak = Stamina + Armor Protection rating. */
 export function computeSoak(
   stamina: number,
   armorId: string | null,
 ): number {
-  const armor = armorId ? ARMORS.find((a) => a.id === armorId) : null;
+  const armor = findArmor(armorId);
   return stamina + (armor?.prt ?? 0);
 }
 
@@ -47,7 +37,7 @@ export function computeEngagement(
   abilityRanks: AbilityRanks,
 ): number {
   const bestMelee = Math.max(
-    ...MELEE_WEAPON_ABILITIES.map((name) => abilityRanks[name] ?? 0),
+    ...MELEE_WEAPON_ABILITY_NAMES.map((name) => abilityRanks[name] ?? 0),
   );
   return strength + bestMelee;
 }

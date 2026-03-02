@@ -11,14 +11,16 @@
  * If the relevant ability has rank 0, a -3 penalty applies (attack & defense).
  */
 
+import { effectiveAbilityScore } from "./ability-check";
 import type { AbilityRanks } from "./abilities";
 import {
-  SHIELDS,
+  FIST_KICK,
+  MISSILE_WEAPON_ABILITIES,
   WEAPON_ABILITY_NAMES,
-  WEAPONS,
+  findShield,
+  findWeapons,
 } from "./equipment";
 import type { ShieldDefinition, WeaponDefinition } from "./equipment";
-import { effectiveAbilityScore } from "./initiative";
 
 export interface AttackScore {
   readonly kind: "melee" | "missile" | "unarmed";
@@ -39,11 +41,6 @@ export interface DamageScore {
   readonly weaponId: string | null;
   readonly score: number;
 }
-
-const FIST_KICK_ID = "fistKick";
-
-/** Weapon abilities classified as missile (ranged). */
-const MISSILE_ABILITIES: ReadonlySet<string> = new Set(["Bows", "Thrown"]);
 
 // ---------------------------------------------------------------------------
 // Attack
@@ -105,7 +102,6 @@ export function computeUnarmedAttack(
   encumbranceDecrease: number,
 ): AttackScore {
   const brawlingRank = abilityRanks["Brawling"] ?? 0;
-  const fistKick = WEAPONS.find((w) => w.id === FIST_KICK_ID)!;
 
   return {
     kind: "unarmed",
@@ -113,7 +109,7 @@ export function computeUnarmedAttack(
     score:
       dexterity +
       effectiveAbilityScore(brawlingRank) +
-      fistKick.atk +
+      FIST_KICK.atk +
       (shield?.atk ?? 0) -
       encumbranceDecrease,
     hasMissingAbilityPenalty: brawlingRank === 0,
@@ -132,30 +128,25 @@ export function computeAllAttacks(
   shieldId: string | null,
   encumbranceDecrease: number,
 ): AttackScore[] {
-  const shield = shieldId
-    ? (SHIELDS.find((s) => s.id === shieldId) ?? null)
-    : null;
+  const shield = findShield(shieldId);
 
-  const armed = weaponIds
-    .map((id) => WEAPONS.find((w) => w.id === id))
-    .filter((w): w is WeaponDefinition => w != null)
-    .map((weapon) =>
-      MISSILE_ABILITIES.has(weapon.ability)
-        ? computeMissileAttack(
-            perception,
-            abilityRanks,
-            weapon,
-            shield,
-            encumbranceDecrease,
-          )
-        : computeMeleeAttack(
-            dexterity,
-            abilityRanks,
-            weapon,
-            shield,
-            encumbranceDecrease,
-          ),
-    );
+  const armed = findWeapons(weaponIds).map((weapon) =>
+    MISSILE_WEAPON_ABILITIES.has(weapon.ability)
+      ? computeMissileAttack(
+          perception,
+          abilityRanks,
+          weapon,
+          shield,
+          encumbranceDecrease,
+        )
+      : computeMeleeAttack(
+          dexterity,
+          abilityRanks,
+          weapon,
+          shield,
+          encumbranceDecrease,
+        ),
+  );
 
   return [
     ...armed,
@@ -199,7 +190,6 @@ export function computeUnarmedDefense(
   encumbranceDecrease: number,
 ): DefenseScore {
   const brawlingRank = abilityRanks["Brawling"] ?? 0;
-  const fistKick = WEAPONS.find((w) => w.id === FIST_KICK_ID)!;
 
   return {
     kind: "unarmed",
@@ -207,7 +197,7 @@ export function computeUnarmedDefense(
     score:
       quickness +
       effectiveAbilityScore(brawlingRank) +
-      (fistKick.dfn ?? 0) +
+      (FIST_KICK.dfn ?? 0) +
       (shield?.dfn ?? 0) -
       encumbranceDecrease,
     hasMissingAbilityPenalty: brawlingRank === 0,
@@ -225,13 +215,9 @@ export function computeAllDefenses(
   shieldId: string | null,
   encumbranceDecrease: number,
 ): DefenseScore[] {
-  const shield = shieldId
-    ? (SHIELDS.find((s) => s.id === shieldId) ?? null)
-    : null;
+  const shield = findShield(shieldId);
 
-  const armed = weaponIds
-    .map((id) => WEAPONS.find((w) => w.id === id))
-    .filter((w): w is WeaponDefinition => w != null)
+  const armed = findWeapons(weaponIds)
     .filter((w) => w.dfn !== null)
     .map((weapon) =>
       computeArmedDefense(
@@ -276,12 +262,10 @@ export function computeMissileDamage(weapon: WeaponDefinition): DamageScore {
 
 /** Compute unarmed damage (Fist/Kick). */
 export function computeUnarmedDamage(strength: number): DamageScore {
-  const fistKick = WEAPONS.find((w) => w.id === FIST_KICK_ID)!;
-
   return {
     kind: "unarmed",
     weaponId: null,
-    score: strength + (typeof fistKick.dam === "number" ? fistKick.dam : 0),
+    score: strength + (typeof FIST_KICK.dam === "number" ? FIST_KICK.dam : 0),
   };
 }
 
@@ -293,17 +277,16 @@ export function computeAllDamages(
   strength: number,
   weaponIds: string[],
 ): DamageScore[] {
-  const weapons = weaponIds
-    .map((id) => WEAPONS.find((w) => w.id === id))
-    .filter((w): w is WeaponDefinition => w != null)
-    .filter((w) => typeof w.dam === "number");
+  const weapons = findWeapons(weaponIds).filter(
+    (w) => typeof w.dam === "number",
+  );
 
   const melee = weapons
-    .filter((w) => !MISSILE_ABILITIES.has(w.ability))
+    .filter((w) => !MISSILE_WEAPON_ABILITIES.has(w.ability))
     .map((weapon) => computeArmedDamage(strength, weapon));
 
   const missile = weapons
-    .filter((w) => MISSILE_ABILITIES.has(w.ability))
+    .filter((w) => MISSILE_WEAPON_ABILITIES.has(w.ability))
     .map((weapon) => computeMissileDamage(weapon));
 
   return [...melee, ...missile, computeUnarmedDamage(strength)];

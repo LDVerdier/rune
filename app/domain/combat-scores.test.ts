@@ -327,4 +327,11 @@ describe("computeAllDamages", () => {
     expect(result[0].score).toBe(5);
     expect(result[1].score).toBe(2); // unarmed: Str 2 + 0
   });
+
+  it("excludes weapons with special damage", () => {
+    // barbNet has dam: "special" — should be filtered out
+    const result = computeAllDamages(2, ["barbNet"]);
+    expect(result).toHaveLength(1);
+    expect(result[0].kind).toBe("unarmed");
+  });
 });

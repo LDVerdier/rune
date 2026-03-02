@@ -1,11 +1,10 @@
 import { describe, it, expect } from "vitest";
+import { effectiveAbilityScore, MISSING_ABILITY_PENALTY } from "./ability-check";
 import {
-  effectiveAbilityScore,
   computeArmedInitiative,
   computeUnarmedInitiative,
   computeNonCombatInitiative,
   computeAllInitiatives,
-  MISSING_ABILITY_PENALTY,
 } from "./initiative";
 import { INITIAL_ABILITY_RANKS } from "./abilities";
 import { WEAPONS, SHIELDS, ARMORS } from "./equipment";

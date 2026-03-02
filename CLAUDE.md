@@ -4,6 +4,9 @@
 - React Router v7, React 19, HeroUI, Tailwind CSS v4, Framer Motion
 - TypeScript, ESLint, Vitest + Testing Library
 
+## Design System
+HeroUI is the design system foundation. Always use HeroUI components before building custom ones. Only create a custom component when HeroUI genuinely has no equivalent.
+
 ## Verification Commands
 - Lint: `npm run lint`
 - Typecheck: `npm run typecheck`

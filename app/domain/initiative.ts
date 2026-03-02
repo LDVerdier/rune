@@ -12,12 +12,14 @@
  * If the relevant ability has rank 0, a -3 penalty applies.
  */
 
+import { effectiveAbilityScore } from "./ability-check";
 import type { AbilityRanks } from "./abilities";
 import {
-  ARMORS,
-  SHIELDS,
+  FIST_KICK,
   WEAPON_ABILITY_NAMES,
-  WEAPONS,
+  findArmor,
+  findShield,
+  findWeapons,
 } from "./equipment";
 import type {
   ArmorDefinition,
@@ -30,19 +32,6 @@ export interface InitiativeScore {
   readonly weaponId: string | null;
   readonly score: number;
   readonly hasMissingAbilityPenalty: boolean;
-}
-
-/** Penalty applied when the character has rank 0 in the required ability. */
-export const MISSING_ABILITY_PENALTY = -3;
-
-const FIST_KICK_ID = "fistKick";
-
-/**
- * Returns the rank if the character has the ability (rank > 0),
- * otherwise returns -3 (missing ability penalty).
- */
-export function effectiveAbilityScore(abilityRank: number): number {
-  return abilityRank > 0 ? abilityRank : MISSING_ABILITY_PENALTY;
 }
 
 /** Compute armed initiative for a single weapon. */
@@ -80,7 +69,6 @@ export function computeUnarmedInitiative(
   encumbranceDecrease: number,
 ): InitiativeScore {
   const brawlingRank = abilityRanks["Brawling"] ?? 0;
-  const fistKick = WEAPONS.find((w) => w.id === FIST_KICK_ID)!;
 
   return {
     kind: "unarmed",
@@ -88,7 +76,7 @@ export function computeUnarmedInitiative(
     score:
       quickness +
       effectiveAbilityScore(brawlingRank) +
-      fistKick.init +
+      FIST_KICK.init +
       (armor?.init ?? 0) +
       (shield?.init ?? 0) -
       encumbranceDecrease,
@@ -131,17 +119,10 @@ export function computeAllInitiatives(
   armorId: string | null,
   encumbranceDecrease: number,
 ): InitiativeScore[] {
-  const armor = armorId
-    ? (ARMORS.find((a) => a.id === armorId) ?? null)
-    : null;
-  const shield = shieldId
-    ? (SHIELDS.find((s) => s.id === shieldId) ?? null)
-    : null;
+  const armor = findArmor(armorId);
+  const shield = findShield(shieldId);
 
-  const armed = weaponIds
-    .map((id) => WEAPONS.find((w) => w.id === id))
-    .filter((w): w is WeaponDefinition => w != null)
-    .map((weapon) =>
+  const armed = findWeapons(weaponIds).map((weapon) =>
       computeArmedInitiative(
         quickness,
         abilityRanks,

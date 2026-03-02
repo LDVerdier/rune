@@ -5,7 +5,7 @@
  * equipment against thresholds that depend on the character's Strength rank.
  */
 
-import { WEAPONS, SHIELDS, ARMORS } from "./equipment";
+import { findArmor, findShield, findWeapons } from "./equipment";
 
 export type EncumbranceDegree =
   | "Light"
@@ -53,20 +53,15 @@ export function computeTotalLoad(
 ): number {
   let total = 0;
 
-  for (const id of weaponIds) {
-    const weapon = WEAPONS.find((w) => w.id === id);
-    if (weapon?.load != null) total += weapon.load;
+  for (const weapon of findWeapons(weaponIds)) {
+    if (weapon.load != null) total += weapon.load;
   }
 
-  if (shieldId) {
-    const shield = SHIELDS.find((s) => s.id === shieldId);
-    if (shield?.load != null) total += shield.load;
-  }
+  const shield = findShield(shieldId);
+  if (shield?.load != null) total += shield.load;
 
-  if (armorId) {
-    const armor = ARMORS.find((a) => a.id === armorId);
-    if (armor) total += armor.load;
-  }
+  const armor = findArmor(armorId);
+  if (armor) total += armor.load;
 
   return total;
 }
