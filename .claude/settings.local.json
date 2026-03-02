@@ -31,7 +31,9 @@
       "Bash(ls /Users/laurent/Documents/perso/rune/node_modules/@heroui/modal/dist/chunk-*.mjs)",
       "Bash(test -d /Users/laurent/Documents/perso/rune/app/domain)",
       "Bash(test -d /Users/laurent/Documents/perso/rune/app/hooks)",
-      "Bash(test -d /Users/laurent/Documents/perso/rune/app/lib)"
+      "Bash(test -d /Users/laurent/Documents/perso/rune/app/lib)",
+      "Read(//Users/laurent/.volta/tools/user/**)",
+      "Bash(~/.volta/bin/npm --version)"
     ],
     "additionalDirectories": [
       "/Users/laurent/Documents/perso/rune",
