@@ -3,7 +3,8 @@
     "allow": [
       "Bash(export PATH=\"$HOME/.volta/bin:$PATH\")",
       "Bash(export PATH=\"/usr/local/bin:/usr/bin:/bin:$HOME/.volta/bin:$PATH\")",
-      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")"
+      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(node -e \"const { Accordion } = require\\(''@heroui/react''\\); console.log\\(typeof Accordion\\);\")"
     ]
   }
 }

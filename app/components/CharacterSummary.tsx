@@ -1,4 +1,4 @@
-import { Button, Divider } from "@heroui/react";
+import { Accordion, AccordionItem, Button, Divider } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import type { Ranks } from "~/domain/character-stats";
 import { CHARACTERISTICS, BASE_POINTS } from "~/domain/character-stats";
@@ -28,6 +28,15 @@ function SummaryLabeledRow({ label, value, color }: SummaryLabeledRowProps) {
     </div>
   );
 }
+
+const accordionItemClasses = {
+  base: "py-0 px-0",
+  trigger: "py-2 px-0",
+  titleWrapper: "flex-initial",
+  title: "text-[10px] font-bold text-gray-500 uppercase tracking-wider",
+  content: "px-0 pb-3 pt-0",
+  indicator: "text-gray-600 text-xs",
+};
 
 interface CharacterSummaryProps {
   heroName: string;
@@ -91,7 +100,7 @@ export function CharacterSummary({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Points + Reset */}
+      {/* Points + Reset — always visible */}
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
@@ -118,7 +127,7 @@ export function CharacterSummary({
 
       <Divider />
 
-      {/* Name */}
+      {/* Name — always visible */}
       {(heroName || cognomen) && (
         <>
           <div>
@@ -133,7 +142,7 @@ export function CharacterSummary({
         </>
       )}
 
-      {/* HP + Wound Threshold */}
+      {/* HP + Wound Threshold — always visible */}
       <div className="grid grid-cols-2 gap-3">
         <div>
           <div className="flex items-center gap-1 mb-0.5">
@@ -168,128 +177,138 @@ export function CharacterSummary({
         </div>
       </div>
 
-      <Divider />
-
-      {/* Characteristics */}
-      <div>
-        <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-          {t("creation.characteristicsSection")}
-        </h3>
-        <div className="flex flex-col gap-1">
-          {CHARACTERISTICS.map((char) => {
-            const rank = ranks[char];
-            return (
-              <SummaryLabeledRow
-                key={char}
-                label={t(`characteristics.${char}`)}
-                value={formatRank(rank)}
-                color={charRankColor(rank)}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Abilities */}
-      {hasPurchasedAbilities && (
-        <>
-          <Divider />
-          <div>
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-              {t("creation.abilitiesSection")}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {ABILITY_SETS.map((set) => {
-                const purchased = ABILITIES_BY_SET[set].filter(
-                  (a) => abilityRanks[a.name] > 0,
-                );
-                if (purchased.length === 0) return null;
+      {/* Collapsible sections */}
+      <Accordion
+        selectionMode="multiple"
+        defaultExpandedKeys={["characteristics"]}
+        variant="light"
+        isCompact
+        className="px-0 gap-0"
+        itemClasses={accordionItemClasses}
+      >
+        {[
+          <AccordionItem
+            key="characteristics"
+            aria-label={t("creation.characteristicsSection")}
+            title={t("creation.characteristicsSection")}
+          >
+            <div className="flex flex-col gap-1">
+              {CHARACTERISTICS.map((char) => {
+                const rank = ranks[char];
                 return (
-                  <div key={set}>
-                    <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
-                      {t(`abilities.sets.${set}`)}
-                    </p>
-                    <div className="flex flex-col gap-0.5">
-                      {purchased.map((a) => (
-                        <SummaryLabeledRow
-                          key={a.name}
-                          label={t(`abilities.${a.name}`)}
-                          value={abilityRanks[a.name]}
-                          color="text-green-400"
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  <SummaryLabeledRow
+                    key={char}
+                    label={t(`characteristics.${char}`)}
+                    value={formatRank(rank)}
+                    color={charRankColor(rank)}
+                  />
                 );
               })}
             </div>
-          </div>
-        </>
-      )}
+          </AccordionItem>,
 
-      {/* Equipment */}
-      {hasEquipment && (
-        <>
-          <Divider />
-          <div>
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-              {t("creation.equipmentSection")}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {selectedWeapons.length > 0 && (
-                <div>
-                  <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
-                    {t("creation.weaponsSection")}
-                  </p>
-                  <div className="flex flex-col gap-0.5">
-                    {selectedWeapons.map((id) => (
-                      <span key={id} className="text-xs text-gray-400">
-                        {t(`equipment.${id}`)}
-                      </span>
-                    ))}
+          hasPurchasedAbilities ? (
+            <AccordionItem
+              key="abilities"
+              aria-label={t("creation.abilitiesSection")}
+              title={t("creation.abilitiesSection")}
+            >
+              <div className="flex flex-col gap-3">
+                {ABILITY_SETS.map((set) => {
+                  const purchased = ABILITIES_BY_SET[set].filter(
+                    (a) => abilityRanks[a.name] > 0,
+                  );
+                  if (purchased.length === 0) return null;
+                  return (
+                    <div key={set}>
+                      <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
+                        {t(`abilities.sets.${set}`)}
+                      </p>
+                      <div className="flex flex-col gap-0.5">
+                        {purchased.map((a) => (
+                          <SummaryLabeledRow
+                            key={a.name}
+                            label={t(`abilities.${a.name}`)}
+                            value={abilityRanks[a.name]}
+                            color="text-green-400"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </AccordionItem>
+          ) : null,
+
+          hasEquipment ? (
+            <AccordionItem
+              key="equipment"
+              aria-label={t("creation.equipmentSection")}
+              title={t("creation.equipmentSection")}
+            >
+              <div className="flex flex-col gap-3">
+                {selectedWeapons.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
+                      {t("creation.weaponsSection")}
+                    </p>
+                    <div className="flex flex-col gap-0.5">
+                      {selectedWeapons.map((id) => (
+                        <span key={id} className="text-xs text-gray-400">
+                          {t(`equipment.${id}`)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {selectedShield && (
-                <div>
-                  <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
-                    {t("creation.shieldsSection")}
-                  </p>
-                  <span className="text-xs text-gray-400">
-                    {t(`equipment.${selectedShield}`)}
-                  </span>
-                </div>
-              )}
-              {selectedArmor && (
-                <div>
-                  <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
-                    {t("creation.armorsSection")}
-                  </p>
-                  <span className="text-xs text-gray-400">
-                    {t(`equipment.${selectedArmor}`)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+                )}
+                {selectedShield && (
+                  <div>
+                    <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
+                      {t("creation.shieldsSection")}
+                    </p>
+                    <span className="text-xs text-gray-400">
+                      {t(`equipment.${selectedShield}`)}
+                    </span>
+                  </div>
+                )}
+                {selectedArmor && (
+                  <div>
+                    <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
+                      {t("creation.armorsSection")}
+                    </p>
+                    <span className="text-xs text-gray-400">
+                      {t(`equipment.${selectedArmor}`)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </AccordionItem>
+          ) : null,
 
-      {/* Combat Scores */}
-      <CombatScoresSummary
-        strengthRank={ranks.Strength}
-        totalLoad={totalLoad}
-        encumbranceDegree={encumbranceDegree}
-        encumbranceDecrease={encumbranceDecrease}
-        initiativeScores={initiativeScores}
-        attackScores={attackScores}
-        defenseScores={defenseScores}
-        damageScores={damageScores}
-        soakScore={soakScore}
-        moveScore={moveScore}
-        engagementScore={engagementScore}
-        responseScore={responseScore}
-      />
+          <AccordionItem
+            key="combat"
+            aria-label={t("creation.importantNumbersSection")}
+            title={t("creation.importantNumbersSection")}
+          >
+            <CombatScoresSummary
+              strengthRank={ranks.Strength}
+              totalLoad={totalLoad}
+              encumbranceDegree={encumbranceDegree}
+              encumbranceDecrease={encumbranceDecrease}
+              initiativeScores={initiativeScores}
+              attackScores={attackScores}
+              defenseScores={defenseScores}
+              damageScores={damageScores}
+              soakScore={soakScore}
+              moveScore={moveScore}
+              engagementScore={engagementScore}
+              responseScore={responseScore}
+            />
+          </AccordionItem>,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HeroUI Accordion's CollectionElement type rejects conditional children
+        ].filter(Boolean) as any}
+      </Accordion>
     </div>
   );
 }

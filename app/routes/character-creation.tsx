@@ -40,8 +40,6 @@ export default function CharacterCreation() {
   return (
     <div className="min-h-screen">
       <div className="lg:flex lg:justify-center">
-        {/* Ghost spacer — mirrors aside width so main content is visually centered */}
-        <div className="hidden lg:block lg:flex-none w-64" />
         <main className="w-full max-w-2xl mx-auto lg:mx-0 lg:flex-none p-4 sm:p-6">
           {/* Header */}
           <div className="relative flex items-center justify-between mb-8">
@@ -199,12 +197,13 @@ export default function CharacterCreation() {
         </main>
 
         {/* Side summary — desktop only */}
-        <aside className="hidden lg:block lg:flex-none w-64 py-4 sm:py-6 pl-8 pr-4 sm:pr-6">
-          <div className="sticky top-4">
-            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-              {t("creation.summary")}
-            </h2>
-            <CharacterSummary
+        <aside className="hidden lg:block lg:flex-none w-80 py-4 sm:py-6 pl-6 pr-4 sm:pr-6">
+          <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto scrollbar-thin">
+            <div className="bg-content1 border border-divider rounded-large p-4">
+              <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
+                {t("creation.summary")}
+              </h2>
+              <CharacterSummary
               heroName={ui.heroName}
               cognomen={ui.cognomen}
               remainingPoints={creation.remainingPoints}
@@ -228,6 +227,7 @@ export default function CharacterCreation() {
               responseScore={creation.responseScore}
               onResetClick={() => ui.setIsResetOpen(true)}
             />
+            </div>
           </div>
         </aside>
       </div>

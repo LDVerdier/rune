@@ -107,13 +107,7 @@ export function CombatScoresSummary({
   const { t } = useTranslation();
 
   return (
-    <>
-      <Divider />
-      <div>
-        <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-          {t("creation.importantNumbersSection")}
-        </h3>
-        <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1">
           {/* Encumbrance */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
@@ -282,8 +276,6 @@ export function CombatScoresSummary({
               {responseScore}
             </span>
           </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
