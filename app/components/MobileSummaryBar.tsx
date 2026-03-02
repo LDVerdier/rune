@@ -4,6 +4,7 @@ import type { Ranks } from "~/domain/character-stats";
 import { BASE_POINTS } from "~/domain/character-stats";
 import type { AbilityRanks } from "~/domain/abilities";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
+import type { InitiativeScore } from "~/domain/initiative";
 import { CharacterSummary } from "~/components/CharacterSummary";
 
 interface MobileSummaryBarProps {
@@ -20,6 +21,7 @@ interface MobileSummaryBarProps {
   totalLoad: number;
   encumbranceDegree: EncumbranceDegree;
   encumbranceDecrease: number;
+  initiativeScores: InitiativeScore[];
   isMobileSummaryOpen: boolean;
   setIsMobileSummaryOpen: (open: boolean) => void;
   onResetClick: () => void;
@@ -39,6 +41,7 @@ export function MobileSummaryBar({
   totalLoad,
   encumbranceDegree,
   encumbranceDecrease,
+  initiativeScores,
   isMobileSummaryOpen,
   setIsMobileSummaryOpen,
   onResetClick,
@@ -75,6 +78,7 @@ export function MobileSummaryBar({
                   totalLoad={totalLoad}
                   encumbranceDegree={encumbranceDegree}
                   encumbranceDecrease={encumbranceDecrease}
+                  initiativeScores={initiativeScores}
                   onResetClick={() => {
                     setIsMobileSummaryOpen(false);
                     onResetClick();

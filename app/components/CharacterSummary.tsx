@@ -8,6 +8,7 @@ import { HPBreakdownPopover } from "~/components/HPBreakdownPopover";
 import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import { charRankColor, formatRank } from "~/utils/formatting";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
+import type { InitiativeScore } from "~/domain/initiative";
 import { EncumbrancePopover } from "~/components/EncumbrancePopover";
 
 interface SummaryLabeledRowProps {
@@ -41,6 +42,7 @@ interface CharacterSummaryProps {
   totalLoad: number;
   encumbranceDegree: EncumbranceDegree;
   encumbranceDecrease: number;
+  initiativeScores: InitiativeScore[];
   onResetClick: () => void;
 }
 
@@ -58,6 +60,7 @@ export function CharacterSummary({
   totalLoad,
   encumbranceDegree,
   encumbranceDecrease,
+  initiativeScores,
   onResetClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
@@ -294,6 +297,46 @@ export function CharacterSummary({
               value={encumbranceDecrease}
               color={degreeColor[encumbranceDegree]}
             />
+            {/* Initiative Scores */}
+            <Divider className="my-1" />
+            <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-0.5 mt-1">
+              {t("creation.initiativeSection")}
+            </p>
+            <div className="flex flex-col gap-0.5">
+              {initiativeScores.map((init) => {
+                const label =
+                  init.kind === "armed"
+                    ? t(`equipment.${init.weaponId}`)
+                    : t(`creation.initiative.${init.kind === "unarmed" ? "unarmed" : "nonCombat"}`);
+                return (
+                  <div
+                    key={init.weaponId ?? init.kind}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-xs text-gray-400 truncate mr-2">
+                      {label}
+                    </span>
+                    <span
+                      className={`text-xs font-bold tabular-nums shrink-0 ${
+                        init.hasMissingAbilityPenalty
+                          ? "text-orange-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {init.score}
+                      {init.hasMissingAbilityPenalty && (
+                        <span className="text-[9px] text-orange-400 ml-0.5">*</span>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+              {initiativeScores.some((i) => i.hasMissingAbilityPenalty) && (
+                <p className="text-[9px] text-orange-400 mt-0.5">
+                  * {t("creation.initiative.missingAbilityNote")}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </>

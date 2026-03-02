@@ -35,6 +35,7 @@ import {
   computeEncumbranceDegree,
   computeEncumbranceDecrease,
 } from "~/domain/encumbrance";
+import { computeAllInitiatives } from "~/domain/initiative";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -83,6 +84,16 @@ export function useCharacterCreation() {
   const totalLoad = computeTotalLoad(selectedWeapons, selectedShield, selectedArmor);
   const encumbranceDegree = computeEncumbranceDegree(ranks.Strength, totalLoad);
   const encumbranceDecrease = computeEncumbranceDecrease(encumbranceDegree);
+
+  // --- Initiative ---
+  const initiativeScores = computeAllInitiatives(
+    ranks.Quickness,
+    abilityRanks,
+    selectedWeapons,
+    selectedShield,
+    selectedArmor,
+    encumbranceDecrease,
+  );
 
   // --- Derived flags ---
   const hasAllocations =
@@ -161,6 +172,9 @@ export function useCharacterCreation() {
     totalLoad,
     encumbranceDegree,
     encumbranceDecrease,
+
+    // Initiative
+    initiativeScores,
 
     // Actions
     resetAll,

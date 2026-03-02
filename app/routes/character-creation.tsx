@@ -218,6 +218,7 @@ export default function CharacterCreation() {
               totalLoad={creation.totalLoad}
               encumbranceDegree={creation.encumbranceDegree}
               encumbranceDecrease={creation.encumbranceDecrease}
+              initiativeScores={creation.initiativeScores}
               onResetClick={() => ui.setIsResetOpen(true)}
             />
           </div>
@@ -238,6 +239,7 @@ export default function CharacterCreation() {
         totalLoad={creation.totalLoad}
         encumbranceDegree={creation.encumbranceDegree}
         encumbranceDecrease={creation.encumbranceDecrease}
+        initiativeScores={creation.initiativeScores}
         isMobileSummaryOpen={ui.isMobileSummaryOpen}
         setIsMobileSummaryOpen={ui.setIsMobileSummaryOpen}
         onResetClick={() => ui.setIsResetOpen(true)}

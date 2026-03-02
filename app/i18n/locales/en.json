@@ -64,6 +64,12 @@
     "importantNumbersSection": "Important Numbers",
     "encumbrance": "Encumbrance",
     "encumbranceDecrease": "Encumbrance Decrease",
+    "initiativeSection": "Initiative",
+    "initiative": {
+      "unarmed": "Unarmed (Fist/Kick)",
+      "nonCombat": "Non-Combat",
+      "missingAbilityNote": "Includes -3 missing ability penalty"
+    },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",

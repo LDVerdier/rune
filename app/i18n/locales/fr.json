@@ -64,6 +64,12 @@
     "importantNumbersSection": "Chiffres Importants",
     "encumbrance": "Encombrement",
     "encumbranceDecrease": "Pénalité d'Encombrement",
+    "initiativeSection": "Initiative",
+    "initiative": {
+      "unarmed": "Mains nues (Poing/Pied)",
+      "nonCombat": "Hors combat",
+      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante"
+    },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",
