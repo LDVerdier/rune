@@ -77,6 +77,36 @@
       "formulaNonCombatLabel": "Hors combat",
       "formulaNonCombat": "Viv + Sprint* + Init armure + Init bouclier − Pénalité d'enc."
     },
+    "attackSection": "Attaque",
+    "attack": {
+      "unarmed": "Mains nues (Poing/Pied)",
+      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante",
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaMeleeLabel": "Mêlée",
+      "formulaMelee": "Dex + Compétence d'arme* + Atq arme + Atq bouclier − Pénalité d'enc.",
+      "formulaMissileLabel": "Tir",
+      "formulaMissile": "Per + Compétence d'arme* + Atq arme + Atq bouclier − Pénalité d'enc.",
+      "formulaUnarmedLabel": "Mains nues",
+      "formulaUnarmed": "Dex + Bagarre* + Atq poing/pied + Atq bouclier − Pénalité d'enc."
+    },
+    "defenseSection": "Défense",
+    "defense": {
+      "unarmed": "Mains nues (Poing/Pied)",
+      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante",
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaArmedLabel": "Armé",
+      "formulaArmed": "Viv + Compétence d'arme* + Déf arme + Déf bouclier − Pénalité d'enc.",
+      "formulaUnarmedLabel": "Mains nues",
+      "formulaUnarmed": "Viv + Bagarre* + Déf poing/pied + Déf bouclier − Pénalité d'enc."
+    },
+    "damageSection": "Dégâts",
+    "damage": {
+      "unarmed": "Mains nues (Poing/Pied)",
+      "triggerLabel": "Comment est-ce calculé ?",
+      "formulaLabel": "Dégâts",
+      "formula": "For + Dég arme",
+      "missileExcludedNote": "Les armes de tir (Arcs, Jet) sont exclues"
+    },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",

@@ -219,6 +219,9 @@ export default function CharacterCreation() {
               encumbranceDegree={creation.encumbranceDegree}
               encumbranceDecrease={creation.encumbranceDecrease}
               initiativeScores={creation.initiativeScores}
+              attackScores={creation.attackScores}
+              defenseScores={creation.defenseScores}
+              damageScores={creation.damageScores}
               onResetClick={() => ui.setIsResetOpen(true)}
             />
           </div>
@@ -240,6 +243,9 @@ export default function CharacterCreation() {
         encumbranceDegree={creation.encumbranceDegree}
         encumbranceDecrease={creation.encumbranceDecrease}
         initiativeScores={creation.initiativeScores}
+        attackScores={creation.attackScores}
+        defenseScores={creation.defenseScores}
+        damageScores={creation.damageScores}
         isMobileSummaryOpen={ui.isMobileSummaryOpen}
         setIsMobileSummaryOpen={ui.setIsMobileSummaryOpen}
         onResetClick={() => ui.setIsResetOpen(true)}

@@ -77,6 +77,36 @@
       "formulaNonCombatLabel": "Non-Combat",
       "formulaNonCombat": "Qik + Sprint* + Armor Init + Shield Init − Enc Decrease"
     },
+    "attackSection": "Attack",
+    "attack": {
+      "unarmed": "Unarmed (Fist/Kick)",
+      "missingAbilityNote": "Includes -3 missing ability penalty",
+      "triggerLabel": "How is this calculated?",
+      "formulaMeleeLabel": "Melee",
+      "formulaMelee": "Dex + Weapon Ability* + Weapon Atk + Shield Atk − Enc Decrease",
+      "formulaMissileLabel": "Missile",
+      "formulaMissile": "Per + Weapon Ability* + Weapon Atk + Shield Atk − Enc Decrease",
+      "formulaUnarmedLabel": "Unarmed",
+      "formulaUnarmed": "Dex + Brawling* + Fist/Kick Atk + Shield Atk − Enc Decrease"
+    },
+    "defenseSection": "Defense",
+    "defense": {
+      "unarmed": "Unarmed (Fist/Kick)",
+      "missingAbilityNote": "Includes -3 missing ability penalty",
+      "triggerLabel": "How is this calculated?",
+      "formulaArmedLabel": "Armed",
+      "formulaArmed": "Qik + Weapon Ability* + Weapon Dfn + Shield Dfn − Enc Decrease",
+      "formulaUnarmedLabel": "Unarmed",
+      "formulaUnarmed": "Qik + Brawling* + Fist/Kick Dfn + Shield Dfn − Enc Decrease"
+    },
+    "damageSection": "Damage",
+    "damage": {
+      "unarmed": "Unarmed (Fist/Kick)",
+      "triggerLabel": "How is this calculated?",
+      "formulaLabel": "Damage",
+      "formula": "Str + Weapon Dam",
+      "missileExcludedNote": "Missile weapons (Bows, Thrown) are excluded"
+    },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",

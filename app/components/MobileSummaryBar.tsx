@@ -5,6 +5,7 @@ import { BASE_POINTS } from "~/domain/character-stats";
 import type { AbilityRanks } from "~/domain/abilities";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
 import type { InitiativeScore } from "~/domain/initiative";
+import type { AttackScore, DefenseScore, DamageScore } from "~/domain/combat-scores";
 import { CharacterSummary } from "~/components/CharacterSummary";
 
 interface MobileSummaryBarProps {
@@ -22,6 +23,9 @@ interface MobileSummaryBarProps {
   encumbranceDegree: EncumbranceDegree;
   encumbranceDecrease: number;
   initiativeScores: InitiativeScore[];
+  attackScores: AttackScore[];
+  defenseScores: DefenseScore[];
+  damageScores: DamageScore[];
   isMobileSummaryOpen: boolean;
   setIsMobileSummaryOpen: (open: boolean) => void;
   onResetClick: () => void;
@@ -42,6 +46,9 @@ export function MobileSummaryBar({
   encumbranceDegree,
   encumbranceDecrease,
   initiativeScores,
+  attackScores,
+  defenseScores,
+  damageScores,
   isMobileSummaryOpen,
   setIsMobileSummaryOpen,
   onResetClick,
@@ -79,6 +86,9 @@ export function MobileSummaryBar({
                   encumbranceDegree={encumbranceDegree}
                   encumbranceDecrease={encumbranceDecrease}
                   initiativeScores={initiativeScores}
+                  attackScores={attackScores}
+                  defenseScores={defenseScores}
+                  damageScores={damageScores}
                   onResetClick={() => {
                     setIsMobileSummaryOpen(false);
                     onResetClick();

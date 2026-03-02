@@ -9,8 +9,12 @@ import { WoundThresholdPopover } from "~/components/WoundThresholdPopover";
 import { charRankColor, formatRank } from "~/utils/formatting";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
 import type { InitiativeScore } from "~/domain/initiative";
+import type { AttackScore, DefenseScore, DamageScore } from "~/domain/combat-scores";
 import { EncumbrancePopover } from "~/components/EncumbrancePopover";
 import { InitiativePopover } from "~/components/InitiativePopover";
+import { AttackPopover } from "~/components/AttackPopover";
+import { DefensePopover } from "~/components/DefensePopover";
+import { DamagePopover } from "~/components/DamagePopover";
 
 interface SummaryLabeledRowProps {
   label: string;
@@ -44,6 +48,9 @@ interface CharacterSummaryProps {
   encumbranceDegree: EncumbranceDegree;
   encumbranceDecrease: number;
   initiativeScores: InitiativeScore[];
+  attackScores: AttackScore[];
+  defenseScores: DefenseScore[];
+  damageScores: DamageScore[];
   onResetClick: () => void;
 }
 
@@ -62,6 +69,9 @@ export function CharacterSummary({
   encumbranceDegree,
   encumbranceDecrease,
   initiativeScores,
+  attackScores,
+  defenseScores,
+  damageScores,
   onResetClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
@@ -340,6 +350,121 @@ export function CharacterSummary({
                   * {t("creation.initiative.missingAbilityNote")}
                 </p>
               )}
+            </div>
+            {/* Attack Scores */}
+            <Divider className="my-1" />
+            <div className="flex items-center gap-1 mb-0.5 mt-1">
+              <p className="text-[10px] text-gray-600 uppercase tracking-wider">
+                {t("creation.attackSection")}
+              </p>
+              <AttackPopover />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              {attackScores.map((atk) => {
+                const label =
+                  atk.kind === "unarmed"
+                    ? t("creation.attack.unarmed")
+                    : t(`equipment.${atk.weaponId}`);
+                return (
+                  <div
+                    key={atk.weaponId ?? atk.kind}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-xs text-gray-400 truncate mr-2">
+                      {label}
+                    </span>
+                    <span
+                      className={`text-xs font-bold tabular-nums shrink-0 ${
+                        atk.hasMissingAbilityPenalty
+                          ? "text-orange-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {atk.score}
+                      {atk.hasMissingAbilityPenalty && (
+                        <span className="text-[9px] text-orange-400 ml-0.5">*</span>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+              {attackScores.some((a) => a.hasMissingAbilityPenalty) && (
+                <p className="text-[9px] text-orange-400 mt-0.5">
+                  * {t("creation.attack.missingAbilityNote")}
+                </p>
+              )}
+            </div>
+            {/* Defense Scores */}
+            <Divider className="my-1" />
+            <div className="flex items-center gap-1 mb-0.5 mt-1">
+              <p className="text-[10px] text-gray-600 uppercase tracking-wider">
+                {t("creation.defenseSection")}
+              </p>
+              <DefensePopover />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              {defenseScores.map((def) => {
+                const label =
+                  def.kind === "unarmed"
+                    ? t("creation.defense.unarmed")
+                    : t(`equipment.${def.weaponId}`);
+                return (
+                  <div
+                    key={def.weaponId ?? def.kind}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-xs text-gray-400 truncate mr-2">
+                      {label}
+                    </span>
+                    <span
+                      className={`text-xs font-bold tabular-nums shrink-0 ${
+                        def.hasMissingAbilityPenalty
+                          ? "text-orange-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {def.score}
+                      {def.hasMissingAbilityPenalty && (
+                        <span className="text-[9px] text-orange-400 ml-0.5">*</span>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+              {defenseScores.some((d) => d.hasMissingAbilityPenalty) && (
+                <p className="text-[9px] text-orange-400 mt-0.5">
+                  * {t("creation.defense.missingAbilityNote")}
+                </p>
+              )}
+            </div>
+            {/* Damage Scores */}
+            <Divider className="my-1" />
+            <div className="flex items-center gap-1 mb-0.5 mt-1">
+              <p className="text-[10px] text-gray-600 uppercase tracking-wider">
+                {t("creation.damageSection")}
+              </p>
+              <DamagePopover />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              {damageScores.map((dmg) => {
+                const label =
+                  dmg.kind === "unarmed"
+                    ? t("creation.damage.unarmed")
+                    : t(`equipment.${dmg.weaponId}`);
+                return (
+                  <div
+                    key={dmg.weaponId ?? dmg.kind}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-xs text-gray-400 truncate mr-2">
+                      {label}
+                    </span>
+                    <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
+                      {dmg.score}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

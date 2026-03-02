@@ -36,6 +36,11 @@ import {
   computeEncumbranceDecrease,
 } from "~/domain/encumbrance";
 import { computeAllInitiatives } from "~/domain/initiative";
+import {
+  computeAllAttacks,
+  computeAllDefenses,
+  computeAllDamages,
+} from "~/domain/combat-scores";
 
 export function useCharacterCreation() {
   const [ranks, setRanks] = useState<Ranks>(() => ({ ...INITIAL_RANKS }));
@@ -94,6 +99,26 @@ export function useCharacterCreation() {
     selectedArmor,
     encumbranceDecrease,
   );
+
+  // --- Attack, Defense, Damage ---
+  const attackScores = computeAllAttacks(
+    ranks.Dexterity,
+    ranks.Perception,
+    abilityRanks,
+    selectedWeapons,
+    selectedShield,
+    encumbranceDecrease,
+  );
+
+  const defenseScores = computeAllDefenses(
+    ranks.Quickness,
+    abilityRanks,
+    selectedWeapons,
+    selectedShield,
+    encumbranceDecrease,
+  );
+
+  const damageScores = computeAllDamages(ranks.Strength, selectedWeapons);
 
   // --- Derived flags ---
   const hasAllocations =
@@ -175,6 +200,11 @@ export function useCharacterCreation() {
 
     // Initiative
     initiativeScores,
+
+    // Combat scores
+    attackScores,
+    defenseScores,
+    damageScores,
 
     // Actions
     resetAll,
