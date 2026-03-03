@@ -33,6 +33,7 @@ interface MobileSummaryBarProps {
   isMobileSummaryOpen: boolean;
   setIsMobileSummaryOpen: (open: boolean) => void;
   onResetClick: () => void;
+  onExportClick: () => void;
 }
 
 export function MobileSummaryBar({
@@ -60,6 +61,7 @@ export function MobileSummaryBar({
   isMobileSummaryOpen,
   setIsMobileSummaryOpen,
   onResetClick,
+  onExportClick,
 }: MobileSummaryBarProps) {
   const { t } = useTranslation();
 
@@ -105,6 +107,7 @@ export function MobileSummaryBar({
                     setIsMobileSummaryOpen(false);
                     onResetClick();
                   }}
+                  onExportClick={onExportClick}
                 />
               </ModalBody>
             </>

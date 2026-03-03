@@ -21,6 +21,7 @@ import { ExtraHPSection } from "~/components/ExtraHPSection";
 import { EquipmentSections } from "~/components/EquipmentSections";
 import { MobileSummaryBar } from "~/components/MobileSummaryBar";
 import { MALE_NAMES, FEMALE_NAMES, deriveCognomen } from "~/domain/names";
+import { usePdfExport } from "~/hooks/use-pdf-export";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -36,6 +37,28 @@ export default function CharacterCreation() {
   const ui = useCharacterCreationUI();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { exportPdf } = usePdfExport({
+    heroName: ui.heroName,
+    cognomen: ui.cognomen,
+    totalHP: creation.totalHP,
+    woundThreshold: creation.woundThreshold,
+    ranks: creation.ranks,
+    abilityRanks: creation.abilityRanks,
+    selectedWeapons: creation.selectedWeapons,
+    selectedShield: creation.selectedShield,
+    selectedArmor: creation.selectedArmor,
+    totalLoad: creation.totalLoad,
+    encumbranceDegree: creation.encumbranceDegree,
+    encumbranceDecrease: creation.encumbranceDecrease,
+    initiativeScores: creation.initiativeScores,
+    attackScores: creation.attackScores,
+    defenseScores: creation.defenseScores,
+    damageScores: creation.damageScores,
+    soakScore: creation.soakScore,
+    moveScore: creation.moveScore,
+    engagementScore: creation.engagementScore,
+    responseScore: creation.responseScore,
+  });
 
   return (
     <div className="min-h-screen">
@@ -226,6 +249,7 @@ export default function CharacterCreation() {
               engagementScore={creation.engagementScore}
               responseScore={creation.responseScore}
               onResetClick={() => ui.setIsResetOpen(true)}
+              onExportClick={exportPdf}
             />
             </div>
           </div>
@@ -257,6 +281,7 @@ export default function CharacterCreation() {
         isMobileSummaryOpen={ui.isMobileSummaryOpen}
         setIsMobileSummaryOpen={ui.setIsMobileSummaryOpen}
         onResetClick={() => ui.setIsResetOpen(true)}
+        onExportClick={exportPdf}
       />
     </div>
   );

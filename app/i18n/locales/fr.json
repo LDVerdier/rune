@@ -43,6 +43,12 @@
     },
     "woundThreshold": "Seuil de Blessure",
     "summary": "Résumé",
+    "exportPDF": "Exporter en PDF",
+    "pdf": {
+      "title": "Fiche de personnage",
+      "notesSection": "Notes",
+      "generatedBy": "Généré par Rune"
+    },
     "equipmentSection": "Équipement",
     "weaponsSection": "Armes",
     "shieldsSection": "Boucliers",

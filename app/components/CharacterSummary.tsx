@@ -61,6 +61,7 @@ interface CharacterSummaryProps {
   engagementScore: number;
   responseScore: number;
   onResetClick: () => void;
+  onExportClick: () => void;
 }
 
 export function CharacterSummary({
@@ -86,6 +87,7 @@ export function CharacterSummary({
   engagementScore,
   responseScore,
   onResetClick,
+  onExportClick,
 }: CharacterSummaryProps) {
   const { t } = useTranslation();
 
@@ -114,6 +116,14 @@ export function CharacterSummary({
           </div>
         </div>
         <div className="flex flex-col gap-1 mt-1 shrink-0">
+          <Button
+            size="sm"
+            variant="flat"
+            className="text-gray-400 text-xs"
+            onPress={onExportClick}
+          >
+            {t("creation.exportPDF")}
+          </Button>
           <Button
             size="sm"
             variant="flat"
