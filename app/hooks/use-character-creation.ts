@@ -124,7 +124,7 @@ export function useCharacterCreation() {
     encumbranceDecrease,
   );
 
-  const damageScores = computeAllDamages(ranks.Strength, selectedWeapons);
+  const damageScores = computeAllDamages(ranks.Strength, selectedWeapons, selectedShield);
 
   // --- Secondary scores ---
   const soakScore = computeSoak(ranks.Stamina, selectedArmor);

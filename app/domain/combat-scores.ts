@@ -116,9 +116,32 @@ export function computeUnarmedAttack(
   };
 }
 
+/** Compute shield-as-weapon attack (no extra shield modifier). */
+export function computeShieldAttack(
+  dexterity: number,
+  abilityRanks: AbilityRanks,
+  shield: ShieldDefinition,
+  encumbranceDecrease: number,
+): AttackScore {
+  const abilityName = WEAPON_ABILITY_NAMES[shield.ability];
+  const abilityRank = abilityRanks[abilityName] ?? 0;
+
+  return {
+    kind: "melee",
+    weaponId: shield.id,
+    score:
+      dexterity +
+      effectiveAbilityScore(abilityRank) +
+      shield.atk -
+      encumbranceDecrease,
+    hasMissingAbilityPenalty: abilityRank === 0,
+  };
+}
+
 /**
  * Compute all attack scores for the character.
- * Returns one entry per selected weapon (melee or missile) plus unarmed.
+ * Returns one entry per selected weapon (melee or missile), shield-as-weapon
+ * if equipped, plus unarmed.
  */
 export function computeAllAttacks(
   dexterity: number,
@@ -148,8 +171,13 @@ export function computeAllAttacks(
         ),
   );
 
+  const shieldEntry = shield
+    ? [computeShieldAttack(dexterity, abilityRanks, shield, encumbranceDecrease)]
+    : [];
+
   return [
     ...armed,
+    ...shieldEntry,
     computeUnarmedAttack(dexterity, abilityRanks, shield, encumbranceDecrease),
   ];
 }
@@ -204,9 +232,32 @@ export function computeUnarmedDefense(
   };
 }
 
+/** Compute shield-as-weapon defense (no extra shield modifier). */
+export function computeShieldDefense(
+  quickness: number,
+  abilityRanks: AbilityRanks,
+  shield: ShieldDefinition,
+  encumbranceDecrease: number,
+): DefenseScore {
+  const abilityName = WEAPON_ABILITY_NAMES[shield.ability];
+  const abilityRank = abilityRanks[abilityName] ?? 0;
+
+  return {
+    kind: "armed",
+    weaponId: shield.id,
+    score:
+      quickness +
+      effectiveAbilityScore(abilityRank) +
+      (shield.dfn ?? 0) -
+      encumbranceDecrease,
+    hasMissingAbilityPenalty: abilityRank === 0,
+  };
+}
+
 /**
  * Compute all defense scores for the character.
- * Returns one entry per selected weapon that has dfn !== null, plus unarmed.
+ * Returns one entry per selected weapon that has dfn !== null, shield-as-weapon
+ * if equipped, plus unarmed.
  */
 export function computeAllDefenses(
   quickness: number,
@@ -229,8 +280,13 @@ export function computeAllDefenses(
       ),
     );
 
+  const shieldEntry = shield
+    ? [computeShieldDefense(quickness, abilityRanks, shield, encumbranceDecrease)]
+    : [];
+
   return [
     ...armed,
+    ...shieldEntry,
     computeUnarmedDefense(quickness, abilityRanks, shield, encumbranceDecrease),
   ];
 }
@@ -269,13 +325,27 @@ export function computeUnarmedDamage(strength: number): DamageScore {
   };
 }
 
+/** Compute shield-as-weapon damage (Str + shield dam). */
+export function computeShieldDamage(
+  strength: number,
+  shield: ShieldDefinition,
+): DamageScore {
+  return {
+    kind: "armed",
+    weaponId: shield.id,
+    score: strength + (typeof shield.dam === "number" ? shield.dam : 0),
+  };
+}
+
 /**
  * Compute all damage scores for the character.
- * Melee: Str + weapon dam. Missile: weapon dam only. Plus unarmed.
+ * Melee: Str + weapon dam. Missile: weapon dam only. Shield: Str + shield dam.
+ * Plus unarmed.
  */
 export function computeAllDamages(
   strength: number,
   weaponIds: string[],
+  shieldId: string | null,
 ): DamageScore[] {
   const weapons = findWeapons(weaponIds).filter(
     (w) => typeof w.dam === "number",
@@ -289,5 +359,10 @@ export function computeAllDamages(
     .filter((w) => MISSILE_WEAPON_ABILITIES.has(w.ability))
     .map((weapon) => computeMissileDamage(weapon));
 
-  return [...melee, ...missile, computeUnarmedDamage(strength)];
+  const shield = findShield(shieldId);
+  const shieldEntry = shield
+    ? [computeShieldDamage(strength, shield)]
+    : [];
+
+  return [...melee, ...missile, ...shieldEntry, computeUnarmedDamage(strength)];
 }

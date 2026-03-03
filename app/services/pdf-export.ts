@@ -51,13 +51,15 @@ export interface CharacterSheetData {
 }
 
 // ---------------------------------------------------------------------------
-// Layout constants (A4, mm)
+// Layout constants (A4, mm — single page)
 // ---------------------------------------------------------------------------
 
 const PAGE_W = 210;
-const PAGE_H = 297;
-const M = 15; // margin
+const M = 12; // margin
 const CW = PAGE_W - 2 * M; // content width
+const COL_GAP = 5; // gap between side-by-side columns
+const HALF_CW = (CW - COL_GAP) / 2; // half column width
+const RIGHT_X = M + HALF_CW + COL_GAP; // right column start
 
 // Colors [R, G, B]
 const BLACK: RGB = [26, 26, 26];
@@ -69,18 +71,15 @@ const PENALTY: RGB = [200, 120, 0];
 type RGB = [number, number, number];
 
 // Font sizes (pt)
-const F_TITLE = 20;
-const F_SECTION = 11;
-const F_SUBSECTION = 8.5;
-const F_BODY = 8;
-const F_SMALL = 7;
-const F_FOOTER = 6;
+const F_SECTION = 10;
+const F_SUBSECTION = 7.5;
+const F_BODY = 7.5;
+const F_SMALL = 6.5;
 
 // Spacing (mm)
-const LH = 4.5; // line height body
-const LH_SM = 3.8; // line height small
-const SEC_GAP = 7; // gap before a new section
-const SUB_GAP = 3; // gap before a subsection
+const LH = 4; // line height body
+const LH_SM = 3.5; // line height small
+const SEC_GAP = 5; // gap before a new section
 
 // ---------------------------------------------------------------------------
 // jsPDF type (loaded dynamically)
@@ -109,11 +108,17 @@ function drawRule(doc: JsPDF, y: number, x1: number, x2: number) {
   doc.line(x1, y, x2, y);
 }
 
-function drawSectionHeader(doc: JsPDF, title: string, y: number): number {
+function drawSectionHeaderAt(
+  doc: JsPDF,
+  title: string,
+  x: number,
+  width: number,
+  y: number,
+): number {
   setFont(doc, "bold", F_SECTION, MAROON);
-  doc.text(title.toUpperCase(), M, y);
+  doc.text(title.toUpperCase(), x, y);
   y += 1;
-  drawRule(doc, y, M, M + CW);
+  drawRule(doc, y, x, x + width);
   return y + 3;
 }
 
@@ -133,85 +138,98 @@ function drawRow(
 }
 
 // ---------------------------------------------------------------------------
-// Page 1 drawing
+// Single-page drawing
 // ---------------------------------------------------------------------------
 
-function drawPage1(
+function drawPage(
   doc: JsPDF,
   data: CharacterSheetData,
   t: TFunction,
 ): void {
   let y = M;
 
-  // --- Title ---
-  setFont(doc, "bold", F_TITLE, MAROON);
-  doc.text("RUNE", M, y + 6);
-  setFont(doc, "normal", F_SMALL, GREY);
-  doc.text(t("creation.pdf.title"), M + 25, y + 6);
-  y += 12;
-  drawRule(doc, y, M, M + CW);
-  y += 5;
-
-  // --- Name ---
+  // --- Name + HP/WT header ---
   const fullName = [data.heroName, data.cognomen].filter(Boolean).join(" ");
   if (fullName) {
     setFont(doc, "bold", 14, BLACK);
     doc.text(fullName, M, y);
-    y += 7;
   }
 
-  // --- HP & Wound Threshold ---
   setFont(doc, "normal", F_BODY, GREY);
-  doc.text(t("creation.totalHitPoints"), M, y);
-  setFont(doc, "bold", 12, BLACK);
-  doc.text(String(data.totalHP), M + 40, y);
+  doc.text(t("creation.totalHitPoints"), M + CW * 0.55, y);
+  setFont(doc, "bold", 11, BLACK);
+  doc.text(String(data.totalHP), M + CW * 0.55 + 25, y);
 
   setFont(doc, "normal", F_BODY, GREY);
-  doc.text(t("creation.woundThreshold"), M + 60, y);
-  setFont(doc, "bold", 12, BLACK);
-  doc.text(String(data.woundThreshold), M + 100, y);
-  y += 8;
+  doc.text(t("creation.woundThreshold"), M + CW * 0.75, y);
+  setFont(doc, "bold", 11, BLACK);
+  doc.text(String(data.woundThreshold), M + CW * 0.75 + 30, y);
 
-  // --- Characteristics ---
-  y = drawSectionHeader(doc, t("creation.characteristicsSection"), y);
+  y += 3;
+  drawRule(doc, y, M, M + CW);
+  y += SEC_GAP;
 
-  const colW = CW / 2 - 2;
+  // --- Characteristics (left) | Important Numbers (right) ---
+  const charY = drawSectionHeaderAt(
+    doc,
+    t("creation.characteristicsSection"),
+    M,
+    HALF_CW,
+    y,
+  );
+  const numY = drawSectionHeaderAt(
+    doc,
+    t("creation.importantNumbersSection"),
+    RIGHT_X,
+    HALF_CW,
+    y,
+  );
+
+  // Characteristics — 2 sub-columns within left half
+  const charSubCol = (HALF_CW - 2) / 2;
+  let cy = charY;
   for (let i = 0; i < 4; i++) {
     const leftChar = CHARACTERISTICS[i];
     const rightChar = CHARACTERISTICS[i + 4];
-    drawRow(doc, t(`characteristics.${leftChar}`), formatRank(data.ranks[leftChar]), M, y, colW);
-    drawRow(doc, t(`characteristics.${rightChar}`), formatRank(data.ranks[rightChar]), M + CW / 2 + 2, y, colW);
-    y += LH;
+    drawRow(doc, t(`characteristics.${leftChar}`), formatRank(data.ranks[leftChar]), M, cy, charSubCol);
+    drawRow(doc, t(`characteristics.${rightChar}`), formatRank(data.ranks[rightChar]), M + charSubCol + 2, cy, charSubCol);
+    cy += LH;
   }
-  y += SUB_GAP;
 
-  // --- Important Numbers ---
-  y = drawSectionHeader(doc, t("creation.importantNumbersSection"), y);
-  y = drawRow(
+  // Important Numbers
+  let ny = numY;
+  ny = drawRow(
     doc,
     t("creation.encumbrance"),
     `${t(`encumbrance.${data.encumbranceDegree}`)} (${data.totalLoad})`,
-    M, y, CW,
+    RIGHT_X, ny, HALF_CW,
   );
-  y = drawRow(doc, t("creation.encumbranceDecrease"), String(data.encumbranceDecrease), M, y, CW);
-  y = drawRow(doc, t("creation.moveSection"), `${data.moveScore} ${t("creation.move.paces")}`, M, y, CW);
-  y = drawRow(doc, t("creation.soakSection"), String(data.soakScore), M, y, CW);
-  y = drawRow(doc, t("creation.responseSection"), String(data.responseScore), M, y, CW);
-  y = drawRow(doc, t("creation.engagementSection"), String(data.engagementScore), M, y, CW);
-  y += SUB_GAP;
+  ny = drawRow(doc, t("creation.encumbranceDecrease"), String(data.encumbranceDecrease), RIGHT_X, ny, HALF_CW);
+  ny = drawRow(doc, t("creation.moveSection"), `${data.moveScore} ${t("creation.move.paces")}`, RIGHT_X, ny, HALF_CW);
+  ny = drawRow(doc, t("creation.soakSection"), String(data.soakScore), RIGHT_X, ny, HALF_CW);
+  ny = drawRow(doc, t("creation.responseSection"), String(data.responseScore), RIGHT_X, ny, HALF_CW);
+  ny = drawRow(doc, t("creation.engagementSection"), String(data.engagementScore), RIGHT_X, ny, HALF_CW);
 
-  // --- Abilities ---
-  y = drawAbilitiesSection(doc, data, t, y);
+  y = Math.max(cy, ny) + SEC_GAP;
 
-  // --- Equipment ---
-  y = drawEquipmentSection(doc, data, t, y);
+  // --- Abilities (two-column) ---
+  y = drawAbilitiesTwoColumn(doc, data, t, y);
+
+  // --- Equipment (left) | Combat Scores (right) ---
+  y = drawEquipmentAndCombatSideBySide(doc, data, t, y);
 }
 
 // ---------------------------------------------------------------------------
-// Abilities section
+// Abilities section — two-column layout
 // ---------------------------------------------------------------------------
 
-function drawAbilitiesSection(
+interface AbilityEntry {
+  setLabel: string;
+  name: string;
+  rank: number;
+}
+
+function drawAbilitiesTwoColumn(
   doc: JsPDF,
   data: CharacterSheetData,
   t: TFunction,
@@ -220,44 +238,88 @@ function drawAbilitiesSection(
   const purchasedSets = ABILITY_SETS.filter((set) =>
     ABILITIES_BY_SET[set].some((a) => data.abilityRanks[a.name] > 0),
   );
-
   if (purchasedSets.length === 0) return y;
 
-  y = drawSectionHeader(doc, t("creation.abilitiesSection"), y);
+  y = drawSectionHeaderAt(doc, t("creation.abilitiesSection"), M, CW, y);
 
+  // Collect all purchased abilities grouped by set
+  const entries: AbilityEntry[] = [];
   for (const set of purchasedSets) {
     const purchased = ABILITIES_BY_SET[set].filter(
       (a) => data.abilityRanks[a.name] > 0,
     );
-
-    setFont(doc, "italic", F_SUBSECTION, GREY);
-    doc.text(t(`abilities.sets.${set}`), M, y);
-    y += LH_SM + 0.5;
-
     for (const ability of purchased) {
-      y = drawRow(
+      entries.push({
+        setLabel: t(`abilities.sets.${set}`),
+        name: ability.name,
+        rank: data.abilityRanks[ability.name],
+      });
+    }
+  }
+
+  // Split into two columns by set grouping
+  const midIdx = Math.ceil(entries.length / 2);
+  const leftEntries = entries.slice(0, midIdx);
+  const rightEntries = entries.slice(midIdx);
+
+  const drawAbilityColumn = (
+    items: AbilityEntry[],
+    x: number,
+    colWidth: number,
+    startY: number,
+  ): number => {
+    let ay = startY;
+    let currentSet = "";
+    for (const entry of items) {
+      if (entry.setLabel !== currentSet) {
+        currentSet = entry.setLabel;
+        setFont(doc, "italic", F_SUBSECTION, GREY);
+        doc.text(currentSet, x, ay);
+        ay += LH_SM;
+      }
+      ay = drawRow(
         doc,
-        t(`abilities.${ability.name}`),
-        String(data.abilityRanks[ability.name]),
-        M + 3,
-        y,
-        CW - 6,
+        t(`abilities.${entry.name}`),
+        String(entry.rank),
+        x + 2,
+        ay,
+        colWidth - 4,
       );
     }
-    y += 1.5;
-  }
-  y += SUB_GAP - 1.5;
-  return y;
+    return ay;
+  };
+
+  const leftBottom = drawAbilityColumn(leftEntries, M, HALF_CW, y);
+  const rightBottom = drawAbilityColumn(rightEntries, RIGHT_X, HALF_CW, y);
+
+  return Math.max(leftBottom, rightBottom) + SEC_GAP;
 }
 
 // ---------------------------------------------------------------------------
-// Equipment section (weapons, shields, armors with ability info)
+// Equipment + Combat Scores — side by side
 // ---------------------------------------------------------------------------
 
-function drawEquipmentSection(
+function drawEquipmentAndCombatSideBySide(
   doc: JsPDF,
   data: CharacterSheetData,
   t: TFunction,
+  y: number,
+): number {
+  const cbY = drawCombatScoresColumn(doc, data, t, M, HALF_CW, y);
+  const eqY = drawEquipmentColumn(doc, data, t, RIGHT_X, HALF_CW, y);
+  return Math.max(eqY, cbY);
+}
+
+// ---------------------------------------------------------------------------
+// Equipment column
+// ---------------------------------------------------------------------------
+
+function drawEquipmentColumn(
+  doc: JsPDF,
+  data: CharacterSheetData,
+  t: TFunction,
+  x: number,
+  width: number,
   y: number,
 ): number {
   const weapons = findWeapons(data.selectedWeapons);
@@ -267,32 +329,32 @@ function drawEquipmentSection(
 
   if (!hasEquipment) return y;
 
-  y = drawSectionHeader(doc, t("creation.equipmentSection"), y);
+  y = drawSectionHeaderAt(doc, t("creation.equipmentSection"), x, width, y);
 
   if (weapons.length > 0) {
     setFont(doc, "italic", F_SUBSECTION, GREY);
-    doc.text(t("creation.weaponsSection"), M, y);
+    doc.text(t("creation.weaponsSection"), x, y);
     y += LH_SM + 0.5;
     for (const w of weapons) {
-      y = drawWeaponRow(doc, w, data.abilityRanks, t, M + 3, y);
+      y = drawWeaponRow(doc, w, data.abilityRanks, t, x + 2, y, width - 4);
     }
-    y += 1.5;
+    y += 1;
   }
 
   if (shield) {
     setFont(doc, "italic", F_SUBSECTION, GREY);
-    doc.text(t("creation.shieldsSection"), M, y);
+    doc.text(t("creation.shieldsSection"), x, y);
     y += LH_SM + 0.5;
-    y = drawShieldRow(doc, shield, data.abilityRanks, t, M + 3, y);
-    y += 1.5;
+    y = drawShieldRow(doc, shield, data.abilityRanks, t, x + 2, y, width - 4);
+    y += 1;
   }
 
   if (armor) {
     setFont(doc, "italic", F_SUBSECTION, GREY);
-    doc.text(t("creation.armorsSection"), M, y);
+    doc.text(t("creation.armorsSection"), x, y);
     y += LH_SM + 0.5;
-    y = drawArmorRow(doc, armor, t, M + 3, y);
-    y += 1.5;
+    y = drawArmorRow(doc, armor, t, x + 2, y);
+    y += 1;
   }
 
   return y;
@@ -305,6 +367,7 @@ function drawWeaponRow(
   t: TFunction,
   x: number,
   y: number,
+  maxWidth: number,
 ): number {
   setFont(doc, "bold", F_BODY, BLACK);
   doc.text(t(`equipment.${w.id}`), x, y);
@@ -319,11 +382,15 @@ function drawWeaponRow(
     w.load !== null ? `${t("equipment.load")} ${w.load}` : null,
   ]
     .filter(Boolean)
-    .join("  ");
+    .join(" ");
 
   setFont(doc, "normal", F_SMALL, GREY);
-  doc.text(stats, x, y + LH_SM);
-  return y + LH_SM * 2 + 0.5;
+  const lines = doc.splitTextToSize(stats, maxWidth) as string[];
+  for (const line of lines) {
+    y += LH_SM;
+    doc.text(line, x, y);
+  }
+  return y + LH_SM + 0.3;
 }
 
 function drawShieldRow(
@@ -333,6 +400,7 @@ function drawShieldRow(
   t: TFunction,
   x: number,
   y: number,
+  maxWidth: number,
 ): number {
   setFont(doc, "bold", F_BODY, BLACK);
   doc.text(t(`equipment.${s.id}`), x, y);
@@ -346,11 +414,15 @@ function drawShieldRow(
     s.load !== null ? `${t("equipment.load")} ${s.load}` : null,
   ]
     .filter(Boolean)
-    .join("  ");
+    .join(" ");
 
   setFont(doc, "normal", F_SMALL, GREY);
-  doc.text(stats, x, y + LH_SM);
-  return y + LH_SM * 2 + 0.5;
+  const lines = doc.splitTextToSize(stats, maxWidth) as string[];
+  for (const line of lines) {
+    y += LH_SM;
+    doc.text(line, x, y);
+  }
+  return y + LH_SM + 0.3;
 }
 
 function drawArmorRow(
@@ -366,15 +438,16 @@ function drawArmorRow(
     `${t("equipment.prt")} ${a.prt}`,
     `${t("equipment.init")} ${formatRank(a.init)}`,
     `${t("equipment.load")} ${a.load}`,
-  ].join("  ");
+  ].join(" ");
 
   setFont(doc, "normal", F_SMALL, GREY);
-  doc.text(stats, x, y + LH_SM);
-  return y + LH_SM * 2 + 0.5;
+  y += LH_SM;
+  doc.text(stats, x, y);
+  return y + LH_SM + 0.3;
 }
 
 // ---------------------------------------------------------------------------
-// Page 2 drawing — Combat scores table + notes
+// Combat scores column
 // ---------------------------------------------------------------------------
 
 interface WeaponCombatRow {
@@ -419,22 +492,113 @@ function buildWeaponRows(
     });
 }
 
-// Column X positions for the combat table
-const COL_LABEL_X = M;
-const COL_INIT_X = M + CW * 0.55;
-const COL_ATK_X = M + CW * 0.67;
-const COL_DFN_X = M + CW * 0.78;
-const COL_DAM_X = M + CW * 0.89;
+function drawCombatScoresColumn(
+  doc: JsPDF,
+  data: CharacterSheetData,
+  t: TFunction,
+  x: number,
+  width: number,
+  y: number,
+): number {
+  y = drawSectionHeaderAt(doc, t("creation.combatScoresSection"), x, width, y);
 
-function drawTableHeader(doc: JsPDF, t: TFunction, y: number): number {
+  // Column positions relative to the column's x
+  const colLabelX = x;
+  const colInitX = x + width * 0.45;
+  const colAtkX = x + width * 0.6;
+  const colDfnX = x + width * 0.75;
+  const colDamX = x + width * 0.9;
+
+  // Table header
   setFont(doc, "normal", F_SMALL, GREY);
-  doc.text(t("equipment.init"), COL_INIT_X, y, { align: "center" });
-  doc.text(t("equipment.atk"), COL_ATK_X, y, { align: "center" });
-  doc.text(t("equipment.dfn"), COL_DFN_X, y, { align: "center" });
-  doc.text(t("equipment.dam"), COL_DAM_X, y, { align: "center" });
+  doc.text(t("equipment.init"), colInitX, y, { align: "center" });
+  doc.text(t("equipment.atk"), colAtkX, y, { align: "center" });
+  doc.text(t("equipment.dfn"), colDfnX, y, { align: "center" });
+  doc.text(t("equipment.dam"), colDamX, y, { align: "center" });
   y += 1;
-  drawRule(doc, y, M, M + CW);
-  return y + 2.5;
+  drawRule(doc, y, x, x + width);
+  y += 2.5;
+
+  const drawTableRow = (
+    label: string,
+    init: number | null,
+    initP: boolean,
+    atk: number | null,
+    atkP: boolean,
+    dfn: number | null,
+    dfnP: boolean,
+    dam: number | null,
+    rowY: number,
+  ): number => {
+    setFont(doc, "normal", F_BODY, BLACK);
+    doc.text(label, colLabelX, rowY);
+    drawCombatCell(doc, init, initP, colInitX, rowY);
+    drawCombatCell(doc, atk, atkP, colAtkX, rowY);
+    drawCombatCell(doc, dfn, dfnP, colDfnX, rowY);
+    drawCombatCell(doc, dam, false, colDamX, rowY);
+    return rowY + LH;
+  };
+
+  const weaponRows = buildWeaponRows(
+    data.initiativeScores,
+    data.attackScores,
+    data.defenseScores,
+    data.damageScores,
+  );
+
+  for (const row of weaponRows) {
+    y = drawTableRow(
+      t(`equipment.${row.weaponId}`),
+      row.init, row.initPenalty,
+      row.atk, row.atkPenalty,
+      row.dfn, row.dfnPenalty,
+      row.dam,
+      y,
+    );
+  }
+
+  // Unarmed
+  const unarmedInit = data.initiativeScores.find((s) => s.kind === "unarmed");
+  const unarmedAtk = data.attackScores.find((s) => s.kind === "unarmed");
+  const unarmedDfn = data.defenseScores.find((s) => s.kind === "unarmed");
+  const unarmedDam = data.damageScores.find((s) => s.kind === "unarmed");
+
+  y = drawTableRow(
+    t("creation.combatScores.fistKick"),
+    unarmedInit?.score ?? null, unarmedInit?.hasMissingAbilityPenalty ?? false,
+    unarmedAtk?.score ?? null, unarmedAtk?.hasMissingAbilityPenalty ?? false,
+    unarmedDfn?.score ?? null, unarmedDfn?.hasMissingAbilityPenalty ?? false,
+    unarmedDam?.score ?? null,
+    y,
+  );
+
+  // Non-combat initiative
+  const nonCombatInit = data.initiativeScores.find((s) => s.kind === "nonCombat");
+  y = drawTableRow(
+    t("creation.combatScores.nonCombatInit"),
+    nonCombatInit?.score ?? null, nonCombatInit?.hasMissingAbilityPenalty ?? false,
+    null, false,
+    null, false,
+    null,
+    y,
+  );
+
+  // Penalty footnote
+  const hasSomePenalty =
+    weaponRows.some((r) => r.initPenalty || r.atkPenalty || r.dfnPenalty) ||
+    unarmedInit?.hasMissingAbilityPenalty ||
+    unarmedAtk?.hasMissingAbilityPenalty ||
+    unarmedDfn?.hasMissingAbilityPenalty ||
+    nonCombatInit?.hasMissingAbilityPenalty;
+
+  if (hasSomePenalty) {
+    y += 0.5;
+    setFont(doc, "italic", F_SMALL, PENALTY);
+    doc.text(`* ${t("creation.combatScores.missingAbilityNote")}`, x, y);
+    y += LH;
+  }
+
+  return y;
 }
 
 function drawCombatCell(
@@ -454,119 +618,6 @@ function drawCombatCell(
   doc.text(val, x, y, { align: "center" });
 }
 
-function drawCombatTableRow(
-  doc: JsPDF,
-  label: string,
-  init: number | null,
-  initPenalty: boolean,
-  atk: number | null,
-  atkPenalty: boolean,
-  dfn: number | null,
-  dfnPenalty: boolean,
-  dam: number | null,
-  y: number,
-): number {
-  setFont(doc, "normal", F_BODY, BLACK);
-  doc.text(label, COL_LABEL_X, y);
-  drawCombatCell(doc, init, initPenalty, COL_INIT_X, y);
-  drawCombatCell(doc, atk, atkPenalty, COL_ATK_X, y);
-  drawCombatCell(doc, dfn, dfnPenalty, COL_DFN_X, y);
-  drawCombatCell(doc, dam, false, COL_DAM_X, y);
-  return y + LH;
-}
-
-function drawPage2(
-  doc: JsPDF,
-  data: CharacterSheetData,
-  t: TFunction,
-): void {
-  let y = M;
-
-  // --- Combat Scores Table ---
-  y = drawSectionHeader(doc, t("creation.combatScoresSection"), y);
-  y = drawTableHeader(doc, t, y);
-
-  const weaponRows = buildWeaponRows(
-    data.initiativeScores,
-    data.attackScores,
-    data.defenseScores,
-    data.damageScores,
-  );
-
-  // Per-weapon rows
-  for (const row of weaponRows) {
-    y = drawCombatTableRow(
-      doc,
-      t(`equipment.${row.weaponId}`),
-      row.init, row.initPenalty,
-      row.atk, row.atkPenalty,
-      row.dfn, row.dfnPenalty,
-      row.dam,
-      y,
-    );
-  }
-
-  // Unarmed (Fist & Kick)
-  const unarmedInit = data.initiativeScores.find((s) => s.kind === "unarmed");
-  const unarmedAtk = data.attackScores.find((s) => s.kind === "unarmed");
-  const unarmedDfn = data.defenseScores.find((s) => s.kind === "unarmed");
-  const unarmedDam = data.damageScores.find((s) => s.kind === "unarmed");
-
-  y = drawCombatTableRow(
-    doc,
-    t("creation.combatScores.fistKick"),
-    unarmedInit?.score ?? null, unarmedInit?.hasMissingAbilityPenalty ?? false,
-    unarmedAtk?.score ?? null, unarmedAtk?.hasMissingAbilityPenalty ?? false,
-    unarmedDfn?.score ?? null, unarmedDfn?.hasMissingAbilityPenalty ?? false,
-    unarmedDam?.score ?? null,
-    y,
-  );
-
-  // Non-combat initiative
-  const nonCombatInit = data.initiativeScores.find((s) => s.kind === "nonCombat");
-  y = drawCombatTableRow(
-    doc,
-    t("creation.combatScores.nonCombatInit"),
-    nonCombatInit?.score ?? null, nonCombatInit?.hasMissingAbilityPenalty ?? false,
-    null, false,
-    null, false,
-    null,
-    y,
-  );
-
-  // Penalty footnote
-  const hasSomePenalty =
-    weaponRows.some((r) => r.initPenalty || r.atkPenalty || r.dfnPenalty) ||
-    unarmedInit?.hasMissingAbilityPenalty ||
-    unarmedAtk?.hasMissingAbilityPenalty ||
-    unarmedDfn?.hasMissingAbilityPenalty ||
-    nonCombatInit?.hasMissingAbilityPenalty;
-
-  if (hasSomePenalty) {
-    y += 1;
-    setFont(doc, "italic", F_SMALL, PENALTY);
-    doc.text(`* ${t("creation.combatScores.missingAbilityNote")}`, M, y);
-    y += LH;
-  }
-  y += SEC_GAP;
-
-  // --- Notes ---
-  y = drawSectionHeader(doc, t("creation.pdf.notesSection"), y);
-  doc.setDrawColor(...RULE);
-  doc.setLineWidth(0.15);
-  while (y < PAGE_H - M - 12) {
-    doc.line(M, y, M + CW, y);
-    y += 7;
-  }
-
-  // --- Footer ---
-  setFont(doc, "normal", F_FOOTER, GREY);
-  const footerY = PAGE_H - M + 2;
-  doc.text(t("creation.pdf.generatedBy"), M, footerY);
-  const date = new Date().toLocaleDateString();
-  doc.text(date, M + CW, footerY, { align: "right" });
-}
-
 // ---------------------------------------------------------------------------
 // Public entry point
 // ---------------------------------------------------------------------------
@@ -578,9 +629,7 @@ export async function generateCharacterPDF(
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  drawPage1(doc, data, t);
-  doc.addPage();
-  drawPage2(doc, data, t);
+  drawPage(doc, data, t);
 
   const fileName = data.heroName
     ? `${data.heroName.replace(/\s+/g, "_")}_character_sheet.pdf`

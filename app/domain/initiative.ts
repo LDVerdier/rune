@@ -84,6 +84,30 @@ export function computeUnarmedInitiative(
   };
 }
 
+/** Compute shield-as-weapon initiative (shield's own ability, no extra shield modifier). */
+export function computeShieldInitiative(
+  quickness: number,
+  abilityRanks: AbilityRanks,
+  shield: ShieldDefinition,
+  armor: ArmorDefinition | null,
+  encumbranceDecrease: number,
+): InitiativeScore {
+  const abilityName = WEAPON_ABILITY_NAMES[shield.ability];
+  const abilityRank = abilityRanks[abilityName] ?? 0;
+
+  return {
+    kind: "armed",
+    weaponId: shield.id,
+    score:
+      quickness +
+      effectiveAbilityScore(abilityRank) +
+      shield.init +
+      (armor?.init ?? 0) -
+      encumbranceDecrease,
+    hasMissingAbilityPenalty: abilityRank === 0,
+  };
+}
+
 /** Compute non-combat initiative (Sprint, no weapon). */
 export function computeNonCombatInitiative(
   quickness: number,
@@ -133,8 +157,13 @@ export function computeAllInitiatives(
       ),
     );
 
+  const shieldEntry = shield
+    ? [computeShieldInitiative(quickness, abilityRanks, shield, armor, encumbranceDecrease)]
+    : [];
+
   return [
     ...armed,
+    ...shieldEntry,
     computeUnarmedInitiative(
       quickness,
       abilityRanks,

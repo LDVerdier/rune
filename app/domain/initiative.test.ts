@@ -4,6 +4,7 @@ import {
   computeArmedInitiative,
   computeUnarmedInitiative,
   computeNonCombatInitiative,
+  computeShieldInitiative,
   computeAllInitiatives,
 } from "./initiative";
 import { INITIAL_ABILITY_RANKS } from "./abilities";
@@ -154,6 +155,32 @@ describe("computeNonCombatInitiative", () => {
   });
 });
 
+describe("computeShieldInitiative", () => {
+  it("computes shield initiative without extra shield modifier", () => {
+    // Qik 2 + SingleWeapon 1 + buckler init 0 + 0 - 0 = 3
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeShieldInitiative(2, ranks, buckler, null, 0);
+    expect(result.score).toBe(3);
+    expect(result.kind).toBe("armed");
+    expect(result.weaponId).toBe("buckler");
+    expect(result.hasMissingAbilityPenalty).toBe(false);
+  });
+
+  it("applies missing ability penalty when rank is 0", () => {
+    // Qik 0 + (-3) + kiteShield init (-1) + 0 - 0 = -4
+    const result = computeShieldInitiative(0, INITIAL_ABILITY_RANKS, kiteShield, null, 0);
+    expect(result.score).toBe(-4);
+    expect(result.hasMissingAbilityPenalty).toBe(true);
+  });
+
+  it("includes armor and encumbrance", () => {
+    // Qik 1 + SingleWeapon 2 + kiteShield init (-1) + chainMail init (-5) - 1 = -4
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 2 };
+    const result = computeShieldInitiative(1, ranks, kiteShield, chainMail, 1);
+    expect(result.score).toBe(-4);
+  });
+});
+
 describe("computeAllInitiatives", () => {
   it("returns unarmed and nonCombat when no weapons selected", () => {
     const result = computeAllInitiatives(
@@ -197,11 +224,16 @@ describe("computeAllInitiatives", () => {
       "chainMail",
       0,
     );
-    // Armed: 0 + 1 + 2 + (-5) + (-1) - 0 = -3
+    expect(result).toHaveLength(4);
+    // Armed (dagger): 0 + 1 + 2 + (-5) + (-1) - 0 = -3
     expect(result[0].score).toBe(-3);
+    expect(result[0].weaponId).toBe("dagger");
+    // Shield (kiteShield): 0 + 1 + (-1) + (-5) - 0 = -5
+    expect(result[1].score).toBe(-5);
+    expect(result[1].weaponId).toBe("kiteShield");
     // Unarmed: 0 + (-3) + 1 + (-5) + (-1) - 0 = -8
-    expect(result[1].score).toBe(-8);
+    expect(result[2].score).toBe(-8);
     // NonCombat: 0 + (-3) + (-5) + (-1) - 0 = -9
-    expect(result[2].score).toBe(-9);
+    expect(result[3].score).toBe(-9);
   });
 });

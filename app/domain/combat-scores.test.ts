@@ -3,13 +3,16 @@ import {
   computeMeleeAttack,
   computeMissileAttack,
   computeUnarmedAttack,
+  computeShieldAttack,
   computeAllAttacks,
   computeArmedDefense,
   computeUnarmedDefense,
+  computeShieldDefense,
   computeAllDefenses,
   computeArmedDamage,
   computeMissileDamage,
   computeUnarmedDamage,
+  computeShieldDamage,
   computeAllDamages,
 } from "./combat-scores";
 import { INITIAL_ABILITY_RANKS } from "./abilities";
@@ -104,6 +107,32 @@ describe("computeUnarmedAttack", () => {
   });
 });
 
+describe("computeShieldAttack", () => {
+  it("computes shield attack without extra shield modifier", () => {
+    // Dex 2 + SingleWeapon 1 + buckler atk 0 - 0 = 3
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeShieldAttack(2, ranks, buckler, 0);
+    expect(result.score).toBe(3);
+    expect(result.kind).toBe("melee");
+    expect(result.weaponId).toBe("buckler");
+    expect(result.hasMissingAbilityPenalty).toBe(false);
+  });
+
+  it("applies missing ability penalty when rank is 0", () => {
+    // Dex 0 + (-3) + kiteShield atk (-1) - 0 = -4
+    const result = computeShieldAttack(0, INITIAL_ABILITY_RANKS, kiteShield, 0);
+    expect(result.score).toBe(-4);
+    expect(result.hasMissingAbilityPenalty).toBe(true);
+  });
+
+  it("subtracts encumbrance decrease", () => {
+    // Dex 1 + SingleWeapon 1 + buckler atk 0 - 2 = 0
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeShieldAttack(1, ranks, buckler, 2);
+    expect(result.score).toBe(0);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Defense
 // ---------------------------------------------------------------------------
@@ -167,6 +196,32 @@ describe("computeUnarmedDefense", () => {
   });
 });
 
+describe("computeShieldDefense", () => {
+  it("computes shield defense without extra shield modifier", () => {
+    // Qik 2 + SingleWeapon 1 + buckler dfn 2 - 0 = 5
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeShieldDefense(2, ranks, buckler, 0);
+    expect(result.score).toBe(5);
+    expect(result.kind).toBe("armed");
+    expect(result.weaponId).toBe("buckler");
+    expect(result.hasMissingAbilityPenalty).toBe(false);
+  });
+
+  it("applies missing ability penalty when rank is 0", () => {
+    // Qik 0 + (-3) + kiteShield dfn 4 - 0 = 1
+    const result = computeShieldDefense(0, INITIAL_ABILITY_RANKS, kiteShield, 0);
+    expect(result.score).toBe(1);
+    expect(result.hasMissingAbilityPenalty).toBe(true);
+  });
+
+  it("subtracts encumbrance decrease", () => {
+    // Qik 1 + SingleWeapon 1 + buckler dfn 2 - 3 = 1
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeShieldDefense(1, ranks, buckler, 3);
+    expect(result.score).toBe(1);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Damage
 // ---------------------------------------------------------------------------
@@ -184,6 +239,16 @@ describe("computeArmedDamage", () => {
     // Str -2 + vikingAxe dam 10 = 8
     const result = computeArmedDamage(-2, vikingAxe);
     expect(result.score).toBe(8);
+  });
+});
+
+describe("computeShieldDamage", () => {
+  it("computes shield damage as Str + shield dam", () => {
+    // Str 2 + buckler dam 0 = 2
+    const result = computeShieldDamage(2, buckler);
+    expect(result.score).toBe(2);
+    expect(result.kind).toBe("armed");
+    expect(result.weaponId).toBe("buckler");
   });
 });
 
@@ -225,6 +290,17 @@ describe("computeAllAttacks", () => {
     expect(result[0].kind).toBe("unarmed");
   });
 
+  it("includes shield-as-weapon entry when shield is equipped", () => {
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeAllAttacks(2, 0, ranks, [], "buckler", 0);
+    expect(result).toHaveLength(2);
+    // Dex 2 + SingleWeapon 1 + buckler atk 0 - 0 = 3
+    expect(result[0].kind).toBe("melee");
+    expect(result[0].weaponId).toBe("buckler");
+    expect(result[0].score).toBe(3);
+    expect(result[1].kind).toBe("unarmed");
+  });
+
   it("classifies melee vs missile correctly", () => {
     const result = computeAllAttacks(
       0,
@@ -264,6 +340,17 @@ describe("computeAllDefenses", () => {
     expect(result[0].kind).toBe("unarmed");
   });
 
+  it("includes shield-as-weapon entry when shield is equipped", () => {
+    const ranks = { ...INITIAL_ABILITY_RANKS, SingleWeapon: 1 };
+    const result = computeAllDefenses(2, ranks, [], "buckler", 0);
+    expect(result).toHaveLength(2);
+    // Qik 2 + SingleWeapon 1 + buckler dfn 2 - 0 = 5
+    expect(result[0].kind).toBe("armed");
+    expect(result[0].weaponId).toBe("buckler");
+    expect(result[0].score).toBe(5);
+    expect(result[1].kind).toBe("unarmed");
+  });
+
   it("filters out weapons with dfn === null", () => {
     // shortBow has dfn: null, dagger has dfn: 2
     const result = computeAllDefenses(
@@ -293,14 +380,24 @@ describe("computeAllDefenses", () => {
 
 describe("computeAllDamages", () => {
   it("returns unarmed only when no weapons selected", () => {
-    const result = computeAllDamages(0, []);
+    const result = computeAllDamages(0, [], null);
     expect(result).toHaveLength(1);
     expect(result[0].kind).toBe("unarmed");
   });
 
+  it("includes shield-as-weapon entry when shield is equipped", () => {
+    const result = computeAllDamages(2, [], "buckler");
+    expect(result).toHaveLength(2);
+    // Str 2 + buckler dam 0 = 2
+    expect(result[0].kind).toBe("armed");
+    expect(result[0].weaponId).toBe("buckler");
+    expect(result[0].score).toBe(2);
+    expect(result[1].kind).toBe("unarmed");
+  });
+
   it("includes missile weapons with weapon dam only", () => {
     // shortBow is Bows (missile), dagger is Single (melee)
-    const result = computeAllDamages(2, ["dagger", "shortBow"]);
+    const result = computeAllDamages(2, ["dagger", "shortBow"], null);
     expect(result).toHaveLength(3); // dagger + shortBow + unarmed
     expect(result[0].kind).toBe("armed");
     expect(result[0].weaponId).toBe("dagger");
@@ -313,7 +410,7 @@ describe("computeAllDamages", () => {
 
   it("includes thrown weapons with weapon dam only", () => {
     // sling is Thrown (missile), dam 3
-    const result = computeAllDamages(2, ["sling"]);
+    const result = computeAllDamages(2, ["sling"], null);
     expect(result).toHaveLength(2); // sling + unarmed
     expect(result[0].kind).toBe("missile");
     expect(result[0].score).toBe(3); // sling dam 3 (no Str)
@@ -323,14 +420,14 @@ describe("computeAllDamages", () => {
 
   it("computes correct melee damage values", () => {
     // Str 2 + dagger dam 3 = 5
-    const result = computeAllDamages(2, ["dagger"]);
+    const result = computeAllDamages(2, ["dagger"], null);
     expect(result[0].score).toBe(5);
     expect(result[1].score).toBe(2); // unarmed: Str 2 + 0
   });
 
   it("excludes weapons with special damage", () => {
     // barbNet has dam: "special" — should be filtered out
-    const result = computeAllDamages(2, ["barbNet"]);
+    const result = computeAllDamages(2, ["barbNet"], null);
     expect(result).toHaveLength(1);
     expect(result[0].kind).toBe("unarmed");
   });
