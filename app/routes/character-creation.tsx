@@ -187,7 +187,6 @@ export default function CharacterCreation() {
             toggleWeapon={creation.toggleWeapon}
             toggleShield={creation.toggleShield}
             toggleArmor={creation.toggleArmor}
-            canSelectWeapon={creation.canSelectWeapon}
             toggleEquipment={ui.toggleEquipment}
           />
 
