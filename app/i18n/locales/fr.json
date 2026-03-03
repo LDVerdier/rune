@@ -155,6 +155,12 @@
       "engagement": "Engagement",
       "engagementFormula": "For + Meilleure mêlée"
     },
+    "combatScoresSection": "Scores de Combat",
+    "combatScores": {
+      "fistKick": "Poing & Pied",
+      "nonCombatInit": "Init hors combat",
+      "missingAbilityNote": "Inclut la pénalité de -3 pour compétence manquante"
+    },
     "totalLoad": "Charge Totale",
     "woundThresholdBreakdown": {
       "triggerLabel": "Comment est-ce calculé ?",

@@ -155,6 +155,12 @@
       "engagement": "Engagement",
       "engagementFormula": "Str + Best Melee"
     },
+    "combatScoresSection": "Combat Scores",
+    "combatScores": {
+      "fistKick": "Fist & Kick",
+      "nonCombatInit": "Non-combat Init",
+      "missingAbilityNote": "Includes -3 missing ability penalty"
+    },
     "totalLoad": "Total Load",
     "woundThresholdBreakdown": {
       "triggerLabel": "How is this calculated?",

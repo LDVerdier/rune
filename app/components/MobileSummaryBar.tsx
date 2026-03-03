@@ -1,24 +1,17 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { useTranslation } from "react-i18next";
-import type { Ranks } from "~/domain/character-stats";
 import { BASE_POINTS } from "~/domain/character-stats";
-import type { AbilityRanks } from "~/domain/abilities";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
 import type { InitiativeScore } from "~/domain/initiative";
 import type { AttackScore, DefenseScore, DamageScore } from "~/domain/combat-scores";
 import { CharacterSummary } from "~/components/CharacterSummary";
 
 interface MobileSummaryBarProps {
-  heroName: string;
-  cognomen: string;
   remainingPoints: number;
-  ranks: Ranks;
-  abilityRanks: AbilityRanks;
+  strengthRank: number;
+  staminaRank: number;
   totalHP: number;
   woundThreshold: number;
-  selectedWeapons: string[];
-  selectedShield: string | null;
-  selectedArmor: string | null;
   totalLoad: number;
   encumbranceDegree: EncumbranceDegree;
   encumbranceDecrease: number;
@@ -37,16 +30,11 @@ interface MobileSummaryBarProps {
 }
 
 export function MobileSummaryBar({
-  heroName,
-  cognomen,
   remainingPoints,
-  ranks,
-  abilityRanks,
+  strengthRank,
+  staminaRank,
   totalHP,
   woundThreshold,
-  selectedWeapons,
-  selectedShield,
-  selectedArmor,
   totalLoad,
   encumbranceDegree,
   encumbranceDecrease,
@@ -82,16 +70,11 @@ export function MobileSummaryBar({
               </ModalHeader>
               <ModalBody className="pb-6">
                 <CharacterSummary
-                  heroName={heroName}
-                  cognomen={cognomen}
                   remainingPoints={remainingPoints}
-                  ranks={ranks}
-                  abilityRanks={abilityRanks}
+                  strengthRank={strengthRank}
+                  staminaRank={staminaRank}
                   totalHP={totalHP}
                   woundThreshold={woundThreshold}
-                  selectedWeapons={selectedWeapons}
-                  selectedShield={selectedShield}
-                  selectedArmor={selectedArmor}
                   totalLoad={totalLoad}
                   encumbranceDegree={encumbranceDegree}
                   encumbranceDecrease={encumbranceDecrease}

@@ -227,46 +227,36 @@ export default function CharacterCreation() {
                 {t("creation.summary")}
               </h2>
               <CharacterSummary
-              heroName={ui.heroName}
-              cognomen={ui.cognomen}
-              remainingPoints={creation.remainingPoints}
-              ranks={creation.ranks}
-              abilityRanks={creation.abilityRanks}
-              totalHP={creation.totalHP}
-              woundThreshold={creation.woundThreshold}
-              selectedWeapons={creation.selectedWeapons}
-              selectedShield={creation.selectedShield}
-              selectedArmor={creation.selectedArmor}
-              totalLoad={creation.totalLoad}
-              encumbranceDegree={creation.encumbranceDegree}
-              encumbranceDecrease={creation.encumbranceDecrease}
-              initiativeScores={creation.initiativeScores}
-              attackScores={creation.attackScores}
-              defenseScores={creation.defenseScores}
-              damageScores={creation.damageScores}
-              soakScore={creation.soakScore}
-              moveScore={creation.moveScore}
-              engagementScore={creation.engagementScore}
-              responseScore={creation.responseScore}
-              onResetClick={() => ui.setIsResetOpen(true)}
-              onExportClick={exportPdf}
-            />
+                remainingPoints={creation.remainingPoints}
+                strengthRank={creation.ranks.Strength}
+                staminaRank={creation.ranks.Stamina}
+                totalHP={creation.totalHP}
+                woundThreshold={creation.woundThreshold}
+                totalLoad={creation.totalLoad}
+                encumbranceDegree={creation.encumbranceDegree}
+                encumbranceDecrease={creation.encumbranceDecrease}
+                initiativeScores={creation.initiativeScores}
+                attackScores={creation.attackScores}
+                defenseScores={creation.defenseScores}
+                damageScores={creation.damageScores}
+                soakScore={creation.soakScore}
+                moveScore={creation.moveScore}
+                engagementScore={creation.engagementScore}
+                responseScore={creation.responseScore}
+                onResetClick={() => ui.setIsResetOpen(true)}
+                onExportClick={exportPdf}
+              />
             </div>
           </div>
         </aside>
       </div>
 
       <MobileSummaryBar
-        heroName={ui.heroName}
-        cognomen={ui.cognomen}
         remainingPoints={creation.remainingPoints}
-        ranks={creation.ranks}
-        abilityRanks={creation.abilityRanks}
+        strengthRank={creation.ranks.Strength}
+        staminaRank={creation.ranks.Stamina}
         totalHP={creation.totalHP}
         woundThreshold={creation.woundThreshold}
-        selectedWeapons={creation.selectedWeapons}
-        selectedShield={creation.selectedShield}
-        selectedArmor={creation.selectedArmor}
         totalLoad={creation.totalLoad}
         encumbranceDegree={creation.encumbranceDegree}
         encumbranceDecrease={creation.encumbranceDecrease}

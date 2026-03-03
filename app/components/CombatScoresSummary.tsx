@@ -1,65 +1,68 @@
-import type { ReactNode } from "react";
 import { Divider } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
 import type { InitiativeScore } from "~/domain/initiative";
 import type { AttackScore, DefenseScore, DamageScore } from "~/domain/combat-scores";
 import { EncumbrancePopover } from "~/components/EncumbrancePopover";
-import { InitiativePopover } from "~/components/InitiativePopover";
-import { AttackPopover } from "~/components/AttackPopover";
-import { DefensePopover } from "~/components/DefensePopover";
-import { DamagePopover } from "~/components/DamagePopover";
 import { SoakPopover } from "~/components/SoakPopover";
 import { MovePopover } from "~/components/MovePopover";
 import { EngagementPopover } from "~/components/EngagementPopover";
 import { ResponsePopover } from "~/components/ResponsePopover";
 
 // ---------------------------------------------------------------------------
-// Shared score rendering
+// Important numbers row
 // ---------------------------------------------------------------------------
 
-interface ScoreRowProps {
+interface NumberRowProps {
   label: string;
-  score: number;
-  hasPenalty?: boolean;
+  value: string | number;
+  color?: string;
+  popover?: React.ReactNode;
 }
 
-function ScoreRow({ label, score, hasPenalty = false }: ScoreRowProps) {
+function NumberRow({
+  label,
+  value,
+  color = "text-gray-300",
+  popover,
+}: NumberRowProps) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-xs text-gray-400 truncate mr-2">{label}</span>
-      <span
-        className={`text-xs font-bold tabular-nums shrink-0 ${
-          hasPenalty ? "text-orange-400" : "text-gray-300"
-        }`}
-      >
-        {score}
-        {hasPenalty && (
-          <span className="text-[9px] text-orange-400 ml-0.5">*</span>
-        )}
+      <div className="flex items-center gap-1">
+        <span className="text-xs text-gray-400 truncate mr-1">{label}</span>
+        {popover}
+      </div>
+      <span className={`text-xs font-bold tabular-nums shrink-0 ${color}`}>
+        {value}
       </span>
     </div>
   );
 }
 
-interface ScoreSectionProps {
-  title: string;
-  popover: ReactNode;
-  children: ReactNode;
+// ---------------------------------------------------------------------------
+// Combat score cell
+// ---------------------------------------------------------------------------
+
+interface ScoreCellProps {
+  score: number | null;
+  hasPenalty?: boolean;
 }
 
-function ScoreSection({ title, popover, children }: ScoreSectionProps) {
+function ScoreCell({ score, hasPenalty = false }: ScoreCellProps) {
+  if (score === null) {
+    return <td className="text-center text-xs text-gray-600">—</td>;
+  }
   return (
-    <>
-      <Divider className="my-1" />
-      <div className="flex items-center gap-1 mb-0.5 mt-1">
-        <p className="text-[10px] text-gray-600 uppercase tracking-wider">
-          {title}
-        </p>
-        {popover}
-      </div>
-      <div className="flex flex-col gap-0.5">{children}</div>
-    </>
+    <td
+      className={`text-center text-xs font-bold tabular-nums ${
+        hasPenalty ? "text-orange-400" : "text-gray-300"
+      }`}
+    >
+      {score}
+      {hasPenalty && (
+        <span className="text-[9px] text-orange-400 ml-0.5">*</span>
+      )}
+    </td>
   );
 }
 
@@ -67,7 +70,7 @@ function ScoreSection({ title, popover, children }: ScoreSectionProps) {
 // Main component
 // ---------------------------------------------------------------------------
 
-interface CombatScoresSummaryProps {
+export interface CombatScoresSummaryProps {
   strengthRank: number;
   totalLoad: number;
   encumbranceDegree: EncumbranceDegree;
@@ -90,6 +93,49 @@ const DEGREE_COLOR: Record<EncumbranceDegree, string> = {
   NoOneWillTakeThisMuch: "text-red-500",
 };
 
+interface WeaponCombatRow {
+  weaponId: string;
+  init: number;
+  initPenalty: boolean;
+  atk: number;
+  atkPenalty: boolean;
+  dfn: number | null;
+  dfnPenalty: boolean;
+  dam: number | null;
+}
+
+function buildWeaponRows(
+  initiativeScores: InitiativeScore[],
+  attackScores: AttackScore[],
+  defenseScores: DefenseScore[],
+  damageScores: DamageScore[],
+): WeaponCombatRow[] {
+  const armedInits = initiativeScores.filter((s) => s.kind === "armed");
+
+  return armedInits.map((init) => {
+    const atk = attackScores.find(
+      (a) => a.weaponId === init.weaponId && a.kind !== "unarmed",
+    );
+    const dfn = defenseScores.find(
+      (d) => d.weaponId === init.weaponId && d.kind !== "unarmed",
+    );
+    const dam = damageScores.find(
+      (d) => d.weaponId === init.weaponId && d.kind !== "unarmed",
+    );
+
+    return {
+      weaponId: init.weaponId!,
+      init: init.score,
+      initPenalty: init.hasMissingAbilityPenalty,
+      atk: atk?.score ?? 0,
+      atkPenalty: atk?.hasMissingAbilityPenalty ?? false,
+      dfn: dfn?.score ?? null,
+      dfnPenalty: dfn?.hasMissingAbilityPenalty ?? false,
+      dam: dam?.score ?? null,
+    };
+  });
+}
+
 export function CombatScoresSummary({
   strengthRank,
   totalLoad,
@@ -106,176 +152,162 @@ export function CombatScoresSummary({
 }: CombatScoresSummaryProps) {
   const { t } = useTranslation();
 
+  // Build per-weapon rows
+  const weaponRows = buildWeaponRows(
+    initiativeScores,
+    attackScores,
+    defenseScores,
+    damageScores,
+  );
+
+  // Unarmed scores
+  const unarmedInit = initiativeScores.find((s) => s.kind === "unarmed");
+  const unarmedAtk = attackScores.find((s) => s.kind === "unarmed");
+  const unarmedDfn = defenseScores.find((s) => s.kind === "unarmed");
+  const unarmedDam = damageScores.find((s) => s.kind === "unarmed");
+
+  // Non-combat initiative
+  const nonCombatInit = initiativeScores.find((s) => s.kind === "nonCombat");
+
+  // Any penalty across all rows?
+  const hasSomePenalty =
+    weaponRows.some(
+      (r) => r.initPenalty || r.atkPenalty || r.dfnPenalty,
+    ) ||
+    unarmedInit?.hasMissingAbilityPenalty ||
+    unarmedAtk?.hasMissingAbilityPenalty ||
+    unarmedDfn?.hasMissingAbilityPenalty ||
+    nonCombatInit?.hasMissingAbilityPenalty;
+
   return (
     <div className="flex flex-col gap-1">
-          {/* Encumbrance */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 truncate mr-1">
-                {t("creation.encumbrance")}
-              </span>
-              <EncumbrancePopover strengthRank={strengthRank} />
-            </div>
-            <div className="flex items-baseline gap-1 shrink-0">
-              <span className={`text-xs font-bold ${DEGREE_COLOR[encumbranceDegree]}`}>
-                {t(`encumbrance.${encumbranceDegree}`)}
-              </span>
-              <span className="text-[10px] text-gray-500">
-                ({totalLoad})
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400 truncate mr-2">
-              {t("creation.encumbranceDecrease")}
-            </span>
-            <span className={`text-xs font-bold tabular-nums shrink-0 ${DEGREE_COLOR[encumbranceDegree]}`}>
-              {encumbranceDecrease}
-            </span>
-          </div>
-
-          {/* Initiative */}
-          <ScoreSection
-            title={t("creation.initiativeSection")}
-            popover={<InitiativePopover />}
+      {/* Important Numbers */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-gray-400 truncate mr-1">
+            {t("creation.encumbrance")}
+          </span>
+          <EncumbrancePopover strengthRank={strengthRank} />
+        </div>
+        <div className="flex items-baseline gap-1 shrink-0">
+          <span
+            className={`text-xs font-bold ${DEGREE_COLOR[encumbranceDegree]}`}
           >
-            {initiativeScores.map((init) => (
-              <ScoreRow
-                key={init.weaponId ?? init.kind}
-                label={
-                  init.kind === "armed"
-                    ? t(`equipment.${init.weaponId}`)
-                    : t(`creation.initiative.${init.kind === "unarmed" ? "unarmed" : "nonCombat"}`)
-                }
-                score={init.score}
-                hasPenalty={init.hasMissingAbilityPenalty}
-              />
-            ))}
-            {initiativeScores.some((i) => i.hasMissingAbilityPenalty) && (
-              <p className="text-[9px] text-orange-400 mt-0.5">
-                * {t("creation.initiative.missingAbilityNote")}
-              </p>
-            )}
-          </ScoreSection>
+            {t(`encumbrance.${encumbranceDegree}`)}
+          </span>
+          <span className="text-[10px] text-gray-500">({totalLoad})</span>
+        </div>
+      </div>
 
-          {/* Attack */}
-          <ScoreSection
-            title={t("creation.attackSection")}
-            popover={<AttackPopover />}
-          >
-            {attackScores.map((atk) => (
-              <ScoreRow
-                key={atk.weaponId ?? atk.kind}
-                label={
-                  atk.kind === "unarmed"
-                    ? t("creation.attack.unarmed")
-                    : t(`equipment.${atk.weaponId}`)
-                }
-                score={atk.score}
-                hasPenalty={atk.hasMissingAbilityPenalty}
-              />
-            ))}
-            {attackScores.some((a) => a.hasMissingAbilityPenalty) && (
-              <p className="text-[9px] text-orange-400 mt-0.5">
-                * {t("creation.attack.missingAbilityNote")}
-              </p>
-            )}
-          </ScoreSection>
+      <NumberRow
+        label={t("creation.encumbranceDecrease")}
+        value={encumbranceDecrease}
+        color={DEGREE_COLOR[encumbranceDegree]}
+      />
 
-          {/* Defense */}
-          <ScoreSection
-            title={t("creation.defenseSection")}
-            popover={<DefensePopover />}
-          >
-            {defenseScores.map((def) => (
-              <ScoreRow
-                key={def.weaponId ?? def.kind}
-                label={
-                  def.kind === "unarmed"
-                    ? t("creation.defense.unarmed")
-                    : t(`equipment.${def.weaponId}`)
-                }
-                score={def.score}
-                hasPenalty={def.hasMissingAbilityPenalty}
-              />
-            ))}
-            {defenseScores.some((d) => d.hasMissingAbilityPenalty) && (
-              <p className="text-[9px] text-orange-400 mt-0.5">
-                * {t("creation.defense.missingAbilityNote")}
-              </p>
-            )}
-          </ScoreSection>
+      <NumberRow
+        label={t("creation.soakSection")}
+        value={soakScore}
+        popover={<SoakPopover />}
+      />
 
-          {/* Damage */}
-          <ScoreSection
-            title={t("creation.damageSection")}
-            popover={<DamagePopover />}
-          >
-            {damageScores.map((dmg) => (
-              <ScoreRow
-                key={dmg.weaponId ?? dmg.kind}
-                label={
-                  dmg.kind === "unarmed"
-                    ? t("creation.damage.unarmed")
-                    : t(`equipment.${dmg.weaponId}`)
-                }
-                score={dmg.score}
-              />
-            ))}
-          </ScoreSection>
+      <NumberRow
+        label={t("creation.moveSection")}
+        value={`${moveScore} ${t("creation.move.paces")}`}
+        popover={<MovePopover />}
+      />
 
-          {/* Soak */}
-          <Divider className="my-1" />
-          <div className="flex items-center justify-between mt-1">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 truncate mr-1">
-                {t("creation.soakSection")}
-              </span>
-              <SoakPopover />
-            </div>
-            <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
-              {soakScore}
-            </span>
-          </div>
+      <NumberRow
+        label={t("creation.engagementSection")}
+        value={engagementScore}
+        popover={<EngagementPopover />}
+      />
 
-          {/* Move */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 truncate mr-1">
-                {t("creation.moveSection")}
-              </span>
-              <MovePopover />
-            </div>
-            <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
-              {moveScore} {t("creation.move.paces")}
-            </span>
-          </div>
+      <NumberRow
+        label={t("creation.responseSection")}
+        value={responseScore}
+        popover={<ResponsePopover />}
+      />
 
-          {/* Engagement */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 truncate mr-1">
-                {t("creation.engagementSection")}
-              </span>
-              <EngagementPopover />
-            </div>
-            <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
-              {engagementScore}
-            </span>
-          </div>
+      {/* Combat Scores */}
+      <Divider className="my-1" />
+      <p className="text-[10px] text-gray-600 uppercase tracking-wider mt-1 mb-0.5">
+        {t("creation.combatScoresSection")}
+      </p>
 
-          {/* Response */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-400 truncate mr-1">
-                {t("creation.responseSection")}
-              </span>
-              <ResponsePopover />
-            </div>
-            <span className="text-xs font-bold tabular-nums shrink-0 text-gray-300">
-              {responseScore}
-            </span>
-          </div>
+      <table className="w-full">
+        <thead>
+          <tr className="text-[10px] text-gray-600 uppercase tracking-wider">
+            <th className="text-left font-normal pb-1" />
+            <th className="text-center font-normal pb-1 w-10">
+              {t("equipment.init")}
+            </th>
+            <th className="text-center font-normal pb-1 w-10">
+              {t("equipment.atk")}
+            </th>
+            <th className="text-center font-normal pb-1 w-10">
+              {t("equipment.dfn")}
+            </th>
+            <th className="text-center font-normal pb-1 w-10">
+              {t("equipment.dam")}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Per-weapon rows */}
+          {weaponRows.map((row) => (
+            <tr key={row.weaponId}>
+              <td className="text-xs text-gray-400 truncate pr-2 max-w-30">
+                {t(`equipment.${row.weaponId}`)}
+              </td>
+              <ScoreCell score={row.init} hasPenalty={row.initPenalty} />
+              <ScoreCell score={row.atk} hasPenalty={row.atkPenalty} />
+              <ScoreCell score={row.dfn} hasPenalty={row.dfnPenalty} />
+              <ScoreCell score={row.dam} />
+            </tr>
+          ))}
+
+          {/* Fist & Kick row */}
+          <tr>
+            <td className="text-xs text-gray-400 truncate pr-2">
+              {t("creation.combatScores.fistKick")}
+            </td>
+            <ScoreCell
+              score={unarmedInit?.score ?? null}
+              hasPenalty={unarmedInit?.hasMissingAbilityPenalty}
+            />
+            <ScoreCell
+              score={unarmedAtk?.score ?? null}
+              hasPenalty={unarmedAtk?.hasMissingAbilityPenalty}
+            />
+            <ScoreCell
+              score={unarmedDfn?.score ?? null}
+              hasPenalty={unarmedDfn?.hasMissingAbilityPenalty}
+            />
+            <ScoreCell score={unarmedDam?.score ?? null} />
+          </tr>
+
+          {/* Non-combat initiative */}
+          <tr>
+            <td className="text-xs text-gray-400 truncate pr-2">
+              {t("creation.combatScores.nonCombatInit")}
+            </td>
+            <ScoreCell
+              score={nonCombatInit?.score ?? null}
+              hasPenalty={nonCombatInit?.hasMissingAbilityPenalty}
+            />
+            <td />
+            <td />
+            <td />
+          </tr>
+        </tbody>
+      </table>
+
+      {hasSomePenalty && (
+        <p className="text-[9px] text-orange-400 mt-0.5">
+          * {t("creation.combatScores.missingAbilityNote")}
+        </p>
+      )}
     </div>
   );
 }
