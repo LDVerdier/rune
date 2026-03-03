@@ -10,7 +10,8 @@ export type WeaponAbility =
   | "Great"
   | "Longshaft"
   | "Single"
-  | "Thrown";
+  | "Thrown"
+  | "TwoWeapons";
 
 
 export type WeaponAvailability = "Common" | "Rare" | "NA" | "Special";
@@ -92,6 +93,9 @@ export const WEAPONS: WeaponDefinition[] = [
   { id: "vikingBroadsword", kind: "weapon", init: 5, atk: 3, dfn: 4, dam: 6, load: 1, ability: "Single", availability: "Common" },
   { id: "warMaul", kind: "weapon", init: 5, atk: 2, dfn: 5, dam: 10, load: 1.5, ability: "Great", availability: "Common" },
   { id: "whip", kind: "weapon", init: 0, atk: 6, dfn: 0, dam: 2, load: 0.5, ability: "Chain", availability: "Common" },
+  { id: "shortswordDagger", kind: "weapon", init: 6, atk: 5, dfn: 6, dam: 5, load: 0.75, ability: "TwoWeapons", availability: "Common" },
+  { id: "twoHandAxes", kind: "weapon", init: 4, atk: 5, dfn: 3, dam: 7, load: 1, ability: "TwoWeapons", availability: "Common" },
+  { id: "twoShortSwords", kind: "weapon", init: 6, atk: 3, dfn: 5, dam: 7, load: 1, ability: "TwoWeapons", availability: "Common" },
 ];
 
 /** Unarmed weapon entry used by initiative, attack, defense, and damage. */
@@ -149,6 +153,7 @@ export const WEAPON_ABILITY_NAMES: Record<WeaponAbility, string> = {
   Longshaft: "LongshaftWeapon",
   Single: "SingleWeapon",
   Thrown: "ThrownWeapon",
+  TwoWeapons: "TwoWeapons",
 };
 
 // ---------------------------------------------------------------------------
@@ -161,16 +166,29 @@ export const MISSILE_WEAPON_ABILITIES: ReadonlySet<WeaponAbility> = new Set([
   "Thrown",
 ]);
 
+/** Selectable melee weapons (excludes Bows, Thrown, and TwoWeapons). */
+export const SELECTABLE_MELEE_WEAPONS = SELECTABLE_WEAPONS.filter(
+  (w) => !MISSILE_WEAPON_ABILITIES.has(w.ability) && w.ability !== "TwoWeapons",
+);
+
+/** Selectable missile weapons (Bows and Thrown only). */
+export const SELECTABLE_MISSILE_WEAPONS = SELECTABLE_WEAPONS.filter(
+  (w) => MISSILE_WEAPON_ABILITIES.has(w.ability),
+);
+
+/** Selectable two-weapon combos. */
+export const SELECTABLE_TWO_WEAPONS = SELECTABLE_WEAPONS.filter(
+  (w) => w.ability === "TwoWeapons",
+);
+
 /**
  * Ability rank names for melee weapon abilities (excludes Bows and ThrownWeapon).
- * Includes "TwoWeapons" — a fighting style with no dedicated weapon type.
  */
-export const MELEE_WEAPON_ABILITY_NAMES: readonly string[] = [
-  ...(Object.entries(WEAPON_ABILITY_NAMES) as [WeaponAbility, string][])
-    .filter(([key]) => !MISSILE_WEAPON_ABILITIES.has(key))
-    .map(([, name]) => name),
-  "TwoWeapons",
-];
+export const MELEE_WEAPON_ABILITY_NAMES: readonly string[] = (
+  Object.entries(WEAPON_ABILITY_NAMES) as [WeaponAbility, string][]
+)
+  .filter(([key]) => !MISSILE_WEAPON_ABILITIES.has(key))
+  .map(([, name]) => name);
 
 // ---------------------------------------------------------------------------
 // Equipment lookup helpers

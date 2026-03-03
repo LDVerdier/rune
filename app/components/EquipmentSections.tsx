@@ -8,7 +8,9 @@ import { ArmorStatsRow, ArmorDetails } from "~/components/Armor";
 import { EquipmentSelectionModal } from "~/components/EquipmentSelectionModal";
 import { ExpandArrow, ExpandableContent } from "~/components/expand";
 import {
-  SELECTABLE_WEAPONS,
+  SELECTABLE_MELEE_WEAPONS,
+  SELECTABLE_MISSILE_WEAPONS,
+  SELECTABLE_TWO_WEAPONS,
   SELECTABLE_SHIELDS,
   SELECTABLE_ARMORS,
   MAX_WEAPONS,
@@ -53,9 +55,20 @@ export function EquipmentSections({
   const resolvedShield = findShield(selectedShield);
   const resolvedArmor = findArmor(selectedArmor);
 
-  const availableWeapons = SELECTABLE_WEAPONS.filter(
+  const availableMelee = SELECTABLE_MELEE_WEAPONS.filter(
     (w) => !selectedWeapons.includes(w.id),
   );
+  const availableMissile = SELECTABLE_MISSILE_WEAPONS.filter(
+    (w) => !selectedWeapons.includes(w.id),
+  );
+  const availableTwoWeapons = SELECTABLE_TWO_WEAPONS.filter(
+    (w) => !selectedWeapons.includes(w.id),
+  );
+  const weaponTabs = [
+    { key: "melee", label: t("creation.meleeWeapons"), items: availableMelee },
+    { key: "missile", label: t("creation.missileWeapons"), items: availableMissile },
+    { key: "twoWeapons", label: t("creation.twoWeaponsTab"), items: availableTwoWeapons },
+  ];
   const availableShields = SELECTABLE_SHIELDS.filter(
     (s) => s.id !== selectedShield,
   );
@@ -150,7 +163,7 @@ export function EquipmentSections({
         isOpen={weaponModalOpen}
         onOpenChange={setWeaponModalOpen}
         title={t("creation.weaponsSection")}
-        items={availableWeapons}
+        tabs={weaponTabs}
         onSelect={toggleWeapon}
       />
       <EquipmentSelectionModal

@@ -4,6 +4,8 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  Tab,
+  Tabs,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import type {
@@ -15,11 +17,18 @@ import { ArmorStatsRow } from "~/components/Armor";
 
 type EquipmentItem = CombatEquipmentDefinition | ArmorDefinition;
 
+export interface EquipmentTab {
+  readonly key: string;
+  readonly label: string;
+  readonly items: readonly EquipmentItem[];
+}
+
 interface EquipmentSelectionModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  items: readonly EquipmentItem[];
+  items?: readonly EquipmentItem[];
+  tabs?: readonly EquipmentTab[];
   onSelect: (id: string) => void;
 }
 
@@ -28,8 +37,14 @@ export function EquipmentSelectionModal({
   onOpenChange,
   title,
   items,
+  tabs,
   onSelect,
 }: EquipmentSelectionModalProps) {
+  const handleSelect = (id: string) => {
+    onSelect(id);
+    onOpenChange(false);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -44,21 +59,46 @@ export function EquipmentSelectionModal({
       <ModalContent>
         <ModalHeader className="text-white">{title}</ModalHeader>
         <ModalBody className="pb-6">
-          <div className="flex flex-col gap-2">
-            {items.map((item) => (
-              <EquipmentRow
-                key={item.id}
-                item={item}
-                onSelect={() => {
-                  onSelect(item.id);
-                  onOpenChange(false);
-                }}
-              />
-            ))}
-          </div>
+          {tabs ? (
+            <Tabs
+              aria-label={title}
+              variant="underlined"
+              classNames={{
+                tabList: "w-full",
+                tab: "text-xs",
+              }}
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab.key} title={tab.label}>
+                  <EquipmentList items={tab.items} onSelect={handleSelect} />
+                </Tab>
+              ))}
+            </Tabs>
+          ) : (
+            <EquipmentList items={items ?? []} onSelect={handleSelect} />
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
+  );
+}
+
+interface EquipmentListProps {
+  items: readonly EquipmentItem[];
+  onSelect: (id: string) => void;
+}
+
+function EquipmentList({ items, onSelect }: EquipmentListProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((item) => (
+        <EquipmentRow
+          key={item.id}
+          item={item}
+          onSelect={() => onSelect(item.id)}
+        />
+      ))}
+    </div>
   );
 }
 
