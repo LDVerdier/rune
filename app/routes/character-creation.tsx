@@ -157,6 +157,7 @@ export default function CharacterCreation() {
           <AbilitiesSection
             abilityRanks={creation.abilityRanks}
             abilSpent={creation.abilSpent}
+            remainingPoints={creation.remainingPoints}
             expandedItem={ui.expandedItem}
             changeAbilityRank={creation.changeAbilityRank}
             canIncreaseAbility={creation.canIncreaseAbility}
