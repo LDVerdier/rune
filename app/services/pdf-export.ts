@@ -7,6 +7,7 @@ import {
   findWeapons,
   findShield,
   findArmor,
+  WEAPON_ABILITY_NAMES,
 } from "~/domain/equipment";
 import type {
   WeaponDefinition,
@@ -131,23 +132,6 @@ function drawRow(
   return y + LH;
 }
 
-function drawRowWithPenalty(
-  doc: JsPDF,
-  label: string,
-  score: number,
-  hasPenalty: boolean,
-  x: number,
-  y: number,
-  width: number,
-): number {
-  setFont(doc, "normal", F_BODY, BLACK);
-  doc.text(label, x, y);
-  const val = String(score) + (hasPenalty ? " *" : "");
-  setFont(doc, "bold", F_BODY, hasPenalty ? PENALTY : BLACK);
-  doc.text(val, x + width, y, { align: "right" });
-  return y + LH;
-}
-
 // ---------------------------------------------------------------------------
 // Page 1 drawing
 // ---------------------------------------------------------------------------
@@ -201,109 +185,137 @@ function drawPage1(
   }
   y += SUB_GAP;
 
+  // --- Important Numbers ---
+  y = drawSectionHeader(doc, t("creation.importantNumbersSection"), y);
+  y = drawRow(
+    doc,
+    t("creation.encumbrance"),
+    `${t(`encumbrance.${data.encumbranceDegree}`)} (${data.totalLoad})`,
+    M, y, CW,
+  );
+  y = drawRow(doc, t("creation.encumbranceDecrease"), String(data.encumbranceDecrease), M, y, CW);
+  y = drawRow(doc, t("creation.moveSection"), `${data.moveScore} ${t("creation.move.paces")}`, M, y, CW);
+  y = drawRow(doc, t("creation.soakSection"), String(data.soakScore), M, y, CW);
+  y = drawRow(doc, t("creation.responseSection"), String(data.responseScore), M, y, CW);
+  y = drawRow(doc, t("creation.engagementSection"), String(data.engagementScore), M, y, CW);
+  y += SUB_GAP;
+
   // --- Abilities ---
+  y = drawAbilitiesSection(doc, data, t, y);
+
+  // --- Equipment ---
+  y = drawEquipmentSection(doc, data, t, y);
+}
+
+// ---------------------------------------------------------------------------
+// Abilities section
+// ---------------------------------------------------------------------------
+
+function drawAbilitiesSection(
+  doc: JsPDF,
+  data: CharacterSheetData,
+  t: TFunction,
+  y: number,
+): number {
   const purchasedSets = ABILITY_SETS.filter((set) =>
     ABILITIES_BY_SET[set].some((a) => data.abilityRanks[a.name] > 0),
   );
 
-  if (purchasedSets.length > 0) {
-    y = drawSectionHeader(doc, t("creation.abilitiesSection"), y);
+  if (purchasedSets.length === 0) return y;
 
-    for (const set of purchasedSets) {
-      const purchased = ABILITIES_BY_SET[set].filter(
-        (a) => data.abilityRanks[a.name] > 0,
+  y = drawSectionHeader(doc, t("creation.abilitiesSection"), y);
+
+  for (const set of purchasedSets) {
+    const purchased = ABILITIES_BY_SET[set].filter(
+      (a) => data.abilityRanks[a.name] > 0,
+    );
+
+    setFont(doc, "italic", F_SUBSECTION, GREY);
+    doc.text(t(`abilities.sets.${set}`), M, y);
+    y += LH_SM + 0.5;
+
+    for (const ability of purchased) {
+      y = drawRow(
+        doc,
+        t(`abilities.${ability.name}`),
+        String(data.abilityRanks[ability.name]),
+        M + 3,
+        y,
+        CW - 6,
       );
-
-      setFont(doc, "italic", F_SUBSECTION, GREY);
-      doc.text(t(`abilities.sets.${set}`), M, y);
-      y += LH_SM + 0.5;
-
-      for (const ability of purchased) {
-        y = drawRow(
-          doc,
-          t(`abilities.${ability.name}`),
-          String(data.abilityRanks[ability.name]),
-          M + 3,
-          y,
-          CW - 6,
-        );
-      }
-      y += 1.5;
     }
-    y += SUB_GAP - 1.5;
+    y += 1.5;
   }
+  y += SUB_GAP - 1.5;
+  return y;
+}
 
-  // --- Equipment ---
+// ---------------------------------------------------------------------------
+// Equipment section (weapons, shields, armors with ability info)
+// ---------------------------------------------------------------------------
+
+function drawEquipmentSection(
+  doc: JsPDF,
+  data: CharacterSheetData,
+  t: TFunction,
+  y: number,
+): number {
   const weapons = findWeapons(data.selectedWeapons);
   const shield = findShield(data.selectedShield);
   const armor = findArmor(data.selectedArmor);
   const hasEquipment = weapons.length > 0 || shield || armor;
 
-  if (hasEquipment) {
-    y = drawSectionHeader(doc, t("creation.equipmentSection"), y);
+  if (!hasEquipment) return y;
 
-    if (weapons.length > 0) {
-      setFont(doc, "italic", F_SUBSECTION, GREY);
-      doc.text(t("creation.weaponsSection"), M, y);
-      y += LH_SM + 0.5;
-      for (const w of weapons) {
-        y = drawWeaponRow(doc, w, t, M + 3, y);
-      }
-      y += 1.5;
+  y = drawSectionHeader(doc, t("creation.equipmentSection"), y);
+
+  if (weapons.length > 0) {
+    setFont(doc, "italic", F_SUBSECTION, GREY);
+    doc.text(t("creation.weaponsSection"), M, y);
+    y += LH_SM + 0.5;
+    for (const w of weapons) {
+      y = drawWeaponRow(doc, w, data.abilityRanks, t, M + 3, y);
     }
-
-    if (shield) {
-      setFont(doc, "italic", F_SUBSECTION, GREY);
-      doc.text(t("creation.shieldsSection"), M, y);
-      y += LH_SM + 0.5;
-      y = drawShieldRow(doc, shield, t, M + 3, y);
-      y += 1.5;
-    }
-
-    if (armor) {
-      setFont(doc, "italic", F_SUBSECTION, GREY);
-      doc.text(t("creation.armorsSection"), M, y);
-      y += LH_SM + 0.5;
-      y = drawArmorRow(doc, armor, t, M + 3, y);
-      y += 1.5;
-    }
-
-    // Encumbrance
-    y += 1;
-    drawRow(
-      doc,
-      t("creation.encumbrance"),
-      `${t(`encumbrance.${data.encumbranceDegree}`)} (${data.totalLoad})`,
-      M + 3,
-      y,
-      CW - 6,
-    );
-    y += LH;
-    drawRow(
-      doc,
-      t("creation.encumbranceDecrease"),
-      String(data.encumbranceDecrease),
-      M + 3,
-      y,
-      CW - 6,
-    );
+    y += 1.5;
   }
+
+  if (shield) {
+    setFont(doc, "italic", F_SUBSECTION, GREY);
+    doc.text(t("creation.shieldsSection"), M, y);
+    y += LH_SM + 0.5;
+    y = drawShieldRow(doc, shield, data.abilityRanks, t, M + 3, y);
+    y += 1.5;
+  }
+
+  if (armor) {
+    setFont(doc, "italic", F_SUBSECTION, GREY);
+    doc.text(t("creation.armorsSection"), M, y);
+    y += LH_SM + 0.5;
+    y = drawArmorRow(doc, armor, t, M + 3, y);
+    y += 1.5;
+  }
+
+  return y;
 }
 
 function drawWeaponRow(
   doc: JsPDF,
   w: WeaponDefinition,
+  abilityRanks: AbilityRanks,
   t: TFunction,
   x: number,
   y: number,
 ): number {
   setFont(doc, "bold", F_BODY, BLACK);
   doc.text(t(`equipment.${w.id}`), x, y);
+  const abilityName = WEAPON_ABILITY_NAMES[w.ability];
+  const abilityRank = abilityRanks[abilityName] ?? 0;
   const stats = [
     `${t("equipment.init")} ${formatRank(w.init)}`,
     `${t("equipment.atk")} ${formatRank(w.atk)}`,
     w.dfn !== null ? `${t("equipment.dfn")} ${formatRank(w.dfn)}` : null,
     `${t("equipment.dam")} ${w.dam === "special" ? t("equipment.special") : formatRank(w.dam)}`,
+    `${t(`abilities.${abilityName}`)} ${abilityRank}`,
     w.load !== null ? `${t("equipment.load")} ${w.load}` : null,
   ]
     .filter(Boolean)
@@ -317,16 +329,20 @@ function drawWeaponRow(
 function drawShieldRow(
   doc: JsPDF,
   s: ShieldDefinition,
+  abilityRanks: AbilityRanks,
   t: TFunction,
   x: number,
   y: number,
 ): number {
   setFont(doc, "bold", F_BODY, BLACK);
   doc.text(t(`equipment.${s.id}`), x, y);
+  const abilityName = WEAPON_ABILITY_NAMES[s.ability];
+  const abilityRank = abilityRanks[abilityName] ?? 0;
   const stats = [
     `${t("equipment.init")} ${formatRank(s.init)}`,
     `${t("equipment.atk")} ${formatRank(s.atk)}`,
     s.dfn !== null ? `${t("equipment.dfn")} ${formatRank(s.dfn)}` : null,
+    `${t(`abilities.${abilityName}`)} ${abilityRank}`,
     s.load !== null ? `${t("equipment.load")} ${s.load}` : null,
   ]
     .filter(Boolean)
@@ -358,8 +374,106 @@ function drawArmorRow(
 }
 
 // ---------------------------------------------------------------------------
-// Page 2 drawing
+// Page 2 drawing — Combat scores table + notes
 // ---------------------------------------------------------------------------
+
+interface WeaponCombatRow {
+  weaponId: string;
+  init: number;
+  initPenalty: boolean;
+  atk: number;
+  atkPenalty: boolean;
+  dfn: number | null;
+  dfnPenalty: boolean;
+  dam: number | null;
+}
+
+function buildWeaponRows(
+  initiativeScores: InitiativeScore[],
+  attackScores: AttackScore[],
+  defenseScores: DefenseScore[],
+  damageScores: DamageScore[],
+): WeaponCombatRow[] {
+  return initiativeScores
+    .filter((s) => s.kind === "armed")
+    .map((init) => {
+      const atk = attackScores.find(
+        (a) => a.weaponId === init.weaponId && a.kind !== "unarmed",
+      );
+      const dfn = defenseScores.find(
+        (d) => d.weaponId === init.weaponId && d.kind !== "unarmed",
+      );
+      const dam = damageScores.find(
+        (d) => d.weaponId === init.weaponId && d.kind !== "unarmed",
+      );
+      return {
+        weaponId: init.weaponId!,
+        init: init.score,
+        initPenalty: init.hasMissingAbilityPenalty,
+        atk: atk?.score ?? 0,
+        atkPenalty: atk?.hasMissingAbilityPenalty ?? false,
+        dfn: dfn?.score ?? null,
+        dfnPenalty: dfn?.hasMissingAbilityPenalty ?? false,
+        dam: dam?.score ?? null,
+      };
+    });
+}
+
+// Column X positions for the combat table
+const COL_LABEL_X = M;
+const COL_INIT_X = M + CW * 0.55;
+const COL_ATK_X = M + CW * 0.67;
+const COL_DFN_X = M + CW * 0.78;
+const COL_DAM_X = M + CW * 0.89;
+
+function drawTableHeader(doc: JsPDF, t: TFunction, y: number): number {
+  setFont(doc, "normal", F_SMALL, GREY);
+  doc.text(t("equipment.init"), COL_INIT_X, y, { align: "center" });
+  doc.text(t("equipment.atk"), COL_ATK_X, y, { align: "center" });
+  doc.text(t("equipment.dfn"), COL_DFN_X, y, { align: "center" });
+  doc.text(t("equipment.dam"), COL_DAM_X, y, { align: "center" });
+  y += 1;
+  drawRule(doc, y, M, M + CW);
+  return y + 2.5;
+}
+
+function drawCombatCell(
+  doc: JsPDF,
+  score: number | null,
+  hasPenalty: boolean,
+  x: number,
+  y: number,
+): void {
+  if (score === null) {
+    setFont(doc, "normal", F_BODY, GREY);
+    doc.text("—", x, y, { align: "center" });
+    return;
+  }
+  const val = String(score) + (hasPenalty ? " *" : "");
+  setFont(doc, "bold", F_BODY, hasPenalty ? PENALTY : BLACK);
+  doc.text(val, x, y, { align: "center" });
+}
+
+function drawCombatTableRow(
+  doc: JsPDF,
+  label: string,
+  init: number | null,
+  initPenalty: boolean,
+  atk: number | null,
+  atkPenalty: boolean,
+  dfn: number | null,
+  dfnPenalty: boolean,
+  dam: number | null,
+  y: number,
+): number {
+  setFont(doc, "normal", F_BODY, BLACK);
+  doc.text(label, COL_LABEL_X, y);
+  drawCombatCell(doc, init, initPenalty, COL_INIT_X, y);
+  drawCombatCell(doc, atk, atkPenalty, COL_ATK_X, y);
+  drawCombatCell(doc, dfn, dfnPenalty, COL_DFN_X, y);
+  drawCombatCell(doc, dam, false, COL_DAM_X, y);
+  return y + LH;
+}
 
 function drawPage2(
   doc: JsPDF,
@@ -368,71 +482,72 @@ function drawPage2(
 ): void {
   let y = M;
 
-  // --- Initiative ---
-  y = drawSectionHeader(doc, t("creation.initiativeSection"), y);
-  for (const init of data.initiativeScores) {
-    const label =
-      init.kind === "armed"
-        ? t(`equipment.${init.weaponId}`)
-        : t(`creation.initiative.${init.kind === "unarmed" ? "unarmed" : "nonCombat"}`);
-    y = drawRowWithPenalty(doc, label, init.score, init.hasMissingAbilityPenalty, M, y, CW);
+  // --- Combat Scores Table ---
+  y = drawSectionHeader(doc, t("creation.combatScoresSection"), y);
+  y = drawTableHeader(doc, t, y);
+
+  const weaponRows = buildWeaponRows(
+    data.initiativeScores,
+    data.attackScores,
+    data.defenseScores,
+    data.damageScores,
+  );
+
+  // Per-weapon rows
+  for (const row of weaponRows) {
+    y = drawCombatTableRow(
+      doc,
+      t(`equipment.${row.weaponId}`),
+      row.init, row.initPenalty,
+      row.atk, row.atkPenalty,
+      row.dfn, row.dfnPenalty,
+      row.dam,
+      y,
+    );
   }
-  if (data.initiativeScores.some((i) => i.hasMissingAbilityPenalty)) {
+
+  // Unarmed (Fist & Kick)
+  const unarmedInit = data.initiativeScores.find((s) => s.kind === "unarmed");
+  const unarmedAtk = data.attackScores.find((s) => s.kind === "unarmed");
+  const unarmedDfn = data.defenseScores.find((s) => s.kind === "unarmed");
+  const unarmedDam = data.damageScores.find((s) => s.kind === "unarmed");
+
+  y = drawCombatTableRow(
+    doc,
+    t("creation.combatScores.fistKick"),
+    unarmedInit?.score ?? null, unarmedInit?.hasMissingAbilityPenalty ?? false,
+    unarmedAtk?.score ?? null, unarmedAtk?.hasMissingAbilityPenalty ?? false,
+    unarmedDfn?.score ?? null, unarmedDfn?.hasMissingAbilityPenalty ?? false,
+    unarmedDam?.score ?? null,
+    y,
+  );
+
+  // Non-combat initiative
+  const nonCombatInit = data.initiativeScores.find((s) => s.kind === "nonCombat");
+  y = drawCombatTableRow(
+    doc,
+    t("creation.combatScores.nonCombatInit"),
+    nonCombatInit?.score ?? null, nonCombatInit?.hasMissingAbilityPenalty ?? false,
+    null, false,
+    null, false,
+    null,
+    y,
+  );
+
+  // Penalty footnote
+  const hasSomePenalty =
+    weaponRows.some((r) => r.initPenalty || r.atkPenalty || r.dfnPenalty) ||
+    unarmedInit?.hasMissingAbilityPenalty ||
+    unarmedAtk?.hasMissingAbilityPenalty ||
+    unarmedDfn?.hasMissingAbilityPenalty ||
+    nonCombatInit?.hasMissingAbilityPenalty;
+
+  if (hasSomePenalty) {
+    y += 1;
     setFont(doc, "italic", F_SMALL, PENALTY);
-    doc.text(`* ${t("creation.initiative.missingAbilityNote")}`, M, y + 1);
+    doc.text(`* ${t("creation.combatScores.missingAbilityNote")}`, M, y);
     y += LH;
   }
-  y += SEC_GAP;
-
-  // --- Attack ---
-  y = drawSectionHeader(doc, t("creation.attackSection"), y);
-  for (const atk of data.attackScores) {
-    const label =
-      atk.kind === "unarmed"
-        ? t("creation.attack.unarmed")
-        : t(`equipment.${atk.weaponId}`);
-    y = drawRowWithPenalty(doc, label, atk.score, atk.hasMissingAbilityPenalty, M, y, CW);
-  }
-  if (data.attackScores.some((a) => a.hasMissingAbilityPenalty)) {
-    setFont(doc, "italic", F_SMALL, PENALTY);
-    doc.text(`* ${t("creation.attack.missingAbilityNote")}`, M, y + 1);
-    y += LH;
-  }
-  y += SEC_GAP;
-
-  // --- Defense ---
-  y = drawSectionHeader(doc, t("creation.defenseSection"), y);
-  for (const def of data.defenseScores) {
-    const label =
-      def.kind === "unarmed"
-        ? t("creation.defense.unarmed")
-        : t(`equipment.${def.weaponId}`);
-    y = drawRowWithPenalty(doc, label, def.score, def.hasMissingAbilityPenalty, M, y, CW);
-  }
-  if (data.defenseScores.some((d) => d.hasMissingAbilityPenalty)) {
-    setFont(doc, "italic", F_SMALL, PENALTY);
-    doc.text(`* ${t("creation.defense.missingAbilityNote")}`, M, y + 1);
-    y += LH;
-  }
-  y += SEC_GAP;
-
-  // --- Damage ---
-  y = drawSectionHeader(doc, t("creation.damageSection"), y);
-  for (const dmg of data.damageScores) {
-    const label =
-      dmg.kind === "unarmed"
-        ? t("creation.damage.unarmed")
-        : t(`equipment.${dmg.weaponId}`);
-    y = drawRow(doc, label, String(dmg.score), M, y, CW);
-  }
-  y += SEC_GAP;
-
-  // --- Secondary Scores ---
-  y = drawSectionHeader(doc, t("creation.importantNumbersSection"), y);
-  y = drawRow(doc, t("creation.soakSection"), String(data.soakScore), M, y, CW);
-  y = drawRow(doc, t("creation.moveSection"), `${data.moveScore} ${t("creation.move.paces")}`, M, y, CW);
-  y = drawRow(doc, t("creation.engagementSection"), String(data.engagementScore), M, y, CW);
-  y = drawRow(doc, t("creation.responseSection"), String(data.responseScore), M, y, CW);
   y += SEC_GAP;
 
   // --- Notes ---
