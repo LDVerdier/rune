@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
+import { Button, Divider, Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { BASE_POINTS } from "~/domain/character-stats";
 import type { EncumbranceDegree } from "~/domain/encumbrance";
@@ -70,7 +70,6 @@ export function MobileSummaryBar({
               </ModalHeader>
               <ModalBody className="pb-6">
                 <CharacterSummary
-                  remainingPoints={remainingPoints}
                   strengthRank={strengthRank}
                   staminaRank={staminaRank}
                   totalHP={totalHP}
@@ -86,12 +85,29 @@ export function MobileSummaryBar({
                   moveScore={moveScore}
                   engagementScore={engagementScore}
                   responseScore={responseScore}
-                  onResetClick={() => {
-                    setIsMobileSummaryOpen(false);
-                    onResetClick();
-                  }}
-                  onExportClick={onExportClick}
                 />
+                <Divider />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    className="text-gray-400 text-xs"
+                    onPress={onExportClick}
+                  >
+                    {t("creation.exportPDF")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    className="text-danger-400 text-xs"
+                    onPress={() => {
+                      setIsMobileSummaryOpen(false);
+                      onResetClick();
+                    }}
+                  >
+                    {t("creation.resetAll")}
+                  </Button>
+                </div>
               </ModalBody>
             </>
           )}

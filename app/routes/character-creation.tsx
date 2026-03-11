@@ -21,6 +21,7 @@ import { ExtraHPSection } from "~/components/ExtraHPSection";
 import { EquipmentSections } from "~/components/EquipmentSections";
 import { MobileSummaryBar } from "~/components/MobileSummaryBar";
 import { MALE_NAMES, FEMALE_NAMES, deriveCognomen } from "~/domain/names";
+import { BASE_POINTS } from "~/domain/character-stats";
 import { usePdfExport } from "~/hooks/use-pdf-export";
 import i18n from "~/i18n";
 
@@ -89,6 +90,31 @@ export default function CharacterCreation() {
           </div>
 
           <Divider className="mb-6" />
+
+          {/* Desktop sticky toolbar — points + actions */}
+          <div className="hidden lg:block sticky top-0 z-30 bg-black/80 backdrop-blur-sm -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-6 border-b border-white/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
+                  {t("creation.pointsRemaining")}
+                </p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold tabular-nums text-white">
+                    {creation.remainingPoints}
+                  </span>
+                  <span className="text-xs text-gray-500">/ {BASE_POINTS}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="flat" className="text-gray-400 text-xs" onPress={exportPdf}>
+                  {t("creation.exportPDF")}
+                </Button>
+                <Button size="sm" variant="flat" className="text-danger-400 text-xs" onPress={() => ui.setIsResetOpen(true)}>
+                  {t("creation.resetAll")}
+                </Button>
+              </div>
+            </div>
+          </div>
 
           {/* Gender selection */}
           <div className="mb-4">
@@ -227,7 +253,6 @@ export default function CharacterCreation() {
                 {t("creation.summary")}
               </h2>
               <CharacterSummary
-                remainingPoints={creation.remainingPoints}
                 strengthRank={creation.ranks.Strength}
                 staminaRank={creation.ranks.Stamina}
                 totalHP={creation.totalHP}
@@ -243,8 +268,6 @@ export default function CharacterCreation() {
                 moveScore={creation.moveScore}
                 engagementScore={creation.engagementScore}
                 responseScore={creation.responseScore}
-                onResetClick={() => ui.setIsResetOpen(true)}
-                onExportClick={exportPdf}
               />
             </div>
           </div>
