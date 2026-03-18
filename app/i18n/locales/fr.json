@@ -530,5 +530,29 @@
     "colBetter": "Poser qqch...",
     "colNoOne": "Personne...",
     "triggerLabel": "Comment est-ce calculé ?"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "signInWithGoogle": "Se connecter avec Google",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?",
+    "checkEmail": "Vérifiez votre email pour confirmer votre compte.",
+    "myCharacters": "Mes personnages"
+  },
+  "characters": {
+    "pageTitle": "Mes personnages - Rune",
+    "myCharacters": "Mes personnages",
+    "create": "Créer un personnage",
+    "save": "Sauvegarder",
+    "savedSuccessfully": "Sauvegardé !",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce personnage ?",
+    "noCharacters": "Aucun personnage — créez-en un pour commencer.",
+    "delete": "Supprimer",
+    "unnamed": "Personnage sans nom",
+    "loginToSave": "Connectez-vous pour sauvegarder"
   }
 }

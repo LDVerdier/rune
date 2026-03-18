@@ -1,7 +1,8 @@
-import { Link } from "react-router";
+import { Link, useRouteLoaderData } from "react-router";
 import { Button, Divider } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/home";
+import type { RootLoaderData } from "~/root";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -14,6 +15,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const { t } = useTranslation();
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const user = rootData?.user ?? null;
 
   const subtitleLines = t("home.subtitle").split("\n");
 
@@ -39,16 +42,29 @@ export default function Home() {
           ))}
         </p>
 
-        <Button
-          as={Link}
-          to="/character-creation"
-          color="primary"
-          variant="solid"
-          size="lg"
-          className="font-semibold uppercase tracking-wider px-10"
-        >
-          {t("home.cta")}
-        </Button>
+        <div className="flex flex-col items-center gap-3">
+          <Button
+            as={Link}
+            to="/character-creation"
+            color="primary"
+            variant="solid"
+            size="lg"
+            className="font-semibold uppercase tracking-wider px-10"
+          >
+            {t("home.cta")}
+          </Button>
+          {user && (
+            <Button
+              as={Link}
+              to="/my-characters"
+              variant="light"
+              size="sm"
+              className="text-gray-400"
+            >
+              {t("auth.myCharacters")}
+            </Button>
+          )}
+        </div>
       </div>
     </main>
   );

@@ -5,6 +5,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  data,
 } from "react-router";
 import { HeroUIProvider } from "@heroui/react";
 import { useTranslation } from "react-i18next";
@@ -12,7 +14,12 @@ import "~/i18n";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import LanguageSwitcher from "~/components/LanguageSwitcher";
+import AuthNavBar from "~/components/AuthNavBar";
+import { createServerClient } from "~/services/supabase.server";
+
+export interface RootLoaderData {
+  user: { id: string; email?: string } | null;
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -48,10 +55,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const { supabase, headers } = createServerClient(request);
+  const { data: { user } } = await supabase.auth.getUser();
+  return data({ user }, { headers });
+}
+
 export default function App() {
+  const { user } = useLoaderData<typeof loader>();
+
   return (
     <HeroUIProvider disableRipple>
-      <LanguageSwitcher />
+      <AuthNavBar user={user} />
       <Outlet />
     </HeroUIProvider>
   );

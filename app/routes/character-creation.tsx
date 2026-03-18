@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useRouteLoaderData, useFetcher } from "react-router";
 import {
   Button,
   Divider,
@@ -12,7 +12,7 @@ import { useCharacterCreation } from "~/hooks/use-character-creation";
 import { useCharacterCreationUI } from "~/hooks/use-character-creation-ui";
 
 import { CharacterSummary } from "~/components/CharacterSummary";
-import LanguageSwitcher from "~/components/LanguageSwitcher";
+
 import { ConfirmationModal } from "~/components/ConfirmationModal";
 import { NameSuggestionPopover } from "~/components/NameSuggestionPopover";
 import { CharacteristicsSection } from "~/components/CharacteristicsSection";
@@ -23,6 +23,11 @@ import { MobileSummaryBar } from "~/components/MobileSummaryBar";
 import { MALE_NAMES, FEMALE_NAMES, deriveCognomen } from "~/domain/names";
 import { BASE_POINTS } from "~/domain/character-stats";
 import { usePdfExport } from "~/hooks/use-pdf-export";
+import { createServerClient } from "~/services/supabase.server";
+import { saveCharacter } from "~/services/character-repository.server";
+import { validateCharacter } from "~/domain/character-validation";
+import type { CharacterData } from "~/domain/character";
+import type { RootLoaderData } from "~/root";
 import i18n from "~/i18n";
 
 export function meta({}: Route.MetaArgs) {
@@ -33,11 +38,50 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+export async function action({ request }: Route.ActionArgs) {
+  const { supabase, headers } = createServerClient(request);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return Response.json({ error: "unauthorized" }, { status: 401, headers });
+
+  const body = await request.json() as CharacterData;
+  const validation = validateCharacter(body);
+  if (!validation.valid) {
+    return Response.json({ error: validation.errors.join(", ") }, { status: 400, headers });
+  }
+
+  await saveCharacter(supabase, user.id, body);
+  return Response.json({ success: true }, { headers });
+}
+
 export default function CharacterCreation() {
   const creation = useCharacterCreation();
   const ui = useCharacterCreationUI();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const rootData = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const user = rootData?.user ?? null;
+  const saveFetcher = useFetcher();
+  const isSaving = saveFetcher.state === "submitting";
+  const saveResult = saveFetcher.data as { success?: boolean; error?: string } | undefined;
+
+  function handleSave() {
+    const characterData: CharacterData = {
+      heroName: ui.heroName,
+      cognomen: ui.cognomen,
+      gender: ui.gender,
+      characteristicRanks: creation.ranks,
+      abilityRanks: creation.abilityRanks,
+      extraHpPoints: creation.extraHPPoints,
+      selectedWeapons: creation.selectedWeapons,
+      selectedShield: creation.selectedShield,
+      selectedArmor: creation.selectedArmor,
+    };
+    saveFetcher.submit(JSON.stringify(characterData), {
+      method: "POST",
+      encType: "application/json",
+    });
+  }
+
   const { exportPdf } = usePdfExport({
     heroName: ui.heroName,
     cognomen: ui.cognomen,
@@ -84,9 +128,7 @@ export default function CharacterCreation() {
             <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl sm:text-3xl font-bold text-white uppercase tracking-wider whitespace-nowrap">
               {t("creation.heading")}
             </h1>
-            <div className="min-w-20 flex justify-end lg:hidden">
-              <LanguageSwitcher inline />
-            </div>
+            <div className="min-w-20" />
           </div>
 
           <Divider className="mb-6" />
@@ -106,6 +148,20 @@ export default function CharacterCreation() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                {user ? (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    color="success"
+                    className="text-xs"
+                    onPress={handleSave}
+                    isLoading={isSaving}
+                  >
+                    {saveResult?.success ? t("characters.savedSuccessfully") : t("characters.save")}
+                  </Button>
+                ) : (
+                  <span className="text-xs text-gray-500">{t("characters.loginToSave")}</span>
+                )}
                 <Button size="sm" variant="flat" className="text-gray-400 text-xs" onPress={exportPdf}>
                   {t("creation.exportPDF")}
                 </Button>

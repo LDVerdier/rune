@@ -530,5 +530,29 @@
     "colBetter": "Better Put...",
     "colNoOne": "No One...",
     "triggerLabel": "How is this calculated?"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "signInWithGoogle": "Sign in with Google",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "checkEmail": "Check your email to confirm your account.",
+    "myCharacters": "My Characters"
+  },
+  "characters": {
+    "pageTitle": "My Characters - Rune",
+    "myCharacters": "My Characters",
+    "create": "Create New",
+    "save": "Save",
+    "savedSuccessfully": "Saved!",
+    "confirmDelete": "Are you sure you want to delete this character?",
+    "noCharacters": "No characters yet — create one to get started.",
+    "delete": "Delete",
+    "unnamed": "Unnamed Character",
+    "loginToSave": "Log in to save"
   }
 }
