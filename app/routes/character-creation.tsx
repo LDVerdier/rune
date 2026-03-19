@@ -43,14 +43,15 @@ export async function action({ request }: Route.ActionArgs) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401, headers });
 
-  const body = await request.json() as CharacterData;
-  const validation = validateCharacter(body);
+  const body = await request.json() as CharacterData & { id?: string };
+  const { id, ...characterData } = body;
+  const validation = validateCharacter(characterData);
   if (!validation.valid) {
     return Response.json({ error: validation.errors.join(", ") }, { status: 400, headers });
   }
 
-  await saveCharacter(supabase, user.id, body);
-  return Response.json({ success: true }, { headers });
+  const saved = await saveCharacter(supabase, user.id, characterData, id);
+  return Response.json({ success: true, id: saved.id }, { headers });
 }
 
 export default function CharacterCreation() {
@@ -62,7 +63,8 @@ export default function CharacterCreation() {
   const user = rootData?.user ?? null;
   const saveFetcher = useFetcher();
   const isSaving = saveFetcher.state === "submitting";
-  const saveResult = saveFetcher.data as { success?: boolean; error?: string } | undefined;
+  const saveResult = saveFetcher.data as { success?: boolean; error?: string; id?: string } | undefined;
+  const savedCharacterId = saveResult?.id ?? null;
 
   function handleSave() {
     const characterData: CharacterData = {
@@ -76,7 +78,7 @@ export default function CharacterCreation() {
       selectedShield: creation.selectedShield,
       selectedArmor: creation.selectedArmor,
     };
-    saveFetcher.submit(JSON.stringify(characterData), {
+    saveFetcher.submit(JSON.stringify({ ...characterData, ...(savedCharacterId && { id: savedCharacterId }) }), {
       method: "POST",
       encType: "application/json",
     });
@@ -283,6 +285,7 @@ export default function CharacterCreation() {
             onConfirm={() => {
               creation.resetAll();
               ui.resetUI();
+              saveFetcher.load("");
             }}
           />
 
@@ -351,6 +354,10 @@ export default function CharacterCreation() {
         setIsMobileSummaryOpen={ui.setIsMobileSummaryOpen}
         onResetClick={() => ui.setIsResetOpen(true)}
         onExportClick={exportPdf}
+        onSaveClick={handleSave}
+        isSaving={isSaving}
+        isLoggedIn={!!user}
+        saveSuccess={saveResult?.success}
       />
     </div>
   );

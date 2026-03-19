@@ -69,15 +69,19 @@ export async function saveCharacter(
   supabase: SupabaseClient,
   userId: string,
   data: CharacterData,
+  id?: string,
 ): Promise<SavedCharacter> {
-  const { data: row, error } = await supabase
+  const row = toRow(userId, data);
+  const payload = id ? { ...row, id } : row;
+
+  const { data: result, error } = await supabase
     .from("characters")
-    .insert(toRow(userId, data))
+    .upsert(payload, { onConflict: "id" })
     .select()
     .single();
 
   if (error) throw new Error(error.message);
-  return fromRow(row as CharacterRow);
+  return fromRow(result as CharacterRow);
 }
 
 export async function listCharacters(

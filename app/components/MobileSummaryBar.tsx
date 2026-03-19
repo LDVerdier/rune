@@ -27,6 +27,10 @@ interface MobileSummaryBarProps {
   setIsMobileSummaryOpen: (open: boolean) => void;
   onResetClick: () => void;
   onExportClick: () => void;
+  onSaveClick?: () => void;
+  isSaving?: boolean;
+  isLoggedIn?: boolean;
+  saveSuccess?: boolean;
 }
 
 export function MobileSummaryBar({
@@ -50,6 +54,10 @@ export function MobileSummaryBar({
   setIsMobileSummaryOpen,
   onResetClick,
   onExportClick,
+  onSaveClick,
+  isSaving,
+  isLoggedIn,
+  saveSuccess,
 }: MobileSummaryBarProps) {
   const { t } = useTranslation();
 
@@ -88,6 +96,18 @@ export function MobileSummaryBar({
                 />
                 <Divider />
                 <div className="flex gap-2">
+                  {isLoggedIn && onSaveClick && (
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      color="success"
+                      className="text-xs"
+                      onPress={onSaveClick}
+                      isLoading={isSaving}
+                    >
+                      {saveSuccess ? t("characters.savedSuccessfully") : t("characters.save")}
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     variant="flat"

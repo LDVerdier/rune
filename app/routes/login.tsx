@@ -20,7 +20,7 @@ export async function action({ request }: Route.ActionArgs) {
   if (intent === "google") {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${new URL(request.url).origin}/auth/callback` },
+      options: { redirectTo: `${process.env.SITE_URL || new URL(request.url).origin}/auth/callback` },
     });
     if (error) return { error: error.message };
     return redirect(data.url, { headers });
