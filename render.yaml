@@ -2,7 +2,7 @@ services:
   - type: web
     name: rune
     runtime: docker
-    plan: free
+    plan: pro
     repo: https://github.com/LDVerdier/rune
     branch: main
     autoDeploy: false
