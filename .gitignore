@@ -6,3 +6,9 @@
 # React Router
 /.react-router/
 /build/
+
+# Agent tooling
+/.claude/settings.local.json
+/.claude/memory/private/
+/.conductor/
+/.playwright-mcp/
