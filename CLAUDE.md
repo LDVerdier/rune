@@ -1,5 +1,8 @@
 # Project: Rune
 
+## Domain Language
+`CONTEXT.md` is the glossary for the *Rune* rulebook's vocabulary. Read it before naming anything in the domain layer, and use its terms verbatim — no synonyms. When a decision settles a term, update it there.
+
 ## Tech Stack
 - React Router v7, React 19, HeroUI, Tailwind CSS v4, Framer Motion
 - TypeScript, ESLint, Vitest + Testing Library
