@@ -7,6 +7,14 @@ export function createServerClient(request: Request) {
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!,
     {
+      // @supabase/ssr defaults to httpOnly: false so a browser-side client can
+      // read the session. This app only ever talks to Supabase from the server,
+      // so the session cookie can stay out of reach of any script.
+      cookieOptions: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      },
       cookies: {
         getAll() {
           const cookieHeader = request.headers.get("Cookie") ?? "";
