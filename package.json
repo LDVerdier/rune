@@ -28,15 +28,15 @@
     "react-router": "^7.18.4"
   },
   "volta": {
-    "node": "24.22.1",
-    "npm": "11.19.1"
+    "node": "26.12.1",
+    "npm": "11.20.0"
   },
   "devDependencies": {
     "@react-router/dev": "^7.18.4",
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.1.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.6.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
